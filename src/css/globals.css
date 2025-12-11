@@ -1,4 +1,19 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@layer utilities {
+  /* 커스텀 쉐도우 */
+  .shadow-flat {
+    box-shadow: 2px 2px 0 0 #c79a6b;
+  }
+
+  .shadow-flat-light {
+    box-shadow: 1.5px 1.5px 0 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .shadow-flat-dark {
+    box-shadow: 1.5px 1.5px 0 0 #6d4c41;
+  }
+}
 
 @theme {
   /* 텍스트 */
