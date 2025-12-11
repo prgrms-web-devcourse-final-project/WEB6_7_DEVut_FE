@@ -1,6 +1,8 @@
-import { CircleCheckBig, Hourglass, RefreshCcw, Stamp } from "lucide-react";
+import { CircleCheckBig, Clock, Hourglass, RefreshCcw, Stamp } from "lucide-react";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import noLive from "@/assets/no-live.svg";
+import Image from "next/image";
 
 type Status = "pending" | "processing" | "done" | "confirmed";
 
@@ -36,6 +38,41 @@ export default function StatusBar({ status, className }: { status: Status; class
     >
       <span className="text-[#4F382A]">{iconMap[status]}</span>
       {textMap[status]}
+    </div>
+  );
+}
+
+type Time = "delay" | "live";
+
+const timeStyle: Record<Time, string> = {
+  delay: "bg-custom-brown",
+  live: "bg-custom-orange",
+};
+
+const timeIconMap: Record<Time, ReactNode> = {
+  delay: <Clock size={18} />,
+  live: <Image src={noLive} alt="라이브아님" />,
+};
+
+export function TimeBar({
+  type,
+  label,
+  className,
+}: {
+  type: Time;
+  label: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={twMerge(
+        "flex h-[33.53px] w-[214.52px] items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px] text-[#4F382A]",
+        timeStyle[type],
+        className
+      )}
+    >
+      <span className="text-[#4F382A]">{timeIconMap[type]}</span>
+      {label}
     </div>
   );
 }
