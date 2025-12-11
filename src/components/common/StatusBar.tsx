@@ -1,7 +1,8 @@
 import { CircleCheckBig, Clock, Hourglass, RefreshCcw, Stamp } from "lucide-react";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import noLive from "@/assets/no-live.svg";
+import offLive from "@/assets/offLive.svg";
+import onLive from "@/assets/onLive.svg";
 import Image from "next/image";
 
 type Status = "pending" | "processing" | "done" | "confirmed";
@@ -42,16 +43,18 @@ export default function StatusBar({ status, className }: { status: Status; class
   );
 }
 
-type Time = "delay" | "live";
+type Time = "delay" | "offLive" | "onLive";
 
 const timeStyle: Record<Time, string> = {
   delay: "bg-custom-brown",
-  live: "bg-custom-orange",
+  offLive: "bg-custom-orange",
+  onLive: "bg-custom-orange",
 };
 
 const timeIconMap: Record<Time, ReactNode> = {
   delay: <Clock size={18} />,
-  live: <Image src={noLive} alt="라이브아님" />,
+  offLive: <Image src={offLive} alt="라이브아님" />,
+  onLive: <Image src={onLive} alt="라이브임" />,
 };
 
 export function TimeBar({
@@ -60,7 +63,7 @@ export function TimeBar({
   className,
 }: {
   type: Time;
-  label: string;
+  label?: string;
   className?: string;
 }) {
   return (
@@ -72,7 +75,7 @@ export function TimeBar({
       )}
     >
       <span className="text-[#4F382A]">{timeIconMap[type]}</span>
-      {label}
+      {label ? label : "라이브 경매 진행 중"}
     </div>
   );
 }
