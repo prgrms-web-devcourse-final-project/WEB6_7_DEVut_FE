@@ -1,21 +1,29 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
+@layer utilities {
+  /* 커스텀 쉐도우 */
+  .shadow-flat {
+    box-shadow: 2px 2px 0 0 #c79a6b;
+  }
+  .shadow-flat-light {
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
+  }
+  .shadow-flat-dark {
+    box-shadow: 1.5px 1.5px 0 0 #6d4c41;
+  }
+}
 @theme {
   /* 텍스트 */
   --color-title-main: #5d4037;
   --color-title-sub: #6d4c41;
-  --color-title-sub: #8d6e63;
-
+  --color-title-sub2: #8d6e63;
   /* 배경, 컨텐츠 */
   --color-bg-main: #fffcf4;
   --color-content-gray: #f4f4f4; /* 버튼이나, 컨텐츠에도 사용 */
   --color-content-area: #f5f1e8;
-
   /* 선 */
   --color-border-main: #6d4c41;
   --color-border-sub: #a1887f;
   --color-border-sub2: #4e342e;
-
   /* 버튼, 상태 뱃지 */
   --color-custom-red: #c63d2f;
   --color-custom-blue: #6c5bea;
@@ -24,4 +32,5 @@
   --color-custom-green: #5b9a8e;
   --color-custom-brown: #d4a574;
   --color-btn-default: #fff8e1;
+  --color-btn-active: #ff8a65;
 }
