@@ -1,5 +1,5 @@
 /** @type {import("prettier").Config} */
-const config = {
+module.exports = {
   plugins: ["prettier-plugin-tailwindcss"],
   semi: true,
   singleQuote: false,
@@ -11,5 +11,3 @@ const config = {
   bracketSpacing: true,
   tailwindFunctions: ["clsx", "cva", "twMerge"],
 };
-
-export default config;
