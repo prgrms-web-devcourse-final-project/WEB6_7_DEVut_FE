@@ -1,8 +1,8 @@
 ---
 name: Custom issue template
 about: 이슈 작성 템플릿
-title: 'Type: 요약 설명'
-labels: enhancement
+title: ''
+labels: ''
 assignees: ''
 
 ---
