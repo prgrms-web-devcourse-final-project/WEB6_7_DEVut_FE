@@ -6,7 +6,7 @@ import test from "../../../public/images/sidebar/BBlogo.png";
 export default function MyIntro() {
   return (
     <ContentContainer className="mt-5 flex min-h-[370px] flex-col justify-between">
-      <div className="mx-auto flex w-[80%] items-stretch gap-10 sm:gap-20">
+      <div className="mx-auto flex w-[80%] gap-10 sm:gap-20">
         <div className="flex min-h-[280px] w-[25%] max-w-[150px] min-w-[130px] flex-col justify-center gap-6">
           <div className="aspect-square w-full">
             <WrapperImage src={test} alt="test" />
@@ -39,7 +39,7 @@ export default function MyIntro() {
           </div>
         </div>
       </div>
-      <div className="flex max-h-[50px] justify-end">
+      <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
         <Button label="수정" className="h-10 w-[100px]" />
       </div>
     </ContentContainer>
