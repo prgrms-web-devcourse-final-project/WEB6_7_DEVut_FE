@@ -12,7 +12,7 @@ export const mypageItems = [
     path: "/mypage/sales",
   },
   {
-    label: "거래내역",
+    label: "Bizz",
     path: "/mypage/bizz",
   },
 ];

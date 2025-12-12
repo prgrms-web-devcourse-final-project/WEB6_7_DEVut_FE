@@ -1,7 +1,9 @@
+import BizzBalance from "@/components/mypage/bizz/BizzBalance";
+
 export default function BizzPage() {
   return (
-    <>
-      <h1>BizzPage</h1>
-    </>
+    <div className="flex flex-col gap-10 pb-15">
+      <BizzBalance />
+    </div>
   );
 }
