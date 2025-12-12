@@ -1,5 +1,5 @@
-import Button from "../common/Button";
-import ContentContainer from "../common/ContentContainer";
+import Button from "../../common/Button";
+import ContentContainer from "../../common/ContentContainer";
 import MyBizzLog from "./MyBizzLog";
 
 export default function MyBizzSimple() {
