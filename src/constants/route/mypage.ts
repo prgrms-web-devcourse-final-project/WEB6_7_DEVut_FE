@@ -5,14 +5,14 @@ export const mypageItems = [
   },
   {
     label: "구매",
-    path: "/purchases",
+    path: "/mypage/purchases",
   },
   {
     label: "판매",
-    path: "/sales",
+    path: "/mypage/sales",
   },
   {
     label: "거래내역",
-    path: "/coins",
+    path: "/mypage/bizz",
   },
 ];
