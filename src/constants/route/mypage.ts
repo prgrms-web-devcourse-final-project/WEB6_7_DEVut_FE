@@ -1,6 +1,6 @@
 export const mypageItems = [
   {
-    label: "my",
+    label: "My",
     path: "/mypage",
   },
   {
