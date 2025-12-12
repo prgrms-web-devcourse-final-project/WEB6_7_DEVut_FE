@@ -1,4 +1,4 @@
-import { sidebarItems } from "@/constants/sidebar";
+import { sidebarItems } from "@/constants/route/sidebar";
 import SideBarItem from "./SideBarItem";
 import BBLogo from "../../../public/images/sidebar/BBlogo.png";
 import BBLogoBackground from "../../../public/images/sidebar/BBlogo_background.png";
