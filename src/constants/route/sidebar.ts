@@ -28,7 +28,7 @@ export const sidebarItems = [
     icon: mypage,
   },
   {
-    path: "/alert",
+    path: "/nofity",
     icon: alarm,
     badgeCount: 0,
   },
