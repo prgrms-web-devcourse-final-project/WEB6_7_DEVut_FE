@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
-import ProductStatus from "../ProductStatus";
+import ProductStatus from "./ProductStatus";
 import liveBadge from "@/assets/liveBadge.svg";
 import delayBadge from "@/assets/delayBadge.svg";
 import fullStar from "@/assets/fullStar.svg";

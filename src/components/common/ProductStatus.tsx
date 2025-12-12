@@ -1,4 +1,4 @@
-import StatusBar, { TimeBar } from "./common/StatusBar";
+import StatusBar, { TimeBar } from "./StatusBar";
 
 type Product = "pending" | "processing" | "done" | "confirmed" | "delay" | "offLive" | "onLive";
 

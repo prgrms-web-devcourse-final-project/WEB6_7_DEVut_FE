@@ -1,7 +1,16 @@
-export default function Button() {
+import { twMerge } from "tailwind-merge";
+
+export default function Button({ label, className }: { label: string; className?: string }) {
   return (
     <>
-      <h1>Button Component</h1>
+      <button
+        className={twMerge(
+          "flex h-16 w-[161.67px] cursor-pointer items-center justify-center rounded-lg border-3 border-[#4E342E] bg-[#FFF8E1] text-[20px] text-[#6D4C41] shadow-[2px_2px_0px_#A1887F] transition-all hover:scale-102 active:scale-99",
+          className
+        )}
+      >
+        {label}
+      </button>
     </>
   );
 }
