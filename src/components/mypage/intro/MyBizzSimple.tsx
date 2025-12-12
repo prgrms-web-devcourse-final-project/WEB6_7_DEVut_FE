@@ -1,6 +1,6 @@
 import Button from "../../common/Button";
 import ContentContainer from "../../common/ContentContainer";
-import MyBizzLog from "./MyBizzLog";
+import MyBizzLog from "../bizz/MyBizzLog";
 
 export default function MyBizzSimple() {
   return (
