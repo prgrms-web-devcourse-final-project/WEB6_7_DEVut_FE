@@ -1,7 +1,9 @@
+import BidsLog from "@/components/product/BidsLog";
+
 export default function BidsPage() {
   return (
-    <>
-      <h1>경매 기록 페이지 입니다</h1>
-    </>
+    <div className="mx-auto mt-6 h-fit w-[90%]">
+      <BidsLog />
+    </div>
   );
 }
