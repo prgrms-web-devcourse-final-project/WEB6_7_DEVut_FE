@@ -12,7 +12,7 @@ export default function PagePrevArea({ title }: { title: string }) {
       >
         <span className="-translate-x-[0.7px]">{"<"}</span>
       </div>
-      <span className="-translate-y-0.5">{title}</span>
+      <span className="-translate-y-0.5 font-bold">{title}</span>
     </div>
   );
 }
