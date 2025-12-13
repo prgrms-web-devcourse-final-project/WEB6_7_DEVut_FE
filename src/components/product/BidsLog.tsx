@@ -1,3 +1,4 @@
+import { RotateCw } from "lucide-react";
 import Button from "../common/Button";
 import BidsLogCard from "./BidsLogCard";
 
@@ -20,10 +21,9 @@ export default function BidsLog() {
         <BidsLogCard />
       </div>
       <div className="border-btn-default mt-4 flex justify-center border-t-3 py-3">
-        <Button
-          label={`새로고침`}
-          className="text-title-main h-[35px] w-[120px] rounded-4xl text-lg"
-        />
+        <Button className="w-[120px] rounded-4xl" size={"sm"} leftIcon={<RotateCw size={18} />}>
+          새로고침
+        </Button>
       </div>
     </div>
   );
