@@ -4,12 +4,13 @@ import ContentContainer from "@/components/common/ContentContainer";
 import Input from "@/components/common/Input";
 import PagePrevArea from "@/components/common/PagePrevArea";
 import Textarea from "@/components/common/TextArea";
+import ImageUploader from "@/components/write/ImageUploader";
 import { useState } from "react";
 export default function WritePage() {
   const [title, setTitle] = useState("");
 
   return (
-    <>
+    <div className="flex flex-col gap-8">
       <PagePrevArea title="경매 게시물 작성" />
       <ContentContainer className="flex flex-col gap-5 p-8">
         <div>
@@ -35,6 +36,7 @@ export default function WritePage() {
               type="radio"
               id="new"
               name="condition"
+              checked
             />
             <span className="text-title-main text-xl">
               새 상품 (미사용){" "}
@@ -76,6 +78,17 @@ export default function WritePage() {
           <Textarea />
         </div>
       </ContentContainer>
-    </>
+      <ContentContainer className="flex flex-col gap-5 p-8">
+        <div>
+          <p className="text-title-sub text-2xl">상품 이미지</p>
+        </div>
+        <ImageUploader />
+      </ContentContainer>
+      <ContentContainer className="flex flex-col gap-5 p-8">
+        <div>
+          <p className="text-title-sub text-2xl">기타</p>
+        </div>
+      </ContentContainer>
+    </div>
   );
 }
