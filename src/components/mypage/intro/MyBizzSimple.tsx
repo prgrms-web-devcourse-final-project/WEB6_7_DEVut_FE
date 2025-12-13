@@ -19,7 +19,7 @@ export default function MyBizzSimple() {
         </div>
       </div>
       <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
-        <Button label="충전" className="h-10 w-[100px]" />
+        <Button className="h-10">충전</Button>
       </div>
     </ContentContainer>
   );
