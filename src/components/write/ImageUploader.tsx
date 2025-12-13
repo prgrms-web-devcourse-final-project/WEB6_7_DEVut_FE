@@ -67,7 +67,9 @@ export default function ImageUploader() {
         onClick={openFilePicker}
         className={twJoin(
           "border-border-sub bg-content-area h-full w-full rounded-2xl border-4 border-dashed p-16",
-          previews.length >= MAX ? "cursor-not-allowed opacity-60" : "hover:border- cursor-pointer"
+          previews.length >= MAX
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer hover:blur-[2px]"
         )}
       >
         <div className="flex flex-col items-center justify-center">
