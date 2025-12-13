@@ -1,5 +1,5 @@
-import MyBizzSimple from "@/components/mypage/MyBizzSimple";
-import MyIntro from "@/components/mypage/MyIntro";
+import MyBizzSimple from "@/components/mypage/intro/MyBizzSimple";
+import MyIntro from "@/components/mypage/intro/MyIntro";
 
 export default function MyPage() {
   return (

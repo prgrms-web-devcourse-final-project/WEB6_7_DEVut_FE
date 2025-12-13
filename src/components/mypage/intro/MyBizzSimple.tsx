@@ -1,7 +1,6 @@
-import { LogIn } from "lucide-react";
-import Button from "../common/Button";
-import ContentContainer from "../common/ContentContainer";
-import MyBizzLog from "./MyBizzLog";
+import Button from "../../common/Button";
+import ContentContainer from "../../common/ContentContainer";
+import MyBizzLog from "../bizz/MyBizzLog";
 
 export default function MyBizzSimple() {
   return (
