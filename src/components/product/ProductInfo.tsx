@@ -30,10 +30,9 @@ export default function ProductInfo({ productId }: { productId: string }) {
             <div className="mt-1 flex items-end justify-between gap-2">
               <p className="text-title-main-dark text-2xl">252,000</p>
 
-              <Button
-                className="border-border-sub2 h-10 w-[100px] border-[3px] text-sm"
-                label="경매 기록"
-              />
+              <Button size="sm" onClick={() => route.push(`/product/${productId}/bidsLog`)}>
+                경매 기록
+              </Button>
             </div>
           </div>
 
@@ -52,9 +51,9 @@ export default function ProductInfo({ productId }: { productId: string }) {
           </div>
 
           <div className="flex gap-2">
-            <Button className="flex-1" label="찜 21" />
-            <Button className="bg-custom-orange flex-2 text-white" label="라이브 입장하기" />
-            <Button className="flex-1" label="대화 하기" />
+            <Button className="flex-1">찜 21</Button>
+            <Button className="bg-custom-orange flex-2 text-white">라이브 입장하기</Button>
+            <Button className="flex-1">대화하기</Button>
           </div>
         </div>
       </div>
