@@ -1,10 +1,10 @@
-import home from "../../../public/images/sidebar/home.png";
-import auction from "../../../public/images/sidebar/auction.png";
-import calender from "../../../public/images/sidebar/calender.png";
-import search from "../../../public/images/sidebar/search.png";
-import mypage from "../../../public/images/sidebar/mypage.png";
-import alarm from "../../../public/images/sidebar/alarm.png";
-import message from "../../../public/images/sidebar/message.png";
+import home from "@/assets/images/sidebar/home.png";
+import auction from "@/assets/images/sidebar/auction.png";
+import calender from "@/assets/images/sidebar/calender.png";
+import search from "@/assets/images/sidebar/search.png";
+import mypage from "@/assets/images/sidebar/mypage.png";
+import alarm from "@/assets/images/sidebar/alarm.png";
+import message from "@/assets/images/sidebar/message.png";
 
 export const sidebarItems = [
   {

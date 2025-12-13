@@ -1,7 +1,7 @@
 import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
 import WrapperImage from "../common/WrapperImage";
-import test from "../../../public/images/sidebar/BBlogo.png";
+import test from "@/assets/images/sidebar/BBlogo.png";
 
 export default function MyIntro() {
   return (
