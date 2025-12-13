@@ -1,12 +1,12 @@
 import ContentContainer from "@/components/common/ContentContainer";
-import Pagenation from "@/components/common/Pagenation";
-import Title from "@/components/common/Title";
+import DelayPopularProducts from "@/components/home/DelayPopularProducts";
+import LivePopularProducts from "@/components/home/LivePopularProducts";
 
 export default function Home() {
   return (
-    <ContentContainer className="border-none shadow-none">
-      <Title size={"lg"}>라이브 인기 상품</Title>
-      <Pagenation />
+    <ContentContainer bordered={false}>
+      <LivePopularProducts />
+      <DelayPopularProducts />
     </ContentContainer>
   );
 }
