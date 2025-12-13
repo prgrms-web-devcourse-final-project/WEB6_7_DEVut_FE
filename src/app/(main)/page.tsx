@@ -4,7 +4,7 @@ import LivePopularProducts from "@/components/home/LivePopularProducts";
 
 export default function Home() {
   return (
-    <ContentContainer bordered={false}>
+    <ContentContainer bordered={false} className="pt-5">
       <LivePopularProducts />
       <DelayPopularProducts />
     </ContentContainer>
