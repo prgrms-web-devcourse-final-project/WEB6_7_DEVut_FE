@@ -11,10 +11,9 @@ export default function MyIntro() {
           <div className="aspect-square w-full">
             <WrapperImage src={test} alt="test" />
           </div>
-          <Button
-            label="로그아웃"
-            className="bg-custom-red h-10 w-full text-lg font-bold text-white"
-          />
+          <Button className="bg-custom-red h-10 w-full text-lg font-bold text-white">
+            로그아웃
+          </Button>
         </div>
 
         <div className="text-title-main flex min-h-[280px] flex-col justify-center gap-7 text-sm font-bold md:text-lg">
@@ -40,7 +39,7 @@ export default function MyIntro() {
         </div>
       </div>
       <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
-        <Button label="수정" className="h-10 w-[100px]" />
+        <Button className="h-10">수정</Button>
       </div>
     </ContentContainer>
   );
