@@ -11,8 +11,8 @@ export default function BizzBalance() {
         </ContentContainer>
       </div>
       <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
-        <Button label="충전" className="bg-custom-blue h-10 w-22 text-white" />
-        <Button label="출금" className="bg-custom-red ml-4 h-10 w-22 text-white" />
+        <Button className="bg-custom-blue h-10 w-22 text-white">충전</Button>
+        <Button className="bg-custom-red ml-4 h-10 w-22 text-white">출금</Button>
       </div>
     </ContentContainer>
   );
