@@ -8,8 +8,20 @@ import delayBadge from "@/assets/delayBadge.svg";
 import fullStar from "@/assets/fullStar.svg";
 import emptyStar from "@/assets/emptyStar.svg";
 import { useState } from "react";
+import BaseImage from "./BaseImage";
+import test from "@/assets/vintage.png";
 
 type Product = "pending" | "processing" | "done" | "confirmed" | "delay" | "offLive" | "onLive";
+
+interface ProductCardProps {
+  type: Product;
+  money: number;
+  title: string;
+  label?: string;
+  image?: string;
+  isLive?: boolean;
+  isTake?: boolean;
+}
 
 export default function ProductCard({
   type,
@@ -19,34 +31,18 @@ export default function ProductCard({
   image,
   isLive,
   isTake,
-}: {
-  type: Product;
-  money: number;
-  title: string;
-  label?: string;
-  image?: string;
-  isLive?: boolean;
-  isTake?: boolean;
-}) {
+}: ProductCardProps) {
   const [star, setStar] = useState<boolean>(!!isTake);
 
-  const handleStar = () => {
-    setStar(prev => !prev);
-  };
-
-  const handleNavigate = () => {
-    console.log("추후 상세페이지 이동");
-  };
+  const handleStar = () => setStar(prev => !prev);
+  const handleNavigate = () => console.log("추후 상세페이지 이동");
 
   const formatMoney = (value: number) => new Intl.NumberFormat("ko-KR").format(value);
 
   return (
-    <div
-      onClick={handleNavigate}
-      className="relative flex h-[279px] w-[238.54px] cursor-pointer items-center justify-center"
-    >
-      <div
-        className="absolute top-[21px] left-[21px] z-20 cursor-pointer transition-transform hover:scale-105 active:scale-90"
+    <div onClick={handleNavigate} className="relative cursor-pointer">
+      <button
+        className="absolute top-4 left-4 z-20 transition-transform hover:scale-105 active:scale-90"
         onClick={e => {
           e.stopPropagation();
           handleStar();
@@ -58,26 +54,15 @@ export default function ProductCard({
           width={20}
           height={20}
         />
-      </div>
+      </button>
 
-      <div className="flex h-full w-full flex-col items-center justify-center border-[1.5px] border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-101 active:scale-99">
+      <div className="flex h-full w-full flex-col items-center rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
         <div
-          className={twMerge(
-            "relative h-[134px] w-[214px] overflow-hidden rounded-[3px] border border-[#4F382A]",
-            !image && "bg-[#D4BBA6]"
-          )}
+          className={twMerge("relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2")}
         >
-          {image && (
-            <Image
-              src={image}
-              alt="카드 이미지"
-              width={214}
-              height={134}
-              className="object-cover"
-            />
-          )}
+          <BaseImage src={test} alt="카드 이미지" />
 
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute top-3 right-3 z-10">
             <Image
               src={isLive ? liveBadge : delayBadge}
               alt={isLive ? "라이브 뱃지" : "지연 뱃지"}
@@ -85,13 +70,13 @@ export default function ProductCard({
           </div>
         </div>
 
-        <div className="mt-2 flex w-[214px] flex-col">
-          <p className="text-[12px] text-[#4F382A] opacity-70">입찰가</p>
+        <div className="text-title-main-dark mt-2 flex w-full flex-col px-2">
+          <p className="text-[12px] opacity-70">입찰가</p>
           <p className="text-[21px] font-bold text-[#E2703A]">₩ {formatMoney(money)}</p>
-          <p className="text-[14px] text-[#4F382A]">{title}</p>
+          <p className="text-[14px]">{title}</p>
         </div>
 
-        <div className="mt-2">
+        <div className="mt-2 mb-3 w-[90%]">
           <ProductStatus type={type} label={label} />
         </div>
       </div>

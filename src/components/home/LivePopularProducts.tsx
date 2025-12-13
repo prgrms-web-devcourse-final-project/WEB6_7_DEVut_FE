@@ -1,0 +1,34 @@
+"use client";
+
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import Title from "../common/Title";
+import ContentContainer from "../common/ContentContainer";
+import ProductCard from "../common/ProductCard";
+
+export default function LivePopularProducts() {
+  const [emblaRef] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({
+      delay: 4000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    }),
+  ]);
+
+  return (
+    <>
+      <Title size="lg">라이브 인기 상품</Title>
+      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border py-4">
+        <div ref={emblaRef} className="w-full overflow-hidden py-2">
+          <div className="flex gap-4 px-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]">
+                <ProductCard money={5000000} title={"진짜 비싼거"} type="onLive" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </ContentContainer>
+    </>
+  );
+}
