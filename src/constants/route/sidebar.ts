@@ -1,6 +1,6 @@
 import home from "@/assets/images/sidebar/home.png";
 import auction from "@/assets/images/sidebar/auction.png";
-import calender from "@/assets/images/sidebar/calender.png";
+import calendar from "@/assets/images/sidebar/calendar.png";
 import search from "@/assets/images/sidebar/search.png";
 import mypage from "@/assets/images/sidebar/mypage.png";
 import alarm from "@/assets/images/sidebar/alarm.png";
@@ -16,8 +16,8 @@ export const sidebarItems = [
     icon: auction,
   },
   {
-    path: "/calender",
-    icon: calender,
+    path: "/schedule",
+    icon: calendar,
   },
   {
     path: "/search",
