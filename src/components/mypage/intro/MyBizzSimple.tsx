@@ -8,7 +8,6 @@ export default function MyBizzSimple() {
     <ContentContainer className="flex min-h-[370px] flex-col justify-between gap-10">
       <div className="mx-auto mt-10 flex h-fit w-[90%] gap-10">
         <div className="flex w-[300px] flex-col">
-          {/* <div className="text-title-main text-lg font-bold">비즈</div> */}
           <Title>비즈</Title>
           <ContentContainer className="bg-content-gray text-title-sub border-border-sub2 flex min-h-[130px] w-full flex-col gap-2 border-2 p-5">
             <span>보유 비즈</span>
@@ -16,9 +15,8 @@ export default function MyBizzSimple() {
           </ContentContainer>
         </div>
         <div className="flex flex-1 flex-col">
-          {/* <div className="text-title-main text-lg font-bold">최근 내역</div> */}
           <Title>최근 내역</Title>
-          <MyBizzLog />
+          <MyBizzLog simple={true} />
         </div>
       </div>
       <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
