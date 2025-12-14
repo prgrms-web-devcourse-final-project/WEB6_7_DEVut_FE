@@ -1,8 +1,8 @@
 import { CircleCheckBig, Clock, Hourglass, RefreshCcw, Stamp } from "lucide-react";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import offLive from "@/assets/offLive.svg";
-import onLive from "@/assets/onLive.svg";
+import offLive from "@/assets/common/offLive.svg";
+import onLive from "@/assets/common/onLive.svg";
 import Image from "next/image";
 
 type Status = "pending" | "processing" | "done" | "confirmed";

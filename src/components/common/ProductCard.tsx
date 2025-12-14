@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 import ProductStatus from "./ProductStatus";
-import liveBadge from "@/assets/liveBadge.svg";
-import delayBadge from "@/assets/delayBadge.svg";
-import fullStar from "@/assets/fullStar.svg";
-import emptyStar from "@/assets/emptyStar.svg";
+import liveBadge from "@/assets/common/liveBadge.svg";
+import delayBadge from "@/assets/common/delayBadge.svg";
+import fullStar from "@/assets/common/fullStar.svg";
+import emptyStar from "@/assets/common/emptyStar.svg";
 import { useState } from "react";
 import BaseImage from "./BaseImage";
 import test from "@/assets/vintage.png";
