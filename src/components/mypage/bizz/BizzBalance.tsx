@@ -1,3 +1,4 @@
+import BizzAmount from "@/components/common/BizzAmount";
 import Button from "@/components/common/Button";
 import ContentContainer from "@/components/common/ContentContainer";
 
@@ -7,7 +8,7 @@ export default function BizzBalance() {
       <div className="text-title-main ml-15 flex w-[50%] flex-1 flex-col justify-center gap-5">
         <div className="text-[32px]">잔액</div>
         <ContentContainer className="shadow-flat-light border-border-sub/20 m-0 h-[130px] min-h-0 p-5 text-[32px]">
-          12,345,678
+          <BizzAmount amount={123456789} fontSize={"xl"} iconSize={"xl"} />
         </ContentContainer>
       </div>
       <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
