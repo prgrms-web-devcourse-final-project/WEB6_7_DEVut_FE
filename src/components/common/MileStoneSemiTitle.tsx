@@ -1,5 +1,5 @@
 import Image from "next/image";
-import MileStone from "@/assets/mileStoneSemiTitle.svg";
+import MileStone from "@/assets/common/mileStoneSemiTitle.svg";
 
 export default function MileStoneSemiTitle({ title }: { title: string }) {
   return (
