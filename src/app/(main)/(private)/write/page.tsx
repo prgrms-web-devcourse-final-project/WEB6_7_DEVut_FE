@@ -22,6 +22,7 @@ export default function WritePage() {
   const [auctionKind, setAuctionKind] = useState<AuctionKind>("live");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [category, setCategory] = useState<CategoryKey | null>(null);
 
   const formatYmd = (d: Date) => {
     const y = d.getFullYear();
@@ -47,7 +48,12 @@ export default function WritePage() {
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">카테고리</p>
-          <Category />
+          <Category
+            name="categoryRadio"
+            value={category}
+            onChange={setCategory}
+            className="flex gap-2 overflow-x-auto whitespace-nowrap sm:flex-wrap"
+          />
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">상품상태</p>
