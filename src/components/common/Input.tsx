@@ -44,7 +44,7 @@ export default function Input({
             onChange?.(e);
           }}
           className={twMerge(
-            "bg-input-area text-border-sub shadow-inner-soft border-border-sub focus:border-border-sub2 mx-auto w-full appearance-none rounded-xl border-2 px-4 py-3.5 outline-none focus:border-3",
+            "bg-input-area text-border-sub shadow-inner-soft border-border-sub focus:border-border-sub2/70 mx-auto w-full appearance-none rounded-xl border-2 px-4 py-3.5 outline-none focus:border-3",
             className
           )}
         />
