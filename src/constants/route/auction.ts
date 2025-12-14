@@ -4,7 +4,7 @@ export const auctionItems = [
     path: "/auction",
   },
   {
-    label: "지연",
+    label: "일반",
     path: "/auction/delay",
   },
   {
