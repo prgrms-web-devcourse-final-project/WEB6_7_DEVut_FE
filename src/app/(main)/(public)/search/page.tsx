@@ -1,7 +1,5 @@
 import ContentContainer from "@/components/common/ContentContainer";
-import SearchInput from "@/components/search/SearchInput";
-import SearchResult from "@/components/search/SearchResult";
-import { Suspense } from "react";
+import SearchPageClient from "@/components/search/SearchPageCliet";
 
 export default function SearchPage() {
   return (
@@ -10,10 +8,8 @@ export default function SearchPage() {
         <div className="text-title-main flex min-h-[65px] text-2xl">
           <p className="-translate-y-0.5 font-bold">검색</p>
         </div>
-        <SearchInput />
-        <Suspense fallback={<div>로딩 중....</div>}>
-          <SearchResult />
-        </Suspense>
+
+        <SearchPageClient />
       </div>
     </ContentContainer>
   );
