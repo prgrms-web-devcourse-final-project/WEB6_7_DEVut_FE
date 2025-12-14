@@ -11,11 +11,11 @@ import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import DashDivider from "@/components/common/DashDivider";
 
-export default function Page() {
+export default function LoginPage() {
   const route = useRouter();
 
   return (
-    <div className="">
+    <>
       <AuthForm>
         <div className="flex justify-center">
           <Image
@@ -44,6 +44,6 @@ export default function Page() {
           </span>
         </div>
       </AuthForm>
-    </div>
+    </>
   );
 }
