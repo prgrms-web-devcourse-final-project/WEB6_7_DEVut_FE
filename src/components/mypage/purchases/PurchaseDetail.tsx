@@ -11,7 +11,9 @@ export default function PurchaseDetail() {
   const [status, setStatus] = useState("전체");
   return (
     <div className="mt-10">
-      <Title wrapperClassName="mb-0">구매 상세</Title>
+      <Title wrapperClassName="mb-0" size={"lg"}>
+        구매 상세
+      </Title>
       <div className="flex w-full justify-end gap-5">
         <div className="relative w-[110px] translate-y-2 scale-120">
           <OrderSwitch />
