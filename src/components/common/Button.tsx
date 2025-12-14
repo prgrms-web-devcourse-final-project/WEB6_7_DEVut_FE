@@ -9,6 +9,8 @@ const buttonVariants = cva(
       variant: {
         primary:
           "border-border-sub2 bg-btn-default text-title-sub shadow-flat-light hover:scale-102 active:scale-99",
+        selected:
+          "border-border-sub2 bg-custom-orange text-title-sub shadow-flat-light hover:scale-102 active:scale-99",
       },
       size: {
         sm: "h-10 px-4 text-sm",
