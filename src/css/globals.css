@@ -20,6 +20,7 @@
 @theme {
   /* 텍스트 */
   --color-title-main: #5d4037;
+  --color-title-main-dark: #3e2723;
   --color-title-sub: #6d4c41;
   --color-title-sub2: #8d6e63;
   /* 배경, 컨텐츠 */

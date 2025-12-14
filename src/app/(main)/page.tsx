@@ -1,9 +1,12 @@
 import ContentContainer from "@/components/common/ContentContainer";
+import DelayPopularProducts from "@/components/home/DelayPopularProducts";
+import LivePopularProducts from "@/components/home/LivePopularProducts";
 
 export default function Home() {
   return (
-    <div className="">
-      <ContentContainer>홈 화면입니다.</ContentContainer>
-    </div>
+    <ContentContainer bordered={false} className="pt-5">
+      <LivePopularProducts />
+      <DelayPopularProducts />
+    </ContentContainer>
   );
 }

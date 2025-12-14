@@ -1,9 +1,9 @@
 import { sidebarItems } from "@/constants/route/sidebar";
 import SideBarItem from "./SideBarItem";
-import BBLogo from "../../../public/images/sidebar/BBlogo.png";
-import BBLogoBackground from "../../../public/images/sidebar/BBlogo_background.png";
+import BBLogo from "@/assets/images/sidebar/BBlogo.png";
+import BBLogoBackground from "@/assets/images/sidebar/BBlogo_background.png";
 import Image from "next/image";
-import sound from "../../../public/images/sidebar/sound.png";
+import sound from "@/assets/images/sidebar/sound.png";
 
 export default function Sidebar() {
   return (

@@ -32,7 +32,7 @@ export default function StatusBar({ status, className }: { status: Status; class
   return (
     <div
       className={twMerge(
-        "flex h-[33.53px] w-[214.52px] items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px] text-white",
+        "flex h-[33.53px] w-full items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px] text-white",
         statusStyle[status],
         className
       )}
@@ -69,7 +69,7 @@ export function TimeBar({
   return (
     <div
       className={twMerge(
-        "flex h-[33.53px] w-[214.52px] items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px] text-[#4F382A]",
+        "flex h-[33.53px] w-full items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px] text-[#4F382A]",
         timeStyle[type],
         className
       )}
