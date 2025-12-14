@@ -10,7 +10,7 @@ const categoryVariants = cva("shadow-flat-light cursor-pointer rounded-lg border
       lg: "px-6 py-2.5 text-[16px]",
     },
     active: {
-      true: "bg-btn-active border-border-main text-white",
+      true: "bg-btn-active border-border-main border-[3px] text-white",
       false: "bg-content-gray border-border-sub text-title-sub",
     },
   },
@@ -29,7 +29,7 @@ interface CategoryProps extends VariantProps<typeof categoryVariants> {
 
 export default function Category({ name, value, onChange, size, className }: CategoryProps) {
   return (
-    <div className={twMerge("flex flex-wrap gap-2.5", className)}>
+    <div className={twMerge(className)}>
       {CATEGORIES.map(cat => {
         const checked = value === cat.key;
 

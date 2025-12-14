@@ -48,7 +48,12 @@ export default function WritePage() {
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">카테고리</p>
-          <Category name="categoryRadio" value={category} onChange={setCategory} />
+          <Category
+            name="categoryRadio"
+            value={category}
+            onChange={setCategory}
+            className="flex gap-2 overflow-x-auto whitespace-nowrap sm:flex-wrap"
+          />
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">상품상태</p>
