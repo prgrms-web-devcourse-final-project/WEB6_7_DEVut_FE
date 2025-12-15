@@ -1,4 +1,5 @@
 import StageBarBackground from "@/components/auction/live/liveRoom/stage/StageBarBackground";
+import LiveRoomList from "@/components/auction/live/liveRoomList/LiveRoomList";
 import RoomProducts from "@/components/auction/live/liveRoomList/RoomProducts";
 import ContentContainer from "@/components/common/ContentContainer";
 import PageTabArea from "@/components/common/PageTabArea";
@@ -17,7 +18,9 @@ export default function AuctionPage() {
             </div>
           </StageBarBackground>
         </div>
-        <div className="flex-1">목록</div>
+        <div className="flex flex-1 bg-[#F5EFE1]">
+          <LiveRoomList />
+        </div>
         <RoomProducts />
       </ContentContainer>
     </>

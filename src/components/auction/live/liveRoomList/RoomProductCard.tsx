@@ -5,7 +5,7 @@ import BizzAmount from "@/components/common/BizzAmount";
 export default function RoomProductCard() {
   return (
     <div className="relative h-full">
-      <div className="flex h-full w-full flex-col rounded-md border border-[#4F382A] bg-[#FDF6E9]">
+      <div className="border-border-main bg-content-area shadow-flat-dark flex h-full w-full flex-col rounded-md border">
         <div className="relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-1.5">
           <BaseImage src={test} alt="카드 이미지" />
         </div>
