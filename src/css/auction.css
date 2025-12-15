@@ -1,0 +1,59 @@
+@keyframes float {
+  0% {
+    transform: translate(var(--x), var(--y)) scale(var(--s));
+  }
+  50% {
+    transform: translate(var(--x), calc(var(--y) - 6px)) scale(var(--s));
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(var(--s));
+  }
+}
+
+.audience {
+  position: relative;
+}
+
+.audience-item {
+  position: absolute;
+  bottom: 0;
+  animation: float 5s ease-in-out infinite;
+}
+
+.audience-item:nth-child(3n) {
+  left: calc(4% * var(--i));
+  --y: -8px;
+  --s: 1.05;
+  z-index: 3;
+}
+
+.audience-item:nth-child(3n + 1) {
+  left: calc(4% * var(--i));
+  --y: -28px;
+  --s: 0.95;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+.audience-item:nth-child(3n + 2) {
+  left: calc(4% * var(--i));
+  --y: -48px;
+  --s: 0.85;
+  opacity: 0.75;
+  z-index: 1;
+}
+
+.audience-item:nth-child(odd) {
+  --x: -8px;
+}
+
+.audience-item:nth-child(even) {
+  --x: 8px;
+}
+
+.audience-item:nth-child(4n) {
+  animation-duration: 4.5s;
+}
+.audience-item:nth-child(5n) {
+  animation-duration: 6.5s;
+}
