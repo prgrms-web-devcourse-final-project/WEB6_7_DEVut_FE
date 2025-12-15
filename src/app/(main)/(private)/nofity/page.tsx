@@ -22,7 +22,7 @@ export default function NofityPage() {
               <NotifyItem icon="⏰">
                 ‘찐한 빈티지 스쿠터 카메라’ 상품의 경매가 곧 시작합니다.
               </NotifyItem>
-              <div className="mt-12 ml-15 w-[1000px] border-t-[3px] border-dashed border-[#A1887F]/30" />
+              <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
             </div>
 
             <div className="mb-12">
@@ -31,7 +31,7 @@ export default function NofityPage() {
               <NotifyItem icon="💬">‘앤티크 목마’ 상품 판매자에게 메시지가 왔습니다.</NotifyItem>
               <NotifyItem icon="💳">기한 내에 ‘LP 턴테이블’ 상품의 결제를 완료해주세요.</NotifyItem>
               <NotifyItem>축하합니다! ‘한정판 피규어’ 상품의 낙찰에 성공했습니다.</NotifyItem>
-              <div className="mt-12 ml-15 w-[1000px] border-t-[3px] border-dashed border-[#A1887F]/30" />
+              <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
             </div>
           </section>
         </div>
