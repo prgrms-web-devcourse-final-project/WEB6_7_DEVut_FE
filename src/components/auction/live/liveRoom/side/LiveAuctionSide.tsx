@@ -10,6 +10,7 @@ import Button from "@/components/common/Button";
 
 export default function LiveAuctionSide() {
   const [tab, setTab] = useState("CHAT");
+
   const messages: LiveChatItemProps[] = [
     { type: "SYSTEM", text: "경매가 시작되었습니다" },
     {
@@ -38,9 +39,11 @@ export default function LiveAuctionSide() {
       avatarUrl: "/avatar/buzzer.png",
     },
   ];
+
   return (
-    <div className="border-border-main flex h-full w-[28%] min-w-[280px] flex-col border">
-      <div className="border-border-main flex h-14 items-center border-b">
+    <div className="border-border-main flex w-[28%] min-w-[280px] flex-col border">
+      {/* 상단 탭 */}
+      <div className="border-border-main flex h-14 shrink-0 items-center border-b">
         <LiveSideTabButton active={tab === "CHAT"} onClick={() => setTab("CHAT")}>
           <MessageCircle size={18} className="mr-2" /> 채팅
         </LiveSideTabButton>
@@ -48,22 +51,26 @@ export default function LiveAuctionSide() {
           <List size={18} className="mr-2" /> 상품 목록
         </LiveSideTabButton>
       </div>
-      <div className="flex-1 overflow-hidden">
-        <div hidden={tab !== "CHAT"} className="h-full">
+
+      {/* 스크롤 영역 (여기만) */}
+      <div className="min-h-0 flex-1">
+        <div hidden={tab !== "CHAT"} className="h-full overflow-y-auto">
           <LiveChatList messages={messages} />
         </div>
 
-        <div hidden={tab !== "PRODUCT"} className="h-full">
+        <div hidden={tab !== "PRODUCT"} className="h-full overflow-y-auto">
           <LiveProductList />
         </div>
       </div>
-      <div className="border-border-sub flex h-33 items-center gap-2 border-t px-3">
+
+      {/* 하단 입력창 */}
+      <div className="border-border-sub shrink-0 border-t px-3 py-3">
         <div className="flex items-end gap-2">
           <textarea
             placeholder="메세지를 입력해주세요."
-            className="bg-content-area border-border-sub text-border-sub2 mx-auto w-full resize-none appearance-none rounded-lg border-2 px-4 py-4 outline-none focus:border-3"
+            className="bg-content-area border-border-sub text-border-sub2 w-full resize-none appearance-none rounded-lg border-2 px-4 py-3 outline-none focus:border-3"
           />
-          <Button size={"sm"} className="w-25 px-0 text-xs">
+          <Button size="sm" className="w-25 px-0 text-xs">
             보내기
           </Button>
         </div>

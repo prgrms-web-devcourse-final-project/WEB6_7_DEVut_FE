@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${font.className} min-h-screen`}>
-        <div className="bg-bg-main mx-auto min-h-screen w-full max-w-7xl">{children}</div>
+        <div className="bg-bg-main mx-auto min-h-screen w-full">{children}</div>
       </body>
     </html>
   );
