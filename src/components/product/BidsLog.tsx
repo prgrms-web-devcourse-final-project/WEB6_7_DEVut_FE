@@ -4,7 +4,7 @@ import BidsLogCard from "./BidsLogCard";
 
 export default function BidsLog() {
   return (
-    <div className="w-full">
+    <div className="mx-auto w-full max-w-[1440px]">
       <div className="border-border-sub2 text-border-sub2 bg-content-gray grid grid-cols-[1fr_1fr_1fr] rounded-lg border-2 px-4 py-2 text-center font-bold">
         <div>ID</div>
         <div>입찰일시</div>

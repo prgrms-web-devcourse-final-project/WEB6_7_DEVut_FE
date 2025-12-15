@@ -7,21 +7,23 @@ import BizzAmount from "@/components/common/BizzAmount";
 export default function MyBizzSimple() {
   return (
     <ContentContainer className="flex min-h-[370px] flex-col justify-between gap-10">
-      <div className="mx-auto mt-10 flex h-fit w-[90%] gap-10">
-        <div className="flex w-[300px] flex-col">
+      <div className="mx-auto mt-10 flex h-fit w-[90%] flex-col gap-10 md:flex-row">
+        <div className="flex w-full flex-col md:w-[300px]">
           <Title>비즈</Title>
           <ContentContainer className="bg-content-gray text-title-sub border-border-sub2 flex min-h-[130px] w-full flex-col gap-2 border-2 p-5">
             <span>보유 비즈</span>
             <BizzAmount amount={100000} />
           </ContentContainer>
         </div>
-        <div className="flex flex-1 flex-col">
+
+        <div className="flex w-full flex-col md:flex-1">
           <Title>최근 내역</Title>
           <MyBizzLog simple={true} />
         </div>
       </div>
-      <div className="mx-auto mb-5 flex max-h-[50px] w-[95%] justify-end">
-        <Button className="h-10">충전</Button>
+
+      <div className="mx-auto mb-5 flex w-[95%] justify-end">
+        <Button className="h-10 w-full md:w-auto">충전</Button>
       </div>
     </ContentContainer>
   );

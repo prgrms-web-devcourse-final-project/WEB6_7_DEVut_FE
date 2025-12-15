@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
   const [status, setStatus] = useState("전체");
   return (
-    <div className="w-full">
+    <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
         <OptionDropdown label={status}>
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
