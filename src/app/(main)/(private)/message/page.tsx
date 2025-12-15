@@ -21,7 +21,7 @@ export default function MessagePage() {
   };
 
   return (
-    <div className="relative flex h-full w-full">
+    <div className="relative flex min-h-screen w-full">
       {/* 왼쪽 채팅방 리스트 */}
       <MessageLeft selectedRoomId={selectedRoomId} onSelectRoom={openRoom} />
 

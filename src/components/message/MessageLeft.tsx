@@ -12,7 +12,7 @@ export default function MessageLeft({
 }) {
   return (
     <div className="w-full border-r-4 border-[#6D4C41] md:w-[394px]">
-      <div className="text-title-main mx-auto flex min-h-[65px] items-center gap-3 border-b-4 border-[#6D4C41] px-[30px] text-2xl">
+      <div className="text-title-main mx-auto flex min-h-[65px] items-center gap-3 border-b-4 border-[#6D4C41] px-[42px] py-5 text-2xl">
         <p className="-translate-y-0.5 font-bold">채팅</p>
       </div>
 
