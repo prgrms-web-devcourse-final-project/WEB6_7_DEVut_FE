@@ -13,7 +13,7 @@ export default function Sidebar() {
           src={BBLogoBackground}
           alt="logo background"
           fill
-          className="object-cover drop-shadow-[0_1px_0_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:-rotate-45"
+          className="object-cover drop-shadow-[4px_4px_0_rgba(0,0,0,0.2)] transition-transform duration-300 group-hover:-rotate-45"
         />
         <Image
           src={BBLogo}

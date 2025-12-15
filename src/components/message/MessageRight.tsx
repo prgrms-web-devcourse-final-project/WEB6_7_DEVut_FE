@@ -25,7 +25,7 @@ export default function MessageRight({
     <div
       className={`bg-bg-main fixed inset-0 z-50 flex flex-col transition-all duration-250 ease-in-out md:static md:z-auto md:flex-1 ${isOpen ? "translate-x-0" : "translate-x-full"} `}
     >
-      <div className="flex min-h-[65px] items-center gap-3 border-b-4 border-[#6D4C41] px-4">
+      <div className="flex min-h-[65px] items-center gap-3 border-b-4 border-[#6D4C41] px-4 py-5">
         <button className="cursor-pointer text-2xl text-[#6D4C41]" onClick={onBack}>
           {">"}
         </button>
