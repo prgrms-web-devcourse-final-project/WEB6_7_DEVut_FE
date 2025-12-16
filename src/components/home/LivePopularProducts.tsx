@@ -8,11 +8,12 @@ import ProductCard from "../common/ProductCard";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import write from "@/assets/home/write.svg";
-import Router from "next/router";
 import { useRouter } from "next/navigation";
+import Toast from "../common/Toast";
 
 export default function LivePopularProducts() {
   const router = useRouter();
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({
       delay: 4000,
@@ -42,7 +43,6 @@ export default function LivePopularProducts() {
           className="bg-btn-default shadow-flat border-border-main mb-4 ml-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-[9999] border-3 transition-all outline-none hover:scale-105 active:scale-95"
           onClick={() => router.push("/write")}
         >
-          {" "}
           <Image src={write} alt="글 작성" width={25} height={25} />
         </button>
       </div>
