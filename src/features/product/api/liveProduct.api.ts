@@ -9,6 +9,8 @@ export interface GetLiveProductsParams {
   size: number;
 }
 export const getLiveProducts = async (params: GetLiveProductsParams) => {
-  const res = await apiClient.get<LiveProductResponse>("/api/v1/auction/live", { params });
-  return res.data;
+  const res = await apiClient.get<ApiResponse<LiveProductResponse>>("/api/v1/auction/live", {
+    params,
+  });
+  return res.data.data;
 };

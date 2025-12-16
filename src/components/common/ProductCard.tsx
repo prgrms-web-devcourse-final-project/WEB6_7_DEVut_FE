@@ -38,8 +38,6 @@ export default function ProductCard({
   const handleStar = () => setStar(prev => !prev);
   const handleNavigate = () => console.log("추후 상세페이지 이동");
 
-  const formatMoney = (value: number) => new Intl.NumberFormat("ko-KR").format(value);
-
   return (
     <div onClick={handleNavigate} className="relative cursor-pointer">
       <button
@@ -73,7 +71,6 @@ export default function ProductCard({
 
         <div className="text-title-main-dark mt-2 flex w-full flex-col px-2">
           <p className="text-[12px] opacity-70">입찰가</p>
-          {/* <p className="text-[21px] font-bold text-[#E2703A]">₩ {formatMoney(money)}</p> */}
           <BizzAmount amount={money} className="text-custom-orange-dark font-bold" />
           <p className="text-[14px]">{title}</p>
         </div>

@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SearchResult from "@/components/search/SearchResult";
 import DetailSearch from "@/components/modal/detailSearch";
 import SearchSection from "./SearchSection";
-import { getLiveProducts } from "@/features/product/api/liveProduct.api";
 import { useLiveProducts } from "@/features/product/hooks/useLiveProducts";
 
 export default function SearchPageClient() {
@@ -13,7 +12,7 @@ export default function SearchPageClient() {
     page: 1,
     size: 15,
   });
-  const { data: searchData, isLoading, isError, error, isFetching } = useLiveProducts(params);
+  const { data: searchData, isLoading, isError, isFetching } = useLiveProducts(params);
 
   return (
     <>

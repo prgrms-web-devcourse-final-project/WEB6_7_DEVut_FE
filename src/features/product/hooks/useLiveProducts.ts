@@ -7,7 +7,7 @@ export function useLiveProducts(params: GetLiveProductsParams) {
   return useQuery({
     queryKey: ["liveProducts", params],
     queryFn: () => getLiveProducts(params),
-    enabled: !!params.page,
+    enabled: !!params.name || !!params.category || !!params.minBidPrice || !!params.maxBidPrice,
     placeholderData: prev => prev,
   });
 }
