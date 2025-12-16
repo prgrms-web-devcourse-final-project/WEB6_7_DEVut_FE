@@ -1,12 +1,13 @@
 import Image from "next/image";
 import StageBackground from "./StageBackground";
-import StageTab from "./StageTab";
 import auctioneerImg from "@/assets/images/auction/auctioneer.svg";
 import AuctionProduct from "./AuctionProduct";
 import AuctionAudience from "./AuctionAudience";
 import Input from "@/components/common/Input";
 import BizzAmount from "@/components/common/BizzAmount";
 import BidButton from "./BidButton";
+import StageBarBackground from "./StageBarBackground";
+import TabButton from "./TabButton";
 
 export default function LiveAuctionStage() {
   return (
@@ -19,12 +20,14 @@ export default function LiveAuctionStage() {
         </div>
       </div> */}
 
-      <StageTab />
+      <StageBarBackground className="h-14 gap-2 px-4">
+        <TabButton label="경매방 1" active />
+        <TabButton label="경매방 2" />
+        <TabButton label="경매방 3" />
+      </StageBarBackground>
 
-      {/* ❌ flex-1 / overflow 제거 */}
       <div>
         <div className="flex flex-col">
-          {/* 스테이지 */}
           <div className="relative aspect-video w-full overflow-hidden border-[3px] bg-black">
             <StageBackground />
 

@@ -8,7 +8,7 @@ export default function TabButton({ label, active, onClick }: TabButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`relative flex h-10 cursor-pointer items-center justify-center px-8 text-sm font-semibold transition-all duration-200 ${
+      className={`relative flex h-10 cursor-pointer items-center justify-center px-8 text-sm transition-all duration-200 ${
         active ? "z-20 translate-y-0.5" : "z-10 translate-y-1.5 opacity-80 hover:opacity-100"
       }`}
     >

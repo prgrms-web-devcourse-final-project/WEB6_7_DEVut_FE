@@ -4,6 +4,16 @@ body {
   background-color: #fffcf4;
 }
 
+@layer base {
+  @font-face {
+    font-family: "aclonica";
+    src: url("/public//fonts//Aclonica-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
 @layer utilities {
   /* 커스텀 쉐도우 */
   .shadow-flat {
@@ -20,6 +30,9 @@ body {
   }
   .shadow-inner-soft {
     box-shadow: inset 4px 4px 8px 3px rgba(0, 0, 0, 0.1);
+  }
+  .font-aclonica {
+    font-family: "aclonica";
   }
 }
 @theme {

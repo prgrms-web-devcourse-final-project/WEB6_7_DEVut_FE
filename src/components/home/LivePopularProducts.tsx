@@ -5,15 +5,29 @@ import Autoplay from "embla-carousel-autoplay";
 import Title from "../common/Title";
 import ContentContainer from "../common/ContentContainer";
 import ProductCard from "../common/ProductCard";
+import { useEffect, useState } from "react";
 
 export default function LivePopularProducts() {
-  const [emblaRef] = useEmblaCarousel({ loop: true, align: "start" }, [
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({
       delay: 4000,
       stopOnInteraction: false,
       stopOnMouseEnter: true,
     }),
   ]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    setScrollSnaps(emblaApi.scrollSnapList());
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+
+    emblaApi.on("select", () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
+  }, [emblaApi]);
 
   return (
     <>
@@ -27,6 +41,17 @@ export default function LivePopularProducts() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="mt-2 flex justify-center gap-2">
+          {scrollSnaps.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => emblaApi?.scrollTo(index)}
+              className={`h-2 w-2 rounded-full transition-all ${
+                index === selectedIndex ? "bg-custom-orange-dark w-4" : "bg-border-sub opacity-40"
+              } `}
+            />
+          ))}
         </div>
       </ContentContainer>
     </>
