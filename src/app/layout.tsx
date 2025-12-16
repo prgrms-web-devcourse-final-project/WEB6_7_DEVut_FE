@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/css/globals.css";
 import ToastProvider from "@/providers/ToastProvider";
+import QueryProvider from "@/providers/QueryProvider";
 
 const font = localFont({
   src: [
@@ -39,7 +40,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${font.className} min-h-screen`}>
         <div className="bg-bg-main mx-auto min-h-screen w-full">
-          {children}
+          <QueryProvider>{children}</QueryProvider>
           <ToastProvider />
         </div>
       </body>
