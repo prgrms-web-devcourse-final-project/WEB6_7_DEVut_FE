@@ -4,6 +4,7 @@ import Input from "../common/Input";
 import { FileSearch, Search } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import OptionDropdown from "../common/OptionDropdown";
+import Toast, { ToastType } from "../common/Toast";
 
 interface SearchSectionProps {
   onOpenDetail: () => void;
@@ -14,8 +15,13 @@ export default function SearchSection({ onSearch, onOpenDetail }: SearchSectionP
   const [searchText, setSearchText] = useState("");
   const [onSell, setOnSell] = useState(false);
   const [status, setStatus] = useState("라이브");
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleSearch = () => {
+    if (searchText.trim() === "") {
+      notify("검색어를 입력해주세요.", "ERROR");
+      return;
+    }
     onSearch(searchText);
   };
 

@@ -7,6 +7,7 @@ interface SearchResultProps {
   isLoading: boolean;
   isFetching: boolean;
   error: string | null;
+  hasSearched: boolean;
   onPageChange: (page: number) => void;
 }
 
@@ -15,11 +16,12 @@ export default function SearchResult({
   isLoading,
   isFetching,
   error,
+  hasSearched,
   onPageChange,
 }: SearchResultProps) {
   console.log("searchData:", searchData);
 
-  if (!searchData && !isLoading) {
+  if (!hasSearched && !isLoading) {
     return (
       <SearchState
         title="상품을 검색해보세요"
@@ -42,21 +44,24 @@ export default function SearchResult({
     );
   }
 
-  return (
-    <>
-      <div className="mt-10">
-        <ProductsGrid>
-          {searchData.liveItems.map((product, index) => (
-            <ProductCard
-              isLive={true}
-              title={product.name}
-              type="onLive"
-              key={index}
-              money={1000000}
-            />
-          ))}
-        </ProductsGrid>
-      </div>
-    </>
-  );
+  if (searchData && searchData.liveItems.length > 0) {
+    return (
+      <>
+        <div className="mt-10">
+          <ProductsGrid>
+            {searchData.liveItems.map((product, index) => (
+              <ProductCard
+                isLive={true}
+                title={product.name}
+                type="onLive"
+                key={index}
+                money={1000000}
+                label={product.liveTime}
+              />
+            ))}
+          </ProductsGrid>
+        </div>
+      </>
+    );
+  }
 }

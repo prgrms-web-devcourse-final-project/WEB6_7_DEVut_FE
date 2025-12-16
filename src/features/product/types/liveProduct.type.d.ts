@@ -12,7 +12,7 @@ interface LiveProductResponse {
 
 interface SearchParams {
   name?: string;
-  category?: string;
+  category?: CategoryKey;
   minBidPrice?: number;
   maxBidPrice?: number;
   page: number;
