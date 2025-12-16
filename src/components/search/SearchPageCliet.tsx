@@ -4,8 +4,8 @@ import { useState } from "react";
 import SearchResult from "@/components/search/SearchResult";
 import SearchSection from "./SearchSection";
 import { useLiveProducts } from "@/features/product/hooks/useLiveProducts";
-import DetailSearch from "../modal/DetailSearch";
 import { FilterBar } from "./FilterBar";
+import DetailSearch from "../modal/detailSearch";
 
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
