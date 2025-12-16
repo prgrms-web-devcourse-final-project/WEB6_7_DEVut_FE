@@ -10,6 +10,7 @@ type Props = {
   maxLength?: number;
   className?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  value?: string;
 };
 
 export default function Input({
@@ -18,6 +19,7 @@ export default function Input({
   maxLength,
   className = "",
   onChange,
+  value,
 }: Props) {
   const [count, setCount] = useState(0);
 
@@ -26,6 +28,7 @@ export default function Input({
       <div className="relative w-full">
         <input
           type={type}
+          value={value}
           placeholder={placeholder}
           maxLength={maxLength}
           onChange={e => {
