@@ -8,7 +8,7 @@ import mypage from "@/assets/images/sidebar/mypage.png";
 import login from "@/assets/images/sidebar/login.svg";
 
 export default function Sidebar() {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   return (
     <div className="shadow-flat-light flex min-h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
