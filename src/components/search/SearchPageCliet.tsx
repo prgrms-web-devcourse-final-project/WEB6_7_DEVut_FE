@@ -3,9 +3,9 @@
 import { useState } from "react";
 import SearchResult from "@/components/search/SearchResult";
 import SearchSection from "./SearchSection";
-import { useLiveProducts } from "@/features/product/hooks/useLiveProducts";
 import { FilterBar } from "./FilterBar";
 import DetailSearch from "../modal/detailSearch";
+import { useLiveProductCards } from "@/features/product/hooks/useLiveProductCards";
 
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function SearchPageClient() {
     });
   };
 
-  const { data: searchData, isLoading, isError, isFetching } = useLiveProducts(params);
+  const { cards, isLoading, isError, isFetching } = useLiveProductCards(params);
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function SearchPageClient() {
       <FilterBar params={params} onRemove={handleRemoveFilter} onReset={handleResetFilters} />
 
       <SearchResult
-        searchData={searchData}
+        cards={cards}
         isLoading={isLoading}
         isFetching={isFetching}
         hasSearched={hasSearched}
