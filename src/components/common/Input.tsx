@@ -13,7 +13,7 @@ export default function Input({
   className,
   value = "",
   onChange,
-  onKeyDown, // 👈 추가
+  onKeyDown,
   ...rest
 }: Props) {
   const [count, setCount] = useState(String(value).length);
@@ -36,8 +36,7 @@ export default function Input({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 여기서 공통 처리 넣어도 됨 (예: Enter 방지)
-    onKeyDown?.(e); // 👈 그대로 위임
+    onKeyDown?.(e);
   };
 
   return (
@@ -47,7 +46,7 @@ export default function Input({
         type={type}
         value={value}
         onChange={handleChange}
-        onKeyDown={handleKeyDown} // 👈 연결
+        onKeyDown={handleKeyDown}
         className={twMerge(
           "bg-input-area text-border-sub shadow-inner-soft border-border-sub focus:border-border-sub2/70 mx-auto w-full appearance-none rounded-xl border-2 px-4 py-3.5 outline-none focus:border-3",
           className
