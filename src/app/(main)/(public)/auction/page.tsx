@@ -5,7 +5,9 @@ export default function AuctionPage() {
   return (
     <>
       <PageTabArea items={auctionItems} />
-      <h1>AuctionPage</h1>
+      <div className="mx-auto w-full max-w-[1440px]">
+        <h1>AuctionPage</h1>
+      </div>
     </>
   );
 }

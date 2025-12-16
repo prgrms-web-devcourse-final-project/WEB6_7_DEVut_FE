@@ -7,7 +7,7 @@ import sound from "@/assets/images/sidebar/sound.png";
 
 export default function Sidebar() {
   return (
-    <div className="border-border-main shadow-right flex h-screen w-20 flex-col items-center gap-4 rounded-md border-[3px] border-r pt-2 pb-2">
+    <div className="shadow-flat-light flex min-h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
         <Image
           src={BBLogoBackground}

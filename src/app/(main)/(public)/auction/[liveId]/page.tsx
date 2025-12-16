@@ -3,7 +3,7 @@ import LiveAuctionStage from "@/components/auction/live/liveRoom/stage/LiveAucti
 
 export default function LiveAuctionRoomPage() {
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex min-h-screen w-full">
       <LiveAuctionStage />
       <LiveAuctionSide />
     </div>

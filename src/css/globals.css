@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+body {
+  background-color: #fffcf4;
+}
+
 @layer utilities {
   /* 커스텀 쉐도우 */
   .shadow-flat {
