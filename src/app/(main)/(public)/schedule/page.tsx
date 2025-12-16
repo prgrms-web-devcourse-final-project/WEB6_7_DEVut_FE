@@ -1,7 +1,9 @@
-export default function SchedulePage() {
+import WeeklySchedule from "@/components/schedule/WeeklySchedule";
+
+export default function Page() {
   return (
     <>
-      <h1>SchedulePage</h1>
+      <WeeklySchedule />
     </>
   );
 }
