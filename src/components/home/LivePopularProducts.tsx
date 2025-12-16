@@ -6,6 +6,7 @@ import Title from "../common/Title";
 import ContentContainer from "../common/ContentContainer";
 import ProductCard from "../common/ProductCard";
 import { useEffect, useState } from "react";
+import { productMocks } from "@/features/product/mock/productCard.mock";
 
 export default function LivePopularProducts() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
@@ -35,9 +36,12 @@ export default function LivePopularProducts() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border py-4">
         <div ref={emblaRef} className="w-full overflow-hidden py-2">
           <div className="flex gap-4 px-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]">
-                <ProductCard money={5000000} title={"진짜 비싼거"} type="onLive" />
+            {productMocks.map(product => (
+              <div
+                key={product.id}
+                className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]"
+              >
+                <ProductCard key={product.id} data={product} />
               </div>
             ))}
           </div>
