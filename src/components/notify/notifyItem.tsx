@@ -19,9 +19,9 @@ export default function NotifyItem({
         className
       )}
     >
-      <Image src={tape} alt="`tape" className="absolute -left-5 -rotate-3" />
+      {icon && <Image src={tape} alt="`tape" className="absolute -left-5 -rotate-3" />}
       <span className="text-xl">{icon}</span>
-      <p className="text-sm">{children}</p>
+      {children}
     </div>
   );
 }
