@@ -4,6 +4,7 @@ import OptionDropdown from "@/components/common/OptionDropdown";
 import OrderSwitch from "@/components/common/OrderSwitch";
 import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
+import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useState } from "react";
 
@@ -32,12 +33,13 @@ export default function SaleDetail() {
         </OptionDropdown>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <ProductsGrid>
         <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
         <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
         <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
         <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
-      </div>
+        <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
+      </ProductsGrid>
       <Pagenation />
     </div>
   );

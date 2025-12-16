@@ -4,19 +4,43 @@ import Input from "../common/Input";
 import { FileSearch, Search } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import OptionDropdown from "../common/OptionDropdown";
+import Toast, { ToastType } from "../common/Toast";
 
-type Props = {
+interface SearchSectionProps {
   onOpenDetail: () => void;
-};
+  onSearch: (name: string) => void;
+}
 
-export default function SearchInput({ onOpenDetail }: Props) {
+export default function SearchSection({ onSearch, onOpenDetail }: SearchSectionProps) {
+  const [searchText, setSearchText] = useState("");
   const [onSell, setOnSell] = useState(false);
-  const [status, setStatus] = useState("전체");
+  const [status, setStatus] = useState("라이브");
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  const handleSearch = () => {
+    if (searchText.trim() === "") {
+      notify("검색어를 입력해주세요.", "ERROR");
+      return;
+    }
+    onSearch(searchText);
+  };
+
   return (
     <div className="flex w-full flex-wrap items-center gap-4">
-      {/* 검색 인풋 */}
       <div className="relative flex min-h-[58px] w-full lg:flex-1">
-        <Input placeholder="상품명을 입력해주세요" className="pr-25" />
+        <Input
+          placeholder="상품명을 입력해주세요"
+          className="pr-25"
+          value={searchText}
+          maxLength={20}
+          onChange={e => setSearchText(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onSearch(searchText);
+            }
+          }}
+        />
         <div className="text-custom-dark-brown absolute top-3 right-2">
           <button
             onClick={onOpenDetail}
@@ -24,13 +48,15 @@ export default function SearchInput({ onOpenDetail }: Props) {
           >
             <FileSearch size={30} />
           </button>
-          <button className="cursor-pointer transition-all hover:scale-110 active:scale-95">
+          <button
+            onClick={handleSearch}
+            className="cursor-pointer transition-all hover:scale-110 active:scale-95"
+          >
             <Search size={30} />
           </button>
         </div>
       </div>
 
-      {/* 판매중 토글 */}
       <div className="flex shrink-0 items-center gap-3">
         <p className="text-custom-dark-brown text-[18px] whitespace-nowrap">판매중인 상품만 보기</p>
         <div
@@ -50,7 +76,6 @@ export default function SearchInput({ onOpenDetail }: Props) {
         </div>
       </div>
 
-      {/* 정렬 드롭다운 */}
       <div className="min-w-[106px] shrink-0">
         <OptionDropdown label={status}>
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
