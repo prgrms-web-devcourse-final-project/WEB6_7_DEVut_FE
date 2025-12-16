@@ -2,6 +2,7 @@
 
 import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
+import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useEffect, useState } from "react";
 
@@ -29,11 +30,11 @@ export default function SaleList() {
     <>
       <Title size="lg">판매중인 목록</Title>
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border py-4">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <ProductsGrid>
           {shownProducts.map((_, i) => (
             <ProductCard key={i} money={100000} title="나이키 슈즈" type="onLive" />
           ))}
-        </div>
+        </ProductsGrid>
 
         {products.length > visibleCount && (
           <div className="mt-4 flex justify-end">
