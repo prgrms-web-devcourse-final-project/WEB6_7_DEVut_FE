@@ -10,10 +10,24 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import DashDivider from "@/components/common/DashDivider";
+import { signin } from "@/features/auth/api/auth.api";
 
 export default function LoginPage() {
   const route = useRouter();
+  const handleTestLogin = async () => {
+    try {
+      const result = await signin({
+        email: "test@test.com",
+        password: "asdf1234!",
+      });
 
+      alert("로그인 요청 보냄");
+      console.log("result:", result);
+    } catch (e) {
+      console.error(e);
+      alert("로그인 실패");
+    }
+  };
   return (
     <>
       <AuthForm>
@@ -27,7 +41,12 @@ export default function LoginPage() {
         </div>
         <Input type="email" placeholder="이메일" />
         <Input type="password" placeholder="비밀번호" />
-        <Button className="bg-custom-orange drop-shadow-[4px_4px_0_rgba(0,0,0,1)]">로그인</Button>
+        <Button
+          onClick={handleTestLogin}
+          className="bg-custom-orange drop-shadow-[4px_4px_0_rgba(0,0,0,1)]"
+        >
+          로그인
+        </Button>
         <DashDivider label="또는" />
         <Button className="shadow-flat bg-yellow-300">
           <Image src={kakao} alt="kakao" className="mr-2" />
