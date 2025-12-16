@@ -1,0 +1,13 @@
+@keyframes ringPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(255 149 0 / 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255 149 0 / 0.15);
+  }
+}
+
+.animate-ringPulse {
+  animation: ringPulse 1.6s ease-in-out infinite;
+}
