@@ -16,3 +16,12 @@ export interface UserSigninResponse {
     };
   };
 }
+
+export interface UserRefreshResponse {
+  resultCode: string;
+  msg: string;
+  data: {
+    accessToken: string;
+    expiresIn: number;
+  };
+}

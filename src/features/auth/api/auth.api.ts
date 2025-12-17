@@ -3,10 +3,20 @@ import type { UserSigninRequest, UserSigninResponse } from "../types/auth.types"
 
 export async function signin(payload: UserSigninRequest) {
   const res = await apiClient.post<UserSigninResponse>("/api/v1/users/signin", payload);
+  return res.data;
+}
 
-  console.log("[signin] status:", res.status);
-  console.log("[signin] data:", res.data);
-  console.log("[signin] headers:", res.headers);
+export async function signout() {
+  const res = await apiClient.get("/api/v1/users/signout");
+  return res.data;
+}
 
+export async function getMe() {
+  const res = await apiClient.get("/api/v1/users/me");
+  return res.data;
+}
+
+export async function refreshToken() {
+  const res = await apiClient.get("/api/v1/users/refresh");
   return res.data;
 }
