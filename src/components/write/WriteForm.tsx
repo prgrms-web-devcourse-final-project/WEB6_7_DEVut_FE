@@ -24,6 +24,8 @@ export default function WriteForm() {
   const [category, setCategory] = useState<CategoryKey | null>(null);
   const [condition, setCondition] = useState<ItemCondition>("NEW");
   const [description, setDescription] = useState("");
+  const [region, setRegion] = useState("");
+  const [preferredPlace, setPreferredPlace] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [startPrice, setStartPrice] = useState(0);
   const [deliveryInclude, setDeliveryInclude] = useState(true);
@@ -70,8 +72,8 @@ export default function WriteForm() {
         deliveryInclude,
         liveTime: auctionKind === "live" ? "2025-12-20T15:30:00" : (endDate?.toISOString() ?? ""),
         directDealAvailable: true,
-        region: "서울",
-        preferredPlace: "강남역 1번 출구",
+        region,
+        preferredPlace,
         images: imageUrls,
       },
       {
@@ -122,6 +124,27 @@ export default function WriteForm() {
             onChange={e => setDescription(e.target.value)}
             placeholder="상품에 대한 설명을 자세히 적어주세요."
           />
+        </div>
+        <div className="flex w-full flex-col gap-6 md:flex-row md:gap-10">
+          <div className="w-full space-y-2">
+            <p className="text-title-sub2 text-lg">지역</p>
+            <Input
+              placeholder="지역을 적어주세요."
+              maxLength={40}
+              onChange={e => setRegion(e.target.value)}
+              value={region}
+            />
+          </div>
+
+          <div className="w-full space-y-2">
+            <p className="text-title-sub2 text-lg">선호 장소</p>
+            <Input
+              placeholder="선호하는 장소를 입력해주세요. ( 직거래 )"
+              maxLength={40}
+              onChange={e => setPreferredPlace(e.target.value)}
+              value={preferredPlace}
+            />
+          </div>
         </div>
       </ContentContainer>
 
