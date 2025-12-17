@@ -6,8 +6,13 @@ import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
 import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
+import { useLiveProductDetail } from "@/features/product/hooks/useLiveProductDetail";
 
 export default function ProductInfo({ productId }: { productId: string }) {
+  const { data, isLoading, isError } = useLiveProductDetail(Number(productId));
+
+  console.log("상품 상세: ", data);
+
   const route = useRouter();
 
   return (

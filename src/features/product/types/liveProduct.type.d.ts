@@ -1,3 +1,4 @@
+// 라이브 상품 목록 조회 타입
 interface LiveProduct {
   id: number;
   name: string;
@@ -17,4 +18,19 @@ interface SearchParams {
   maxBidPrice?: number;
   page: number;
   size: number;
+}
+
+// 라이브 상품 상세 조회 타입
+interface LiveProductDetail {
+  id: number;
+  name: string;
+  category: CategoryKey;
+  description: string;
+  deliveryInclude: boolean;
+  itemStatus: "NEW" | "USED" | "SOLD";
+  DirectDealAvailable: boolean;
+  region: string;
+  preferredPlace: string;
+  images: string[];
+  likeCount: number;
 }
