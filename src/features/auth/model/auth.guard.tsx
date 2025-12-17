@@ -4,6 +4,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMe } from "../hooks/useMe";
+import Toast, { ToastType } from "@/components/common/Toast";
+const notify = (message: string, type: ToastType) => Toast({ message, type });
 
 //  로그인 필요한 페이지용
 export function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -12,8 +14,8 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && !data) {
-      alert("로그인이 필요합니다");
-      router.replace("/auth/login");
+      router.replace("/login");
+      notify("로그인이 필요한 서비스입니다.", "INFO");
     }
   }, [isLoading, data, router]);
 
@@ -28,7 +30,6 @@ export function NoAuthOnly({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && data) {
-      alert("로그인 상태입니다");
       router.replace("/");
     }
   }, [isLoading, data, router]);
