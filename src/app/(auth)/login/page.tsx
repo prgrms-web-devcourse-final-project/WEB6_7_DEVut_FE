@@ -14,13 +14,13 @@ import google from "@/assets/auth/google.svg";
 import BBlogoSet from "@/assets/common/BBlogoSet.svg";
 
 import { useSignIn } from "@/features/auth/hooks/useSignIn";
-import { NoAuthOnly } from "@/features/auth/model/auth.guard";
+import Toast, { ToastType } from "@/components/common/Toast";
 
 export default function LoginPage() {
   return (
-    <NoAuthOnly>
+    <>
       <LoginForm />
-    </NoAuthOnly>
+    </>
   );
 }
 
@@ -32,6 +32,8 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (signIn.isPending) return;
@@ -41,9 +43,9 @@ function LoginForm() {
     signIn.mutate(
       { email, password },
       {
-        onSuccess: () => {
-          alert("로그인 성공");
-          router.push("/");
+        onSuccess: data => {
+          notify(`${data.data.userInfo.nickname} 님 어서오세요!`,'SUCCESS');
+          router.replace("/");
         },
         onError: (error: any) => {
           const msg = error?.response?.data?.msg ?? "이메일 또는 비밀번호를 확인해주세요.";
