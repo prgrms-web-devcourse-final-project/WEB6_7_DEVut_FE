@@ -6,51 +6,65 @@ import ContentContainer from "@/components/common/ContentContainer";
 import Input from "@/components/common/Input";
 import WrapperImage from "@/components/common/WrapperImage";
 import { useEffect, useState } from "react";
+import { useMe } from "@/features/auth/hooks/useMe";
+import { useUpdateMe } from "@/features/auth/hooks/useUpdateMe";
 
 export default function MyIntro() {
+  const { data: me } = useMe();
+  const updateMeMutation = useUpdateMe();
+
   const [onEdit, setOnEdit] = useState(false);
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [address, setAddress] = useState("");
 
   const inputFields = [
     { label: "닉네임", value: nickname, setValue: setNickname },
     { label: "이메일", value: email, setValue: setEmail },
-    { label: "전화번호", value: phone, setValue: setPhone },
+    { label: "생  일", value: birthDate, setValue: setBirthDate },
     { label: "배송지", value: address, setValue: setAddress },
   ];
 
   useEffect(() => {
-    const fetchMyInfo = async () => {
-      try {
-        const res = await fetch("/api/v1/users/me", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    if (!me) return;
 
-        if (!res.ok) {
-          throw new Error("내 정보 조회 실패");
-        }
-        const result = await res.json();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNickname(me.data.nickname);
+    setEmail(me.data.email);
+    setBirthDate(me.data.birthDate);
 
-        const data = result.data;
+    // phone, address는 아직 API 없으면 비워두기
+  }, [me]);
 
-        setNickname(data.nickname);
-        setEmail(data.email);
-      } catch (error) {
-        console.error(error);
+  const handleEditClick = () => {
+    // 1️⃣ 보기 → 수정
+    if (!onEdit) {
+      if (!me) return;
+
+      setNickname(me.data.nickname);
+      setEmail(me.data.email);
+      setBirthDate(me.data.birthDate);
+      setOnEdit(true);
+      return;
+    }
+
+    // 2️⃣ 수정 → 저장
+    updateMeMutation.mutate(
+      {
+        email,
+        nickname: nickname.trim(), // ❗ null 보내지 마
+        birthDate,
+        image: null,
+      },
+      {
+        onSuccess: () => {
+          console.log("수정 성공");
+          setOnEdit(false);
+        },
       }
-    };
-    fetchMyInfo();
-  }, []);
-
-  const signOut = () => {};
-
-  const withdrawMember = () => {};
+    );
+  };
 
   return (
     <ContentContainer className="mt-5 flex min-h-[370px] flex-col justify-between">
@@ -89,8 +103,12 @@ export default function MyIntro() {
       </div>
 
       <div className="mx-auto mb-5 flex w-[95%] justify-end">
-        <Button className="h-10 w-full md:w-auto" onClick={() => setOnEdit(prev => !prev)}>
-          수정
+        <Button
+          className="h-10 w-full md:w-auto"
+          onClick={handleEditClick}
+          disabled={updateMeMutation.isPending}
+        >
+          {onEdit ? (updateMeMutation.isPending ? "저장 중..." : "저장") : "수정"}
         </Button>
       </div>
     </ContentContainer>
