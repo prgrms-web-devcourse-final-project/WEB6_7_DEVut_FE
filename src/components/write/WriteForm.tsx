@@ -15,6 +15,8 @@ import { formatYmd } from "@/utils/date";
 import ItemStatusRadio from "./ItemStatusRadio";
 import { useCreateAuctionProduct } from "@/features/auction/hooks/useCreateAuctionProduct";
 import Toast, { ToastType } from "../common/Toast";
+import { useUploadImages } from "@/features/image/hooks/useUploadImages";
+import { useRouter } from "next/navigation";
 
 type AuctionKind = "live" | "delay";
 export default function WriteForm() {
@@ -30,17 +32,33 @@ export default function WriteForm() {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   const notify = (message: string, type: ToastType) => Toast({ message, type });
+  const router = useRouter();
 
+  const { uploadImages, isUploading } = useUploadImages();
   const { mutate, isPending } = useCreateAuctionProduct();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!category) return;
-    if (!title.trim()) return;
-    if (startPrice <= 0) return;
+    if (!category) {
+      notify("카테고리를 선택해주세요.", "ERROR");
+      return;
+    }
+    if (!title.trim()) {
+      notify("상품명을 입력해주세요.", "ERROR");
+      return;
+    }
+    if (startPrice <= 0) {
+      notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
+      return;
+    }
+    // if (auctionKind === "delay" && !endDate) return;
+    if (images.length === 0) {
+      notify("최소 한 장의 이미지를 업로드해주세요.", "ERROR");
+      return;
+    }
 
-    if (auctionKind === "delay" && !endDate) return;
+    const imageUrls = await uploadImages(images, "auctions");
 
     mutate(
       {
@@ -50,16 +68,16 @@ export default function WriteForm() {
         description,
         initPrice: startPrice,
         deliveryInclude,
-        liveTime: auctionKind === "live" ? "2025-12-14T15:30:00" : (endDate?.toISOString() ?? ""),
+        liveTime: auctionKind === "live" ? "2025-12-20T15:30:00" : (endDate?.toISOString() ?? ""),
         directDealAvailable: true,
         region: "서울",
         preferredPlace: "강남역 1번 출구",
-        images: [],
+        images: imageUrls,
       },
       {
         onSuccess: data => {
           notify("상품이 성공적으로 등록되었습니다.", "SUCCESS");
-          console.log("Created auction product:", data);
+          router.replace(`/product/live/${data.id}`);
         },
         onError: error => {
           notify("상품 등록에 실패했습니다. 다시 시도해주세요.", "ERROR");
@@ -180,7 +198,7 @@ export default function WriteForm() {
               <div>
                 <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
                   <div className="bg-content-gray text-title-sub border-border-sub2/20 inline-flex w-full cursor-not-allowed items-center justify-center rounded-lg border-3">
-                    2025-12-14 15:30
+                    2025-12-20 15:30
                   </div>
                   <Button
                     fullWidth={true}
@@ -232,7 +250,11 @@ export default function WriteForm() {
           )}
 
           <div className="mt-12 flex w-full justify-end gap-5">
-            <Button disabled={isPending} className="bg-btn-active text-white" type="submit">
+            <Button
+              disabled={isUploading || isPending}
+              className="bg-btn-active text-white"
+              type="submit"
+            >
               등록하기
             </Button>
             <Button className="bg-content-gray">등록취소</Button>

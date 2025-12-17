@@ -5,5 +5,6 @@ export const createAuctionProduct = async (body: CreateAuctionProductRequest) =>
     "/api/v1/auction/live",
     body
   );
+
   return res.data.data;
 };
