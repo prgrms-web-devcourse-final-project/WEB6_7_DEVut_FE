@@ -11,7 +11,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
   const route = useRouter();
 
   return (
-    <div className="mx-auto flex h-fit w-full max-w-[1440px] flex-col gap-7 pb-10">
+    <div className="mx-auto flex h-fit w-[95%] max-w-[1440px] flex-col gap-7 pb-10">
       <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2">
         <WrapperImage src={test} alt="test" className="aspect-square" />
         <div className="flex flex-col gap-5 lg:sticky lg:top-24">
