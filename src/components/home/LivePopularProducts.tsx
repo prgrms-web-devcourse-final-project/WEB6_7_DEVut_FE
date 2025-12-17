@@ -9,11 +9,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import write from "@/assets/home/write.svg";
 import { useRouter } from "next/navigation";
-import Toast from "../common/Toast";
 
 export default function LivePopularProducts() {
   const router = useRouter();
-  const notify = (message: string, type: ToastType) => Toast({ message, type });
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({
       delay: 4000,
