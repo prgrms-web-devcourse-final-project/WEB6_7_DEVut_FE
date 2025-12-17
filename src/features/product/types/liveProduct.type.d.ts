@@ -27,7 +27,7 @@ interface LiveProductDetail {
   category: CategoryKey;
   description: string;
   deliveryInclude: boolean;
-  itemStatus: "NEW" | "USED" | "SOLD";
+  itemStatus: ItemCondition;
   DirectDealAvailable: boolean;
   region: string;
   preferredPlace: string;

@@ -3,7 +3,7 @@ import { getLiveProduct } from "../api/liveProduct.api";
 
 export const useLiveProductDetail = (productId: number) =>
   useQuery({
-    queryKey: ["liveproductDetail", productId],
+    queryKey: ["liveProductDetail", productId],
     queryFn: async () => {
       const data = await getLiveProduct(productId);
       return data;
