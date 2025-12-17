@@ -1,49 +1,47 @@
-import { useEffect, useRef, useState } from "react";
-import camera from "@/assets/camera.svg";
+"use client";
+
+import { useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { twJoin } from "tailwind-merge";
+import camera from "@/assets/camera.svg";
 import WrapperImage from "../common/WrapperImage";
 
-type PreviewItem = {
-  file: File;
-  url: string;
-};
-export default function ImageUploader() {
+interface ImageUploaderProps {
+  files: File[];
+  onChange: (files: File[]) => void;
+  max?: number;
+}
+
+export default function ImageUploader({ files, onChange, max = 5 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [previews, setPreviews] = useState<PreviewItem[]>([]);
-  const MAX = 5;
 
-  const openFilePicker = () => inputRef.current?.click();
+  const openFilePicker = () => {
+    if (files.length >= max) return;
+    inputRef.current?.click();
+  };
 
-  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    if (!files.length) return;
-
-    // if (!files.type.startsWith("image/")) {
-    //   alert("이미지 파일만 업로드 해주세요");
-    //   return;
-    // }
-
-    setPreviews(prev => {
-      const remaining = MAX - prev.length;
-      const nextFiles = files.slice(0, Math.max(0, remaining));
-
-      const nextItems = nextFiles.map(file => ({
+  const previews = useMemo(
+    () =>
+      files.map(file => ({
         file,
         url: URL.createObjectURL(file),
-      }));
-      return [...prev, ...nextItems];
-    });
+      })),
+    [files]
+  );
 
+  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    if (!selected.length) return;
+
+    const remaining = max - files.length;
+    if (remaining <= 0) return;
+
+    onChange([...files, ...selected.slice(0, remaining)]);
     e.target.value = "";
   };
 
   const removeAt = (index: number) => {
-    setPreviews(prev => {
-      const target = prev[index];
-      if (target) URL.revokeObjectURL(target.url);
-      return prev.filter((_, i) => i !== index);
-    });
+    onChange(files.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -55,29 +53,27 @@ export default function ImageUploader() {
   return (
     <div>
       <input
-        type="file"
         ref={inputRef}
+        type="file"
         accept="image/*"
         multiple
         className="hidden"
         onChange={onChangeFile}
       />
+
       <button
         type="button"
         onClick={openFilePicker}
+        disabled={files.length >= max}
         className={twJoin(
           "border-border-sub bg-content-area h-full w-full rounded-2xl border-4 border-dashed p-16",
-          previews.length >= MAX
-            ? "cursor-not-allowed opacity-60"
-            : "cursor-pointer hover:blur-[2px]"
+          files.length >= max ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:blur-[2px]"
         )}
       >
         <div className="flex flex-col items-center justify-center">
-          <div className="mb-2 flex w-full justify-center">
-            <Image src={camera} alt="camera Icon" />
-          </div>
+          <Image src={camera} alt="camera Icon" className="mb-2" />
           <p className="text-title-sub2 text-[18px]">이곳을 클릭하여 이미지를 업로드 하세요</p>
-          <p className="text-title-sub2 text-[14px]">최대 {MAX}장까지 가능합니다</p>
+          <p className="text-title-sub2 text-[14px]">최대 {max}장까지 가능합니다</p>
         </div>
       </button>
 
