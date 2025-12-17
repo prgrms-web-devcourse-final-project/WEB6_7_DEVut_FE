@@ -1,6 +1,6 @@
 "use client";
 
-import { act, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/common/Button";
 import Category from "@/components/common/Category";
 import ContentContainer from "@/components/common/ContentContainer";
@@ -13,6 +13,8 @@ import Image from "next/image";
 import { DayPicker } from "react-day-picker";
 import { formatYmd } from "@/utils/date";
 import ItemStatusRadio from "./ItemStatusRadio";
+import { useCreateAuctionProduct } from "@/features/auction/hooks/useCreateAuctionProduct";
+import Toast, { ToastType } from "../common/Toast";
 
 type AuctionKind = "live" | "delay";
 export default function WriteForm() {
@@ -27,19 +29,44 @@ export default function WriteForm() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  const { mutate, isPending } = useCreateAuctionProduct();
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      title,
-      category,
-      condition,
-      description,
-      images,
-      startPrice,
-      deliveryInclude,
-      auctionKind,
-      endDate,
-    });
+
+    if (!category) return;
+    if (!title.trim()) return;
+    if (startPrice <= 0) return;
+
+    if (auctionKind === "delay" && !endDate) return;
+
+    mutate(
+      {
+        name: title,
+        category,
+        itemStatus: condition,
+        description,
+        initPrice: startPrice,
+        deliveryInclude,
+        liveTime: auctionKind === "live" ? "2025-12-14T15:30:00" : (endDate?.toISOString() ?? ""),
+        directDealAvailable: true,
+        region: "서울",
+        preferredPlace: "강남역 1번 출구",
+        images: [],
+      },
+      {
+        onSuccess: data => {
+          notify("상품이 성공적으로 등록되었습니다.", "SUCCESS");
+          console.log("Created auction product:", data);
+        },
+        onError: error => {
+          notify("상품 등록에 실패했습니다. 다시 시도해주세요.", "ERROR");
+          console.error("Error creating auction product:", error);
+        },
+      }
+    );
   };
 
   return (
@@ -205,7 +232,7 @@ export default function WriteForm() {
           )}
 
           <div className="mt-12 flex w-full justify-end gap-5">
-            <Button className="bg-btn-active text-white" type="submit">
+            <Button disabled={isPending} className="bg-btn-active text-white" type="submit">
               등록하기
             </Button>
             <Button className="bg-content-gray">등록취소</Button>
