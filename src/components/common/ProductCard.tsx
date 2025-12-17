@@ -1,52 +1,35 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import ProductStatus from "./ProductStatus";
-import liveBadge from "@/assets/common/liveBadge.svg";
-import delayBadge from "@/assets/common/delayBadge.svg";
+
 import fullStar from "@/assets/common/fullStar.svg";
 import emptyStar from "@/assets/common/emptyStar.svg";
-import { useState } from "react";
+
 import BaseImage from "./BaseImage";
-import test from "@/assets/vintage.png";
 import BizzAmount from "./BizzAmount";
-
-type Product = "pending" | "processing" | "done" | "confirmed" | "delay" | "offLive" | "onLive";
-
-interface ProductCardProps {
-  type: Product;
-  money: number;
-  title: string;
-  label?: string;
-  image?: string;
-  isLive?: boolean;
-  isTake?: boolean;
-}
+import ProductStatus from "./ProductStatus";
 
 export default function ProductCard({
-  type,
-  money,
-  title,
-  label,
-  image,
-  isLive,
-  isTake,
-}: ProductCardProps) {
-  const [star, setStar] = useState<boolean>(!!isTake);
-
-  const handleStar = () => setStar(prev => !prev);
-  const handleNavigate = () => console.log("추후 상세페이지 이동");
-
-  const formatMoney = (value: number) => new Intl.NumberFormat("ko-KR").format(value);
+  data,
+  className,
+}: {
+  data: ProductCardType;
+  className?: string;
+}) {
+  const [star, setStar] = useState<boolean>(!!data.isWish);
 
   return (
-    <div onClick={handleNavigate} className="relative cursor-pointer">
+    <Link href={data.href} className={twMerge("relative cursor-pointer", className)}>
+      {/* 찜 버튼 */}
       <button
         className="absolute top-4 left-4 z-20 transition-transform hover:scale-105 active:scale-90"
         onClick={e => {
+          e.preventDefault();
           e.stopPropagation();
-          handleStar();
+          setStar(prev => !prev);
         }}
       >
         <Image
@@ -57,31 +40,32 @@ export default function ProductCard({
         />
       </button>
 
-      <div className="flex h-full w-full flex-col items-center rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
-        <div
-          className={twMerge("relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2")}
-        >
-          <BaseImage src={test} alt="카드 이미지" />
+      <div className="flex h-full w-full flex-col rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
+        {/* 이미지 */}
+        <div className="relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2">
+          <BaseImage src={data.image} alt={data.title} />
 
-          <div className="absolute top-3 right-3 z-10">
-            <Image
-              src={isLive ? liveBadge : delayBadge}
-              alt={isLive ? "라이브 뱃지" : "지연 뱃지"}
-            />
-          </div>
+          {data.badge && (
+            <div className="absolute top-3 right-3 z-10">
+              <Image src={data.badge.image} alt={data.badge.alt} />
+            </div>
+          )}
         </div>
 
+        {/* 정보 */}
         <div className="text-title-main-dark mt-2 flex w-full flex-col px-2">
           <p className="text-[12px] opacity-70">입찰가</p>
-          {/* <p className="text-[21px] font-bold text-[#E2703A]">₩ {formatMoney(money)}</p> */}
-          <BizzAmount amount={money} className="text-custom-orange-dark font-bold" />
-          <p className="text-[14px]">{title}</p>
+          <BizzAmount amount={data.amount} className="text-custom-orange-dark font-bold" />
+          <p className="text-[14px]">{data.title}</p>
         </div>
 
-        <div className="mt-2 mb-3 w-[90%]">
-          <ProductStatus type={type} label={label} />
-        </div>
+        {/* 상태 */}
+        {data.status && (
+          <div className="mt-2 mb-3 w-[90%] self-center">
+            <ProductStatus {...data.status} />
+          </div>
+        )}
       </div>
-    </div>
+    </Link>
   );
 }

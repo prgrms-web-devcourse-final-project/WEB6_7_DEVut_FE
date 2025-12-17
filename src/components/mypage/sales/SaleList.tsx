@@ -2,7 +2,9 @@
 
 import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
+import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { productMocks } from "@/features/product/mock/productCard.mock";
 import { useEffect, useState } from "react";
 
 export default function SaleList() {
@@ -23,19 +25,18 @@ export default function SaleList() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const products = Array.from({ length: 6 });
-  const shownProducts = expanded ? products : products.slice(0, visibleCount);
+  const shownProducts = expanded ? productMocks : productMocks.slice(0, visibleCount);
   return (
     <>
       <Title size="lg">판매중인 목록</Title>
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border py-4">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {shownProducts.map((_, i) => (
-            <ProductCard key={i} money={100000} title="나이키 슈즈" type="onLive" />
+        <ProductsGrid>
+          {shownProducts.map(product => (
+            <ProductCard key={product.id} data={product} />
           ))}
-        </div>
+        </ProductsGrid>
 
-        {products.length > visibleCount && (
+        {productMocks.length > visibleCount && (
           <div className="mt-4 flex justify-end">
             <button
               onClick={() => setExpanded(prev => !prev)}

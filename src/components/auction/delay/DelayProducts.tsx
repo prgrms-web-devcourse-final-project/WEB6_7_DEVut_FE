@@ -1,7 +1,9 @@
 import OrderSwitch from "@/components/common/OrderSwitch";
 import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
+import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { productMocks } from "@/features/product/mock/productCard.mock";
 
 export default function DelayProducts() {
   return (
@@ -16,12 +18,11 @@ export default function DelayProducts() {
       <div className="h-[15px] w-[90%] text-right">
         <OrderSwitch />
       </div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
-        <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
-        <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
-        <ProductCard money={100000} title="나이키 슈즈" type="onLive" />
-      </div>
+      <ProductsGrid>
+        {productMocks.map(product => (
+          <ProductCard key={product.id} data={product} />
+        ))}
+      </ProductsGrid>
       <Pagenation />
     </div>
   );

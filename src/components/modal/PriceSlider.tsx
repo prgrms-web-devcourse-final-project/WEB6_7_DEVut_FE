@@ -2,9 +2,12 @@
 import * as Slider from "@radix-ui/react-slider";
 import { useState } from "react";
 
-export function PriceSlider() {
-  const [value, setValue] = useState<[number, number]>([0, 300000]);
+interface PriceSliderProps {
+  value: [number, number];
+  onChange: (value: [number, number]) => void;
+}
 
+export function PriceSlider({ value, onChange }: PriceSliderProps) {
   return (
     <Slider.Root
       className="relative flex w-full items-center pt-6"
@@ -12,7 +15,7 @@ export function PriceSlider() {
       min={0}
       max={300000}
       step={1000}
-      onValueChange={v => setValue(v as [number, number])}
+      onValueChange={v => onChange(v as [number, number])}
     >
       {/* 트랙 */}
       <Slider.Track className="bg-border-sub relative h-2 w-full rounded-full">

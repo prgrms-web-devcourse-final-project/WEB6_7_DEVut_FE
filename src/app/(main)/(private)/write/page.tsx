@@ -23,6 +23,7 @@ export default function WritePage() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [category, setCategory] = useState<CategoryKey | null>(null);
+  const [startPrice, setStartPrice] = useState<number>(0);
 
   const formatYmd = (d: Date) => {
     const y = d.getFullYear();
@@ -44,6 +45,7 @@ export default function WritePage() {
             placeholder="상품명을 입력해주세요"
             maxLength={40}
             onChange={e => setTitle(e.target.value)}
+            value={title}
           />
         </div>
         <div className="space-y-2">
@@ -123,7 +125,11 @@ export default function WritePage() {
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">가격</p>
-          <PriceInput placeholder="경매 시작가를 입력해주세요 (수정 불가)" />
+          <PriceInput
+            placeholder="경매 시작가를 입력해주세요 (수정 불가)"
+            onChange={setStartPrice}
+            value={startPrice}
+          />
         </div>
         <div className="space-y-2">
           <p className="text-title-sub2 text-lg">택배거래</p>
