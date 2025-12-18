@@ -8,10 +8,15 @@ import WrapperImage from "@/components/common/WrapperImage";
 import { useEffect, useState } from "react";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useUpdateMe } from "@/features/auth/hooks/useUpdateMe";
+import { useRouter } from "next/navigation";
+import { useSignOut } from "@/features/auth/hooks/useSignOut";
 
 export default function MyIntro() {
   const { data: me } = useMe();
+  const signOutMutation = useSignOut();
   const updateMeMutation = useUpdateMe();
+
+  const router = useRouter();
 
   const [onEdit, setOnEdit] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -28,42 +33,44 @@ export default function MyIntro() {
 
   useEffect(() => {
     if (!me) return;
+    if (onEdit) return; // 🔑 이 한 줄이 핵심
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setNickname(me.data.nickname);
     setEmail(me.data.email);
     setBirthDate(me.data.birthDate);
-
-    // phone, address는 아직 API 없으면 비워두기
-  }, [me]);
+  }, [me, onEdit]);
 
   const handleEditClick = () => {
-    // 1️⃣ 보기 → 수정
     if (!onEdit) {
-      if (!me) return;
-
-      setNickname(me.data.nickname);
-      setEmail(me.data.email);
-      setBirthDate(me.data.birthDate);
       setOnEdit(true);
       return;
     }
 
-    // 2️⃣ 수정 → 저장
     updateMeMutation.mutate(
       {
         email,
-        nickname: nickname.trim(), // ❗ null 보내지 마
+        nickname: nickname.trim(),
         birthDate,
         image: null,
       },
       {
         onSuccess: () => {
-          console.log("수정 성공");
           setOnEdit(false);
         },
       }
     );
+  };
+
+  const handleSignOut = () => {
+    if (!me) return;
+
+    signOutMutation.mutate(undefined, {
+      onSuccess: () => {
+        console.log("로그아웃 완료");
+        router.replace("/");
+      },
+    });
   };
 
   return (
@@ -73,8 +80,11 @@ export default function MyIntro() {
           <div className="aspect-square w-full">
             <WrapperImage src={test} alt="test" />
           </div>
-          <Button className="bg-custom-red h-10 w-full text-lg font-bold text-white">
-            로그아웃
+          <Button
+            className="bg-custom-red h-10 w-full text-lg font-bold text-white"
+            onClick={handleSignOut}
+          >
+            {signOutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
           </Button>
           <Button className="bg-custom-orange h-10 w-full border-white text-lg font-bold text-white">
             회원탈퇴

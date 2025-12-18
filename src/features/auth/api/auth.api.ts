@@ -7,7 +7,7 @@ export async function signin(payload: UserSigninRequest) {
 }
 
 export async function signout() {
-  const res = await apiClient.get("/api/v1/users/signout");
+  const res = await apiClient.post("/api/v1/users/signout");
   return res.data;
 }
 
