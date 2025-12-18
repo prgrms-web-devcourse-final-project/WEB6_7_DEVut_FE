@@ -4,18 +4,23 @@ import WrapperImage from "../common/WrapperImage";
 import test from "@/assets/vintage.png";
 import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
 import { useLiveProductDetail } from "@/features/product/hooks/useLiveProductDetail";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { Star } from "lucide-react";
+import { MessageCircle, Star } from "lucide-react";
 import ProductImageCarousel from "./ProductImageCarousel";
+import { formatDateTime } from "@/utils/date";
 
 export default function ProductInfo({ productId }: { productId: string }) {
   const { data: product, isLoading, isError } = useLiveProductDetail(Number(productId));
 
-  console.log(product);
+  const pathname = usePathname();
+
+  const now = new Date();
+  const liveDate = new Date(product?.liveTIem || "");
+  const isLivePath = pathname.split("/")[2] === "live";
 
   const route = useRouter();
 
@@ -73,8 +78,10 @@ export default function ProductInfo({ productId }: { productId: string }) {
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
 
-                <div className="text-title-sub font-bold">날짜</div>
-                <div className="text-title-main-dark">{"2025-12-20 / 09:00"}</div>
+                <div className="text-title-sub font-bold">경매 시작</div>
+                <div className="text-title-main-dark">
+                  {formatDateTime(product?.liveTIem || "")}
+                </div>
               </div>
             </div>
           </div>
@@ -83,8 +90,33 @@ export default function ProductInfo({ productId }: { productId: string }) {
             <Button className="flex-1" leftIcon={<Star />}>
               찜 {product?.likeCount}
             </Button>
-            <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
-            <Button className="flex-1">대화하기</Button>
+            {isLivePath && (
+              <>
+                {product?.auctionStatus === "BEFORE_BIDDING" && (
+                  <Button className="flex-1" disabled>
+                    라이브 준비중
+                  </Button>
+                )}
+
+                {product?.auctionStatus === "IN_PROGRESS" && (
+                  <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
+                )}
+
+                {["PAYMENT_PENDING", "IN_DEAL", "PURCHASE_CONFIRMED", "FAILED"].includes(
+                  product?.auctionStatus || ""
+                ) && (
+                  <Button className="flex-1" disabled>
+                    라이브 종료
+                  </Button>
+                )}
+              </>
+            )}
+
+            {/* 지연(일반) */}
+
+            <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+              대화하기
+            </Button>
           </div>
         </div>
       </div>

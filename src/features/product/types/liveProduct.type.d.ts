@@ -23,12 +23,15 @@ interface SearchParams {
 // 라이브 상품 상세 조회 타입
 interface LiveProductDetail {
   id: number;
+  sellerId: number;
   name: string;
-  category: CategoryKey;
+  category: Category;
   description: string;
   deliveryInclude: boolean;
   itemStatus: ItemCondition;
-  DirectDealAvailable: boolean;
+  auctionStatus: AuctionStatus;
+  liveTIem: string;
+  directDealAvailable: boolean;
   region: string;
   preferredPlace: string;
   images: string[];
