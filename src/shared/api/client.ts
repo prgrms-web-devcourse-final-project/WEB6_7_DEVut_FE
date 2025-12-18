@@ -1,7 +1,11 @@
 import { refreshToken } from "@/features/auth/api/auth.api";
 import { UserRefreshResponse } from "@/features/auth/types/auth.types";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-// import { is } from "date-fns/locale";
+
+type AuthedConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+  skipAuthRefresh?: boolean;
+};
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -38,12 +42,12 @@ apiClient.interceptors.response.use(
   response => response, // 성공이면 걍 통과
   async (error: AxiosError) => {
     const status = error.response?.status;
-    const originalRequest = error.config as
-      | (InternalAxiosRequestConfig & { _retry?: boolean })
-      | undefined; // 싪패한 요청의 설정을 담아놓음. 다시 실행할거니까
+    const originalRequest = error.config as AuthedConfig | undefined; // 싪패한 요청의 설정을 담아놓음. 다시 실행할거니까
 
     // 응답 자체가 없으면(네트워크 문제 등) 여기서 끝
     if (!originalRequest) return Promise.reject(error);
+
+    if (originalRequest.skipAuthRefresh) return Promise.reject(error);
 
     // 401 아니면 그대로 던짐
     if (status !== 401) return Promise.reject(error);
