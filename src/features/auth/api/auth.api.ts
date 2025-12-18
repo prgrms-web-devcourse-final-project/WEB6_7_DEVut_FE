@@ -27,6 +27,6 @@ export async function updateMe(payload: {
   birthDate: string;
   image: string | null;
 }) {
-  const res = await apiClient.patch("/api/v1/users/me", payload);
+  const res = await apiClient.patch<ApiResponse<User>>("/api/v1/users/me", payload);
   return res.data;
 }
