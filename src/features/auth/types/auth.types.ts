@@ -1,27 +1,14 @@
-export interface UserSigninRequest {
+export type UserSigninRequest = {
   email: string;
   password: string;
-}
+};
+export type UserSigninResponse = ApiResponse<{ userInfo: User }>;
 
-export interface UserSigninResponse {
-  resultCode: string;
-  msg: string;
-  data: {
-    userInfo: {
-      id: number;
-      email: string;
-      nickname: string;
-      birthDate: string;
-      image: null;
-    };
-  };
-}
+export type UserSignupRequest = {
+  email: string;
+  password: string;
+  nickname: string;
+};
+export type UserSignupResponse = ApiResponse<{ id: number }>;
 
-export interface UserRefreshResponse {
-  resultCode: string;
-  msg: string;
-  data: {
-    accessToken: string;
-    expiresIn: number;
-  };
-}
+export type UserRefreshResponse = ApiResponse<{ accessToken: string; expiresIn: number }>;
