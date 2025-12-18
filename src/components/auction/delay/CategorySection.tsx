@@ -8,7 +8,7 @@ export default function CategorySection() {
   const [category, setCategory] = useState<CategoryKey | null>(null);
 
   return (
-    <ContentContainer className="border-border-sub/10 shadow-flat-light min-h-0 w-full py-6">
+    <ContentContainer className="border-border-sub/10 shadow-flat-light min-h-0 w-full py-6 md:w-full">
       <div className="mx-auto max-w-[1000px] px-3">
         <div className="mx-auto w-full max-w-[900px] px-3">
           <Category

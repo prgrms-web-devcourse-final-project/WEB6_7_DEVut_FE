@@ -9,26 +9,32 @@ export const sidebarItems = [
   {
     path: "/",
     icon: home,
+    label: "홈",
   },
   {
     path: "/auction",
     icon: auction,
+    label: "경매",
   },
   {
     path: "/schedule",
     icon: calendar,
+    label: "시간표",
   },
   {
     path: "/search",
     icon: search,
+    label: "검색",
   },
   {
     path: "/nofity",
     icon: alarm,
     badgeCount: 0,
+    label: "알림",
   },
   {
     path: "/message",
     icon: message,
+    label: "채팅",
   },
 ];
