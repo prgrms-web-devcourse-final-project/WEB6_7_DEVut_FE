@@ -18,7 +18,7 @@ export default function Toast({ message, type }: { message: string; type: ToastT
       });
     case "INFO":
       return toast.info(message, {
-        className: "toast-success",
+        className: "toast-info",
       });
     default:
       return null;
