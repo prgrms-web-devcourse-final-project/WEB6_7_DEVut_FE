@@ -44,10 +44,12 @@ body {
   --color-title-main-dark: #3e2723;
   --color-title-sub: #6d4c41;
   --color-title-sub2: #8d6e63;
+  --color-text-white-brown: #a1887f;
   /* 배경, 컨텐츠 */
   --color-bg-main: #fffcf4;
   --color-content-gray: #f4f4f4; /* 버튼이나, 컨텐츠에도 사용 */
   --color-content-area: #f5f1e8;
+  --color-home-banner-sub: #f3c88b;
   /* 선 */
   --color-border-main: #6d4c41;
   --color-border-sub: #a1887f;
