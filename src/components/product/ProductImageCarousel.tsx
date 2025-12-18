@@ -6,12 +6,12 @@ import { useCallback, useEffect, useState } from "react";
 import test from "@/assets/vintage.png";
 import WrapperImage from "../common/WrapperImage";
 
-interface Props {
+interface ProductImageCarouselProps {
   images?: string[];
   className?: string;
 }
 
-export default function ProductImageCarousel({ images, className }: Props) {
+export default function ProductImageCarousel({ images, className }: ProductImageCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
 
   const dummyImages = Array.from({ length: 6 });

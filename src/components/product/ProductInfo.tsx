@@ -1,21 +1,27 @@
 "use client";
 
-import WrapperImage from "../common/WrapperImage";
-import test from "@/assets/vintage.png";
 import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
 import { useLiveProductDetail } from "@/features/product/hooks/useLiveProductDetail";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { Star } from "lucide-react";
+import { MessageCircle, Star } from "lucide-react";
 import ProductImageCarousel from "./ProductImageCarousel";
+import { formatDateTime } from "@/utils/date";
+import { useState } from "react";
+import { BiddingSectionModal } from "./BiddingSectionModal";
 
 export default function ProductInfo({ productId }: { productId: string }) {
   const { data: product, isLoading, isError } = useLiveProductDetail(Number(productId));
 
+  const pathname = usePathname();
+  const isLivePath = pathname.split("/")[2] === "live";
+
   const route = useRouter();
+
+  const [isBidOpen, setIsBidOpen] = useState(false);
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -70,6 +76,16 @@ export default function ProductInfo({ productId }: { productId: string }) {
 
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
+
+                {/* 라이브, 일반 분기 나중에 */}
+                {isLivePath && (
+                  <>
+                    <div className="text-title-sub font-bold">경매 시작</div>
+                    <div className="text-title-main-dark">
+                      {formatDateTime(product?.liveTIem || "")}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -78,8 +94,47 @@ export default function ProductInfo({ productId }: { productId: string }) {
             <Button className="flex-1" leftIcon={<Star />}>
               찜 {product?.likeCount}
             </Button>
-            <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
-            <Button className="flex-1">대화하기</Button>
+            {/* 라이브 */}
+            {/* {isLivePath && (
+              <>
+                {product?.auctionStatus === "BEFORE_BIDDING" && (
+                  <Button className="flex-1" disabled>
+                    라이브 준비중
+                  </Button>
+                )}
+
+                {product?.auctionStatus === "IN_PROGRESS" && (
+                  <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
+                )}
+
+                {["PAYMENT_PENDING", "IN_DEAL", "PURCHASE_CONFIRMED", "FAILED"].includes(
+                  product?.auctionStatus || ""
+                ) && (
+                  <Button className="flex-1" disabled>
+                    라이브 종료
+                  </Button>
+                )}
+              </>
+            )} */}
+
+            {/* 지연(일반) */}
+            <BiddingSectionModal
+              isOpen={isBidOpen}
+              onClose={() => setIsBidOpen(false)}
+              currentBid={1000000}
+              minBid={1000000}
+              onConfirmBid={() => {}}
+            />
+            <Button
+              className="bg-custom-brown flex-1 text-white"
+              onClick={() => setIsBidOpen(true)}
+            >
+              입찰하기
+            </Button>
+
+            <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+              대화하기
+            </Button>
           </div>
         </div>
       </div>
