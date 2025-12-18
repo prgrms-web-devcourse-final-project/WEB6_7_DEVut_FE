@@ -15,6 +15,8 @@ import ProductImageCarousel from "./ProductImageCarousel";
 export default function ProductInfo({ productId }: { productId: string }) {
   const { data: product, isLoading, isError } = useLiveProductDetail(Number(productId));
 
+  console.log(product);
+
   const route = useRouter();
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
@@ -70,6 +72,9 @@ export default function ProductInfo({ productId }: { productId: string }) {
 
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
+
+                <div className="text-title-sub font-bold">날짜</div>
+                <div className="text-title-main-dark">{"2025-12-20 / 09:00"}</div>
               </div>
             </div>
           </div>
