@@ -25,14 +25,14 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
 
 // 로그인 페이지 접근 차단용. 로그인 된 상태에서 못 접근하게
 export function NoAuthOnly({ children }: { children: React.ReactNode }) {
-  const { data, isLoading } = useMe();
+  const { data, isLoading, isError } = useMe();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (!isLoading && !isError && data) {
       router.replace("/");
     }
-  }, [isLoading, data, router]);
+  }, [isLoading, isError, data, router]);
 
   if (isLoading) return null;
   return <>{children}</>;
