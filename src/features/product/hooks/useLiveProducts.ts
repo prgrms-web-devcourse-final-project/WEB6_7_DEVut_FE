@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getLiveProducts } from "../api/liveProduct.api";
+import { getLiveProducts } from "../api/product.client.api";
 
 export function useLiveProducts(params: GetProductsParams, options?: { enabled?: boolean }) {
   return useQuery({

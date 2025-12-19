@@ -5,7 +5,11 @@ import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 
-export default function DelayProducts() {
+interface DelayProductsProps {
+  initialDelayProducts: ProductCardType[];
+}
+
+export default function DelayProducts({ initialDelayProducts }: DelayProductsProps) {
   return (
     <div className="mt-10">
       <Title size={"sm"} className="font-normal">

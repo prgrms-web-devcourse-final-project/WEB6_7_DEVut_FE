@@ -1,4 +1,4 @@
-// 라이브 쿼리 파람스
+// 상품 목록 쿼리 파람스
 interface GetProductsParams {
   name?: string;
   category?: string;

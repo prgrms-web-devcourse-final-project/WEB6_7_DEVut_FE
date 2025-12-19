@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDelayedProducts } from "../api/delayProduct.api";
+import { getDelayedProducts } from "../api/product.client.api";
 
 export function useDelayedProducts(params: GetProductsParams, options?: { enabled?: boolean }) {
   return useQuery({

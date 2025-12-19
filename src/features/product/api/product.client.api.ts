@@ -1,5 +1,13 @@
 import ClientApi from "@/lib/clientApi";
-import { ApiError } from "next/dist/server/api-utils";
+
+export const getDelayedProducts = async (params: GetProductsParams) => {
+  const res = await ClientApi<DelayProductResponse>("/auction/delayed", {
+    method: "GET",
+    params: { ...params },
+  });
+
+  return res.data;
+};
 
 export const getLiveProducts = async (params: GetProductsParams) => {
   const res = await ClientApi<LiveProductResponse>("/auction/live", {
