@@ -9,12 +9,18 @@ import Toast, { ToastType } from "../common/Toast";
 interface SearchSectionProps {
   onOpenDetail: () => void;
   onSearch: (name: string) => void;
+  auctionType: "전체" | "라이브" | "일반";
+  onChangeAuctionType: (type: "전체" | "라이브" | "일반") => void;
 }
 
-export default function SearchSection({ onSearch, onOpenDetail }: SearchSectionProps) {
+export default function SearchSection({
+  onSearch,
+  onOpenDetail,
+  auctionType,
+  onChangeAuctionType,
+}: SearchSectionProps) {
   const [searchText, setSearchText] = useState("");
   const [onSell, setOnSell] = useState(false);
-  const [status, setStatus] = useState("라이브");
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleSearch = () => {
@@ -77,10 +83,16 @@ export default function SearchSection({ onSearch, onOpenDetail }: SearchSectionP
       </div>
 
       <div className="min-w-[106px] shrink-0">
-        <OptionDropdown label={status}>
-          <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("라이브")}>라이브</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("지연")}>지연</OptionDropdown.Item>
+        <OptionDropdown label={auctionType}>
+          <OptionDropdown.Item onClick={() => onChangeAuctionType("전체")}>
+            전체
+          </OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => onChangeAuctionType("라이브")}>
+            라이브
+          </OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => onChangeAuctionType("일반")}>
+            일반
+          </OptionDropdown.Item>
         </OptionDropdown>
       </div>
     </div>
