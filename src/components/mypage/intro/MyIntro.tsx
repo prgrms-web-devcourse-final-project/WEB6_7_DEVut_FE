@@ -11,11 +11,15 @@ import { useRouter } from "next/navigation";
 import { useSignOut } from "@/features/auth/hooks/useSignOut";
 import Toast from "@/components/common/Toast";
 import { useMe } from "@/features/auth/hooks/useMe";
+import { useUploadImages } from "@/features/image/hooks/useUploadImages";
+import closeIcon from "@/assets/mypage/closeButton.svg";
+import Image from "next/image";
 
 export default function MyIntro() {
   const { data: user } = useMe();
   const signOutMutation = useSignOut();
   const updateMeMutation = useUpdateMe();
+  const { uploadImages, isUploading } = useUploadImages();
 
   const router = useRouter();
   const notify = (message: string, type: ToastType) => Toast({ message, type });
@@ -24,7 +28,7 @@ export default function MyIntro() {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const inputFields = [
     { label: "닉네임", value: nickname, setValue: setNickname },
@@ -40,7 +44,7 @@ export default function MyIntro() {
     setEmail(user.email);
   }, [user]);
 
-  const handleEditClick = () => {
+  const handleEditClick = async () => {
     if (!user) {
       notify("로그인이 만료되었습니다.", "ERROR");
       router.replace("/login");
@@ -53,17 +57,21 @@ export default function MyIntro() {
       return;
     }
 
-    // 저장
+    let imageUrl: string | null = null;
+
+    if (profileImage) {
+      const urls = await uploadImages([profileImage], "auctions");
+      imageUrl = urls[0];
+    }
+
     updateMeMutation.mutate(
       {
         email,
         nickname: nickname.trim(),
-        image: null,
+        image: imageUrl,
       },
       {
-        onSuccess: res => {
-          setNickname(res.data.nickname);
-          setEmail(res.data.email);
+        onSuccess: () => {
           setOnEdit(false);
         },
       }
@@ -83,12 +91,52 @@ export default function MyIntro() {
     });
   };
 
+  const previewImageSrc = profileImage ? URL.createObjectURL(profileImage) : (user?.image ?? test);
+
   return (
     <ContentContainer className="mt-5 flex min-h-[370px] flex-col justify-between">
       <div className="mx-auto flex w-[90%] flex-col gap-10 gap-y-0 sm:w-[80%] md:flex-row md:gap-20">
         <div className="mx-auto flex min-h-[280px] w-full max-w-[180px] flex-col justify-center gap-6 md:mx-0 md:w-[25%] md:min-w-[130px]">
-          <div className="aspect-square w-full">
-            <WrapperImage src={test} alt="test" />
+          <div className="group relative aspect-square w-full">
+            <WrapperImage src={previewImageSrc} alt="profile" />
+
+            {onEdit && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!profileImage) {
+                      document.getElementById("profile-image-input")?.click();
+                    }
+                  }}
+                  className="text-bg-main absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 text-sm font-bold opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  {!profileImage && "이미지를 업로드하세요"}
+                </button>
+
+                <input
+                  id="profile-image-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) setProfileImage(file);
+                    e.target.value = "";
+                  }}
+                />
+
+                {profileImage && (
+                  <button
+                    type="button"
+                    onClick={() => setProfileImage(null)}
+                    className="absolute top-2 right-2 hidden cursor-pointer group-hover:block"
+                  >
+                    <Image src={closeIcon.src} alt="remove" width={30} height={30} />
+                  </button>
+                )}
+              </>
+            )}
           </div>
           <Button
             className="bg-custom-red h-10 w-full text-lg font-bold text-white"
@@ -126,9 +174,9 @@ export default function MyIntro() {
         <Button
           className="h-10 w-full md:w-auto"
           onClick={handleEditClick}
-          disabled={updateMeMutation.isPending}
+          disabled={updateMeMutation.isPending || isUploading}
         >
-          {onEdit ? (updateMeMutation.isPending ? "저장 중..." : "저장") : "수정"}
+          {onEdit ? (updateMeMutation.isPending || isUploading ? "저장 중..." : "저장") : "수정"}
         </Button>
       </div>
     </ContentContainer>

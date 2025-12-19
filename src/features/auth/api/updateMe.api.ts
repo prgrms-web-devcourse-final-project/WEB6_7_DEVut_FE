@@ -1,17 +1,25 @@
 import ClientApi from "@/lib/clientApi";
 
-export const updateMe = async (payload: {
+type UpdateMePayload = {
   email: string;
   nickname: string;
   image: string | null;
-}) => {
-  const res = await ClientApi("/api/v1/users/me", {
+};
+
+export const updateMe = async (payload: UpdateMePayload) => {
+  const res = await ClientApi<{
+    id: number;
+    email: string;
+    nickname: string;
+    image: string | null;
+    modifyDate: string;
+  }>("/users/me", {
     method: "PATCH",
     body: JSON.stringify(payload),
   });
 
   if (res.resultCode !== "200") {
-    throw new Error();
+    throw new Error(res.msg);
   }
 
   return res.data;
