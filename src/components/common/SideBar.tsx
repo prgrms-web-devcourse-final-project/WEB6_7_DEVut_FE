@@ -11,7 +11,7 @@ import login from "@/assets/images/sidebar/login.svg";
 import { useMe } from "@/features/auth/hooks/useMe";
 
 export default function Sidebar() {
-  const { data: me } = useMe();
+  const { data: user } = useMe();
   return (
     <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2 md:flex">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
@@ -39,9 +39,9 @@ export default function Sidebar() {
       ))}
 
       <SideBarItem
-        path={me ? "/mypage" : "/login"}
-        src={me ? mypage : login}
-        label={me ? "내정보" : "로그인"}
+        path={user ? "/mypage" : "/login"}
+        src={user ? mypage : login}
+        label={user ? "내정보" : "로그인"}
       />
       <div
         className={`border-border-sub2 shadow-flat mt-auto flex h-[50px] cursor-pointer items-center justify-center border-[3px] p-3 transition-all active:translate-y-0.5 active:shadow-none`}
