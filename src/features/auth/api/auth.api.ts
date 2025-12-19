@@ -23,10 +23,10 @@ export async function signout() {
   return res.data;
 }
 
-export async function getMe(): Promise<User | null> {
+export async function getMe() {
   try {
-    const res = await apiClient.get("/api/v1/users/me");
-    return res.data;
+    const res = await apiClient.get<ApiResponse<User>>("/api/v1/users/me");
+    return res.data.data;
   } catch (e) {
     // 401은 비로그인이므로 에러가 아니라 null로 처리
     if (axios.isAxiosError(e) && e.response?.status === 401) {
@@ -41,12 +41,12 @@ export async function refreshToken() {
   return res.data;
 }
 
-export async function updateMe(payload: {
-  email: string;
-  nickname: string | null;
-  birthDate: string;
-  image: string | null;
-}) {
-  const res = await apiClient.patch("/api/v1/users/me", payload);
-  return res.data;
-}
+// export async function updateMe(payload: {
+//   email: string;
+//   nickname: string | null;
+//   birthDate: string;
+//   image: string | null;
+// }) {
+//   const res = await apiClient.patch<ApiResponse<User>>("/api/v1/users/me", payload);
+//   return res.data;
+// }
