@@ -7,3 +7,15 @@ type AuctionStatus =
   | "IN_DEAL"
   | "PURCHASE_CONFIRMED"
   | "FAILED";
+type ProductKind = "LIVE" | "DELAYED";
+type ProductContext = "CARD" | "MY_BUYING" | "MY_SELLING";
+type ProductStatusData =
+  | {
+      kind: "status";
+      status: AuctionStatus;
+    }
+  | {
+      kind: "time";
+      time: string;
+      label?: string;
+    };

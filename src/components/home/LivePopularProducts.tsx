@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import write from "@/assets/home/write.svg";
 import { useRouter } from "next/navigation";
-import { productMocks } from "@/features/product/mock/productCard.mock";
+import { productCardMock_LIVE } from "@/features/product/mock/productCard.live.mock";
 
 export default function LivePopularProducts() {
   const router = useRouter();
@@ -49,12 +49,12 @@ export default function LivePopularProducts() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border px-3 py-4 md:w-full">
         <div ref={emblaRef} className="w-full overflow-hidden py-2">
           <div className="flex gap-4 px-4">
-            {productMocks.map(product => (
+            {productCardMock_LIVE.map(product => (
               <div
                 key={product.id}
                 className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]"
               >
-                <ProductCard key={product.id} data={product} />
+                <ProductCard context="CARD" key={product.id} data={product} />
               </div>
             ))}
           </div>

@@ -1,41 +1,71 @@
-import liveBadge from "@/assets/common/liveBadge.svg";
-// import delayBadge from "@/assets/common/delayBadge.svg";
-import productImg from "@/assets/images/mock/product/product_mock.jpg";
+export const mapLiveProductToCard = (item: LiveProduct): ProductCardType => {
+  if (item.auctionStatus === "BEFORE_BIDDING") {
+    return {
+      id: item.id,
+      title: item.name,
+      amount: item.currentPrice,
+      image: item.image,
+      href: `/product/live/${item.id}`,
+      status: {
+        kind: "time",
+        time: item.liveTime,
+        label: "라이브 시작",
+      },
+    };
+  }
 
-export const mapLiveProductToCard = (product: LiveProduct): ProductCardType => ({
-  id: product.id,
-  title: product.name,
-  amount: 1000000,
-  image: productImg,
-  href: `/product/live/${product.id}`,
+  if (item.auctionStatus === "IN_PROGRESS") {
+    return {
+      id: item.id,
+      title: item.name,
+      amount: item.currentPrice,
+      image: item.image,
+      href: `/product/live/${item.id}`,
+      status: {
+        kind: "status",
+        status: "IN_PROGRESS",
+      },
+    };
+  }
 
-  badge: {
-    image: liveBadge,
-    alt: "LIVE",
-  },
+  return {
+    id: item.id,
+    title: item.name,
+    amount: item.currentPrice,
+    image: item.image,
+    href: `/product/live/${item.id}`,
+    status: {
+      kind: "status",
+      status: item.auctionStatus,
+    },
+  };
+};
 
-  status: {
-    kind: "time",
-    time: "onLive",
-    label: product.liveTime,
-  },
-});
+export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => {
+  if (item.auctionStatus === "IN_PROGRESS") {
+    return {
+      id: item.id,
+      title: item.name,
+      amount: item.currentPrice,
+      image: item.image,
+      href: `/product/${item.id}`,
+      status: {
+        kind: "time",
+        time: item.endTime,
+        label: "마감시간",
+      },
+    };
+  }
 
-// 지연 경매
-// export const mapDelayProductToCardVM = (product): ProductCardType => ({
-//   id: product.id,
-//   title: product.name,
-//   amount: product.startPrice,
-//   image: product.image,
-//   href: `/product/${product.id}`,
-
-//   badge: {
-//     image: delayBadge,
-//     alt: "지연 경매",
-//   },
-
-//   status: {
-//     kind: "status",
-//     status: "pending",
-//   },
-// });
+  return {
+    id: item.id,
+    title: item.name,
+    amount: item.currentPrice,
+    image: item.image,
+    href: `/product/${item.id}`,
+    status: {
+      kind: "status",
+      status: item.auctionStatus,
+    },
+  };
+};

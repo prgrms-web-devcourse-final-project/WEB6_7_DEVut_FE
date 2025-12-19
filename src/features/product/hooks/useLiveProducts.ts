@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLiveProducts } from "../api/liveProduct.api";
 
-export function useLiveProducts(params: GetLiveProductsParams) {
+export function useLiveProducts(params: GetProductsParams) {
   console.log("searchParams:", params);
 
   return useQuery({

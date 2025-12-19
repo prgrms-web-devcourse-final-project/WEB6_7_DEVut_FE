@@ -6,7 +6,7 @@ interface SearchResultProps {
   cards: ProductCardType[];
   isLoading: boolean;
   isFetching: boolean;
-  error: string | null;
+  error: string | null | undefined;
   hasSearched: boolean;
   onPageChange: (page: number) => void;
 }
@@ -50,7 +50,7 @@ export default function SearchResult({
         <div className="mt-10">
           <ProductsGrid>
             {cards.map((product, index) => (
-              <ProductCard key={index} data={product} />
+              <ProductCard context="CARD" key={index} data={product} />
             ))}
           </ProductsGrid>
         </div>

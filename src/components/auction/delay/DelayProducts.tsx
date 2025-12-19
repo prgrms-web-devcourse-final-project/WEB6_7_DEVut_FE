@@ -3,7 +3,7 @@ import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
-import { productMocks } from "@/features/product/mock/productCard.mock";
+import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 
 export default function DelayProducts() {
   return (
@@ -19,8 +19,8 @@ export default function DelayProducts() {
         <OrderSwitch />
       </div>
       <ProductsGrid>
-        {productMocks.map(product => (
-          <ProductCard key={product.id} data={product} />
+        {productCardMock_DELAYED.map(product => (
+          <ProductCard context="CARD" key={product.id} data={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

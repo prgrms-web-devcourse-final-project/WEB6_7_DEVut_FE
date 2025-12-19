@@ -9,7 +9,5 @@ interface ProductCardType {
     image: StaticImageData;
     alt: string;
   };
-  status?:
-    | { kind: "status"; status: StatusType }
-    | { kind: "time"; time: TimeType; label?: string };
+  status?: ProductStatusData;
 }
