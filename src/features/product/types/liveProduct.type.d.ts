@@ -1,4 +1,13 @@
 // 라이브 상품 목록 조회 타입
+interface GetLiveProductsParams {
+  name?: string;
+  category?: string;
+  minBidPrice?: number;
+  maxBidPrice?: number;
+  page: number;
+  size: number;
+}
+
 interface LiveProduct {
   id: number;
   name: string;
@@ -30,7 +39,7 @@ interface LiveProductDetail {
   deliveryInclude: boolean;
   itemStatus: ItemCondition;
   auctionStatus: AuctionStatus;
-  liveTIem: string;
+  liveTime: string;
   directDealAvailable: boolean;
   region: string;
   preferredPlace: string;

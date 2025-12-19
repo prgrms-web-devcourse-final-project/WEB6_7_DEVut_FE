@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getLiveProducts, GetLiveProductsParams } from "../api/liveProduct.api";
+import { getLiveProducts } from "../api/liveProduct.api";
 
 export function useLiveProducts(params: GetLiveProductsParams) {
   console.log("searchParams:", params);

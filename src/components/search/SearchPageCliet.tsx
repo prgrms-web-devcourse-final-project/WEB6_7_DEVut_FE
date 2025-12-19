@@ -31,7 +31,7 @@ export default function SearchPageClient() {
     });
   };
 
-  const { cards, isLoading, isError, isFetching } = useLiveProductCards(params);
+  const { cards, isLoading, isError, error, isFetching } = useLiveProductCards(params);
 
   return (
     <>
@@ -46,7 +46,7 @@ export default function SearchPageClient() {
         isLoading={isLoading}
         isFetching={isFetching}
         hasSearched={hasSearched}
-        error={isError ? "검색하신 상품 목록이 없습니다." : null}
+        error={isError ? error.message : null}
         onPageChange={(page: number) => setParams(prev => ({ ...prev, page }))}
       />
 
