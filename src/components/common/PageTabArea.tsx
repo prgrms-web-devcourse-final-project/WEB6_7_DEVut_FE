@@ -13,7 +13,7 @@ export default function PageTabArea({ items, isUnderline = true }: PageTabAreaPr
     .filter(tab => pathname === tab.path || pathname.startsWith(tab.path + "/"))
     .sort((a, b) => b.path.length - a.path.length)[0]?.path;
   return (
-    <div className="relative mx-auto flex min-h-[65px] w-[95%] max-w-[1440px] items-end">
+    <div className="relative mx-auto flex min-h-[65px] w-[98%] max-w-[1440px] items-end md:w-[95%]">
       {isUnderline && (
         <div className="bg-border-sub absolute right-0 bottom-0 left-0 h-[3px] rounded-full" />
       )}

@@ -77,7 +77,7 @@ export default function WeeklySchedule() {
 
   return (
     <>
-      <ContentContainer className="border-0 p-12">
+      <ContentContainer bordered={false} className="p-12">
         <div className="border-border-sub2 shadow-flat-heavy flex items-center justify-center gap-6 rounded-2xl border-3 p-6">
           <div className="border-border-sub2 shadow-flat-dark flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[3.5px] bg-black/5 text-lg">
             <span className="-translate-x-[0.7px]">{"<"}</span>
