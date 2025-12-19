@@ -82,7 +82,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
                   <>
                     <div className="text-title-sub font-bold">경매 시작</div>
                     <div className="text-title-main-dark">
-                      {formatDateTime(product?.liveTIem || "")}
+                      {formatDateTime(product?.liveTime || "")}
                     </div>
                   </>
                 )}

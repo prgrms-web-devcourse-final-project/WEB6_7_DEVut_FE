@@ -1,5 +1,4 @@
 import { useLiveProducts } from "./useLiveProducts";
-import { GetLiveProductsParams } from "../api/liveProduct.api";
 import { mapLiveProductToCard } from "../mapper/productCard";
 
 export function useLiveProductCards(params: GetLiveProductsParams) {

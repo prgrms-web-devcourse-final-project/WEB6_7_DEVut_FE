@@ -1,24 +1,23 @@
-import { apiClient } from "@/shared/api/client";
-
-export interface GetLiveProductsParams {
-  name?: string;
-  category?: string;
-  minBidPrice?: number;
-  maxBidPrice?: number;
-  page: number;
-  size: number;
-}
+import ClientApi from "@/lib/clientApi";
+import { ApiError } from "next/dist/server/api-utils";
 
 export const getLiveProducts = async (params: GetLiveProductsParams) => {
-  const res = await apiClient.get<ApiResponse<LiveProductResponse>>("/api/v1/auction/live", {
-    params,
+  const res = await ClientApi<LiveProductResponse>("/auction/live", {
+    method: "GET",
+    params: { ...params },
   });
-  return res.data.data;
+
+  // if (res.resultCode) {
+  //   throw new ApiError(res.resultCode, res.msg);
+  // }
+
+  return res.data;
 };
 
 export const getLiveProduct = async (productId: number) => {
-  const res = await apiClient.get<ApiResponse<LiveProductDetail>>(
-    `/api/v1/auction/live/${productId}`
-  );
-  return res.data.data;
+  const res = await ClientApi<LiveProductDetail>(`/auction/live/${productId}`, {
+    method: "GET",
+  });
+
+  return res.data;
 };
