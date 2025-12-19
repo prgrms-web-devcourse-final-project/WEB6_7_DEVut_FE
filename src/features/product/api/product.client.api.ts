@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { mapDelayedProductToCard, mapLiveProductToCard } from "../mapper/productCard";
 
 export const getDelayedProducts = async (params: GetProductsParams) => {
   const res = await ClientApi<DelayProductResponse>("/auction/delayed", {
@@ -6,7 +7,7 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
     params: { ...params },
   });
 
-  return res.data;
+  return res.data.delayedItems.map(mapDelayedProductToCard);
 };
 
 export const getLiveProducts = async (params: GetProductsParams) => {
@@ -15,7 +16,7 @@ export const getLiveProducts = async (params: GetProductsParams) => {
     params: { ...params },
   });
 
-  return res.data;
+  return res.data.liveItems.map(mapLiveProductToCard);
 };
 
 export const getLiveProduct = async (productId: number) => {
