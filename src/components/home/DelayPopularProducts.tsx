@@ -1,4 +1,4 @@
-import { productMocks } from "@/features/product/mock/productCard.mock";
+import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import Pagenation from "../common/Pagenation";
 import ProductCard from "../common/ProductCard";
 import ProductsGrid from "../common/ProductsGrid";
@@ -9,11 +9,10 @@ export default function DelayPopularProducts() {
     <div className="mt-10">
       <Title>일반 인기 상품</Title>
       <ProductsGrid>
-        {productMocks.map(product => (
-          <ProductCard key={product.id} data={product} />
+        {productCardMock_DELAYED.map(product => (
+          <ProductCard context="CARD" key={product.id} data={product} />
         ))}
       </ProductsGrid>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"></div>
       <Pagenation />
     </div>
   );

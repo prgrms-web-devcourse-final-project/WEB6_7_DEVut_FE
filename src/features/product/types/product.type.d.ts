@@ -1,5 +1,5 @@
-// 라이브 상품 목록 조회 타입
-interface GetLiveProductsParams {
+// 라이브 쿼리 파람스
+interface GetProductsParams {
   name?: string;
   category?: string;
   minBidPrice?: number;
@@ -8,16 +8,44 @@ interface GetLiveProductsParams {
   size: number;
 }
 
+// 라이브 상품 응답 DTO
 interface LiveProduct {
   id: number;
   name: string;
   image: string;
+  currentPrice: number;
   liveTime: string;
+  auctionStatus: AuctionStatus;
 }
 
 interface LiveProductResponse {
   liveItems: LiveProduct[];
   totalCount: number;
+}
+
+// 지연(일반) 상품 응답 DTO
+interface DelayProduct {
+  id: number;
+  name: string;
+  image: string;
+  currentPrice: number;
+  endTime: string;
+  auctionStatus: AuctionStatus;
+}
+
+interface DelayProductResponse {
+  delayedItems: DelayProduct[];
+  totalCount: number;
+}
+
+// 공통 상품 타입
+interface Product {
+  id: number;
+  name: string;
+  image: string;
+  currentPrice: number;
+  time: string;
+  type: "LIVE" | "DELAYED";
 }
 
 interface SearchParams {
@@ -29,7 +57,6 @@ interface SearchParams {
   size: number;
 }
 
-// 라이브 상품 상세 조회 타입
 interface LiveProductDetail {
   id: number;
   sellerId: number;
