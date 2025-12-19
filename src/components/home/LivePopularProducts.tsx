@@ -39,14 +39,14 @@ export default function LivePopularProducts() {
       <div className="flex items-center">
         <Title size="lg">라이브 인기 상품</Title>
         <button
-          className="bg-btn-default shadow-flat border-border-main mb-4 ml-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-[9999] border-3 transition-all outline-none hover:scale-105 active:scale-95"
+          className="bg-btn-default shadow-flat border-border-main mb-4 ml-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-[9999] border-3 transition-all outline-none hover:scale-105 active:scale-95"
           onClick={() => router.push("/write")}
         >
-          <Image src={write} alt="글 작성" width={25} height={25} />
+          <Image src={write} alt="글 작성" width={20} height={20} />
         </button>
       </div>
 
-      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border py-4">
+      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border px-3 py-4 md:w-full">
         <div ref={emblaRef} className="w-full overflow-hidden py-2">
           <div className="flex gap-4 px-4">
             {productMocks.map(product => (

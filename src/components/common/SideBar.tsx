@@ -13,7 +13,7 @@ import { useMe } from "@/features/auth/hooks/useMe";
 export default function Sidebar() {
   const { data: user } = useMe();
   return (
-    <div className="shadow-flat-light flex min-h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2">
+    <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2 md:flex">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
         <Image
           src={BBLogoBackground}
@@ -34,10 +34,15 @@ export default function Sidebar() {
           path={item.path}
           src={item.icon}
           badgeCount={item.badgeCount}
+          label={item.label}
         />
       ))}
 
-      <SideBarItem path={user ? "/mypage" : "/login"} src={user ? mypage : login} />
+      <SideBarItem
+        path={user ? "/mypage" : "/login"}
+        src={user ? mypage : login}
+        label={user ? "내정보" : "로그인"}
+      />
       <div
         className={`border-border-sub2 shadow-flat mt-auto flex h-[50px] cursor-pointer items-center justify-center border-[3px] p-3 transition-all active:translate-y-0.5 active:shadow-none`}
       >

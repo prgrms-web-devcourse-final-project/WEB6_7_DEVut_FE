@@ -30,7 +30,7 @@ export default function BidList() {
   return (
     <>
       <Title size="lg">입찰중인 목록</Title>
-      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border py-4">
+      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
           {shownProducts.map(product => (
             <ProductCard key={product.id} data={product} />

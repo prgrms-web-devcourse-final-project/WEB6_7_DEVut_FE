@@ -27,7 +27,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
-    <div className="mx-auto flex h-fit w-[95%] max-w-[1440px] flex-col gap-7 pb-10">
+    <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
       <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-stretch">
         <ProductImageCarousel images={product?.images} className="w-full" />
 
@@ -82,7 +82,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
                   <>
                     <div className="text-title-sub font-bold">경매 시작</div>
                     <div className="text-title-main-dark">
-                      {formatDateTime(product?.liveTIem || "")}
+                      {formatDateTime(product?.liveTime || "")}
                     </div>
                   </>
                 )}
@@ -139,7 +139,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
         </div>
       </div>
 
-      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light w-full p-5 text-xl">
+      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light w-full p-5 text-xl md:w-full">
         {product?.description}
       </ContentContainer>
     </div>

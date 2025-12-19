@@ -29,7 +29,7 @@ export default function SaleList() {
   return (
     <>
       <Title size="lg">판매중인 목록</Title>
-      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border py-4">
+      <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
           {shownProducts.map(product => (
             <ProductCard key={product.id} data={product} />
