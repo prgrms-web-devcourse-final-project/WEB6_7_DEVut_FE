@@ -1,15 +1,11 @@
 import ClientApi from "@/lib/clientApi";
 import { ApiError } from "next/dist/server/api-utils";
 
-export const getLiveProducts = async (params: GetLiveProductsParams) => {
+export const getLiveProducts = async (params: GetProductsParams) => {
   const res = await ClientApi<LiveProductResponse>("/auction/live", {
     method: "GET",
     params: { ...params },
   });
-
-  // if (res.resultCode) {
-  //   throw new ApiError(res.resultCode, res.msg);
-  // }
 
   return res.data;
 };

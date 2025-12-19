@@ -5,7 +5,8 @@ import SearchResult from "@/components/search/SearchResult";
 import SearchSection from "./SearchSection";
 import { FilterBar } from "./FilterBar";
 import DetailSearch from "../modal/detailSearch";
-import { useLiveProductCards } from "@/features/product/hooks/useLiveProductCards";
+import { useProductCards } from "@/features/product/hooks/useProductCards";
+import { useSearchProductCards } from "@/features/product/hooks/useSearchProductCards";
 
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
@@ -31,7 +32,7 @@ export default function SearchPageClient() {
     });
   };
 
-  const { cards, isLoading, isError, error, isFetching } = useLiveProductCards(params);
+  const { cards, isLoading, isFetching, isError, error } = useSearchProductCards(params);
 
   return (
     <>
@@ -46,7 +47,7 @@ export default function SearchPageClient() {
         isLoading={isLoading}
         isFetching={isFetching}
         hasSearched={hasSearched}
-        error={isError ? error.message : null}
+        error={isError ? error?.message : null}
         onPageChange={(page: number) => setParams(prev => ({ ...prev, page }))}
       />
 

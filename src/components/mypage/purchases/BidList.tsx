@@ -4,7 +4,7 @@ import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
-import { productMocks } from "@/features/product/mock/productCard.mock";
+import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import { useEffect, useState } from "react";
 
 export default function BidList() {
@@ -25,7 +25,9 @@ export default function BidList() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const shownProducts = expanded ? productMocks : productMocks.slice(0, visibleCount);
+  const shownProducts = expanded
+    ? productCardMock_DELAYED
+    : productCardMock_DELAYED.slice(0, visibleCount);
 
   return (
     <>
@@ -33,11 +35,11 @@ export default function BidList() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
           {shownProducts.map(product => (
-            <ProductCard key={product.id} data={product} />
+            <ProductCard context="CARD" key={product.id} data={product} />
           ))}
         </ProductsGrid>
 
-        {productMocks.length > visibleCount && (
+        {productCardMock_DELAYED.length > visibleCount && (
           <div className="mt-4 flex justify-end">
             <button
               onClick={() => setExpanded(prev => !prev)}

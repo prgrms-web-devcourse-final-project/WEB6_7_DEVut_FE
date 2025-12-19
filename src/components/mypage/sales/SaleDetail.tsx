@@ -6,7 +6,7 @@ import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
-import { productMocks } from "@/features/product/mock/productCard.mock";
+import { productCardMock_MY_SELLING } from "@/features/product/mock/productCard.mySelling.mock";
 import { useState } from "react";
 
 export default function SaleDetail() {
@@ -35,8 +35,8 @@ export default function SaleDetail() {
       </div>
 
       <ProductsGrid>
-        {productMocks.map(product => (
-          <ProductCard key={product.id} data={product} />
+        {productCardMock_MY_SELLING.map(product => (
+          <ProductCard context="MY_SELLING" key={product.id} data={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

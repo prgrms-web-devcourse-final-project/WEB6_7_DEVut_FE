@@ -1,8 +1,8 @@
 import ContentContainer from "../../common/ContentContainer";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import ProductCard from "@/components/common/ProductCard";
-import { productMocks } from "@/features/product/mock/productCard.mock";
 import Title from "@/components/common/Title";
+import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 
 export default function MyWish() {
   return (
@@ -12,8 +12,8 @@ export default function MyWish() {
           찜 목록
         </Title>
         <ProductsGrid>
-          {productMocks.map(product => (
-            <ProductCard key={product.id} data={product} />
+          {productCardMock_DELAYED.map(product => (
+            <ProductCard context="CARD" key={product.id} data={product} />
           ))}
         </ProductsGrid>
       </ContentContainer>
