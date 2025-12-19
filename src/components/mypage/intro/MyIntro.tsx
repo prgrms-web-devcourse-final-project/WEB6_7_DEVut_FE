@@ -5,19 +5,17 @@ import Button from "@/components/common/Button";
 import ContentContainer from "@/components/common/ContentContainer";
 import Input from "@/components/common/Input";
 import WrapperImage from "@/components/common/WrapperImage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUpdateMe } from "@/features/auth/hooks/useUpdateMe";
 import { useRouter } from "next/navigation";
 import { useSignOut } from "@/features/auth/hooks/useSignOut";
-import { useAuthStore } from "@/features/auth/model/auth.store";
 import Toast from "@/components/common/Toast";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 export default function MyIntro() {
+  const { data: user } = useMe();
   const signOutMutation = useSignOut();
   const updateMeMutation = useUpdateMe();
-
-  const setUser = useAuthStore(state => state.setUser);
-  const user = useAuthStore(state => state.user);
 
   const router = useRouter();
   const notify = (message: string, type: ToastType) => Toast({ message, type });
@@ -25,33 +23,47 @@ export default function MyIntro() {
   const [onEdit, setOnEdit] = useState(false);
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [birthDate, setBirthDate] = useState("");
   const [address, setAddress] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+
+  const inputFields = [
+    { label: "닉네임", value: nickname, setValue: setNickname },
+    { label: "이메일", value: email, setValue: setEmail },
+    { label: "배송지", value: address, setValue: setAddress },
+  ];
+
+  useEffect(() => {
+    if (!user) return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNickname(user.nickname);
+    setEmail(user.email);
+  }, [user]);
 
   const handleEditClick = () => {
     if (!user) {
       notify("로그인이 만료되었습니다.", "ERROR");
       router.replace("/login");
+      return;
     }
 
-    if (!onEdit && user) {
-      setNickname(user.nickname);
-      setEmail(user.email);
-      setBirthDate(user.birthDate);
+    // 수정 시작
+    if (!onEdit) {
       setOnEdit(true);
       return;
     }
 
+    // 저장
     updateMeMutation.mutate(
       {
         email,
         nickname: nickname.trim(),
-        birthDate,
         image: null,
       },
       {
         onSuccess: res => {
-          setUser(res.data);
+          setNickname(res.data.nickname);
+          setEmail(res.data.email);
           setOnEdit(false);
         },
       }
@@ -61,11 +73,11 @@ export default function MyIntro() {
   const handleSignOut = () => {
     if (!user) {
       notify("로그인이 만료되었습니다.", "ERROR");
+      router.replace("/login");
     }
 
     signOutMutation.mutate(undefined, {
       onSuccess: () => {
-        useAuthStore.getState().logoutLocal();
         router.replace("/");
       },
     });
@@ -90,69 +102,23 @@ export default function MyIntro() {
         </div>
 
         <div className="text-title-main flex min-h-[280px] w-full flex-col justify-center gap-7 text-sm font-bold md:flex-1 md:text-lg">
-          {/* 닉네임 */}
-          <div className="flex">
-            <span className="w-20 shrink-0 md:w-[100px]">닉네임</span>
-            {onEdit ? (
-              <Input
-                value={nickname}
-                onChange={e => setNickname(e.target.value)}
-                className="h-10 flex-1 md:max-w-[60%]"
-              />
-            ) : (
-              <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
-                {user?.nickname}
-              </span>
-            )}
-          </div>
-
-          {/* 이메일 */}
-          <div className="flex">
-            <span className="w-20 shrink-0 md:w-[100px]">이메일</span>
-            {onEdit ? (
-              <Input
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="h-10 flex-1 md:max-w-[60%]"
-              />
-            ) : (
-              <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
-                {user?.email}
-              </span>
-            )}
-          </div>
-
-          {/* 생일 */}
-          <div className="flex">
-            <span className="w-20 shrink-0 md:w-[100px]">생 일</span>
-            {onEdit ? (
-              <Input
-                value={birthDate}
-                onChange={e => setBirthDate(e.target.value)}
-                className="h-10 flex-1 md:max-w-[60%]"
-              />
-            ) : (
-              <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
-                {user?.birthDate}
-              </span>
-            )}
-          </div>
-
-          {/* 배송지 (임시 로컬 상태) */}
-          <div className="flex">
-            <span className="w-20 shrink-0 md:w-[100px]">배송지</span>
-            {onEdit ? (
-              <Input
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                className="h-10 flex-1 md:max-w-[60%]"
-              />
-            ) : (
-              <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
-                {address || "-"}
-              </span>
-            )}
-          </div>
+          {inputFields.map(({ label, value, setValue }) => (
+            <div key={label} className="flex">
+              <span className={`w-20 shrink-0 md:w-[100px]`}>{label}</span>
+              {onEdit ? (
+                <Input
+                  placeholder="입력해주세요"
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                  className="h-10 flex-1 md:max-w-[60%]"
+                />
+              ) : (
+                <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
+                  {value}
+                </span>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 

@@ -8,10 +8,10 @@ import Image from "next/image";
 import sound from "@/assets/images/sidebar/sound.png";
 import mypage from "@/assets/images/sidebar/mypage.png";
 import login from "@/assets/images/sidebar/login.svg";
-import { useAuthStore } from "@/features/auth/model/auth.store";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 export default function Sidebar() {
-  const user = useAuthStore(state => state.user);
+  const { data: user } = useMe();
   return (
     <div className="shadow-flat-light flex min-h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
