@@ -9,3 +9,19 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
 
   return res.data.delayedItems.map(mapDelayedProductToCard);
 };
+
+export const getLiveProduct = async (productId: number) => {
+  const res = await ServerApi<LiveProductDetail>(`/auction/live/${productId}`, {
+    method: "GET",
+  });
+
+  return { ...res.data, type: "LIVE" } as LiveProductDetail;
+};
+
+export const getDelayProduct = async (productId: number) => {
+  const res = await ServerApi<DelayProductDetail>(`/auction/delayed/${productId}`, {
+    method: "GET",
+  });
+
+  return { ...res.data, type: "DELAYED" } as DelayProductDetail;
+};
