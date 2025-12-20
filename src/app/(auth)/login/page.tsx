@@ -44,11 +44,11 @@ function LoginForm() {
       { email, password },
       {
         onSuccess: data => {
-          notify(`${data.data.userInfo.nickname} 님 어서오세요!`, "SUCCESS");
+          notify(`${data.userInfo.nickname} 님 어서오세요!`, "SUCCESS");
           router.replace("/");
         },
         onError: (error: any) => {
-          const msg = error?.response?.data?.msg ?? "이메일 또는 비밀번호를 확인해주세요.";
+          const msg = error?.message ?? "이메일 또는 비밀번호를 확인해주세요.";
           setErrorMsg(msg);
         },
       }

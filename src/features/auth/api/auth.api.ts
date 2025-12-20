@@ -1,71 +1,50 @@
 import ClientApi from "@/lib/clientApi";
-import type {
-  UserRefreshResponse,
-  UserSigninRequest,
-  UserSigninResponse,
-  UserSignupRequest,
-  UserSignupResponse,
-} from "../types/auth.types";
 
-type ApiErrorBody = { msg?: string; resultCode?: string };
+import type { UserSignupRequest, UserSignupResponse } from "../types/auth.types";
 
-async function parseError(res: Response) {
-  try {
-    const data = (await res.json()) as ApiErrorBody;
-    return data?.msg ?? `HTTP ${res.status}`;
-  } catch {
-    const text = await res.text().catch(() => "");
-    return text || `HTTP ${res.status}`;
+function isSuccess(resultCode: string) {
+  return resultCode === "OK" || resultCode === "SUCCESS";
+}
+
+function assertSuccess<T>(res: ApiResponse<T>) {
+  if (!isSuccess(res.resultCode)) {
+    throw new Error(res.msg || "요청에 실패했습니다.");
   }
+  return res;
 }
 
-export async function signin(payload: UserSigninRequest): Promise<UserSigninResponse> {
-  const res = await ClientApi("/api/v1/users/signin", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) throw new Error(await parseError(res));
-  return (await res.json()) as UserSigninResponse;
-}
-
-// export async function updateMe(payload: {
-//   email: string;
-//   nickname: string | null;
-//   birthDate: string;
-//   image: string | null;
-// }) {
-//   const res = await apiClient.patch<ApiResponse<User>>("/api/v1/users/me", payload);
-//   return res.data;
-// }
+// 회원가입 (Client)
 export async function signup(payload: UserSignupRequest): Promise<UserSignupResponse> {
-  const res = await ClientApi("/api/v1/users/signup", {
+  const res = await ClientApi<UserSignupResponse["data"]>("/users/signup", {
     method: "POST",
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) throw new Error(await parseError(res));
-  return (await res.json()) as UserSignupResponse;
+  return assertSuccess(res) as UserSignupResponse;
 }
 
-export async function signout(): Promise<unknown> {
-  const res = await ClientApi("/api/v1/users/signout", { method: "POST" });
-  if (!res.ok) throw new Error(await parseError(res));
-  return res.json();
-}
-
+// 내 정보 조회
 export async function getMe(): Promise<User | null> {
-  const res = await ClientApi("/api/v1/users/me", { method: "GET" });
+  const res = await fetch("/api/auth/me", { method: "GET", credentials: "include" });
+  if (res.status === 401) return null;
+  if (!res.ok) throw new Error(await res.text());
 
-  if (res.status === 401) return null; // 비로그인 = 정상 케이스
-  if (!res.ok) throw new Error(await parseError(res));
-
-  return (await res.json()) as User;
+  const json = await res.json();
+  return json?.data?.userInfo ?? null;
 }
 
-export async function refreshToken(): Promise<UserRefreshResponse> {
-  const res = await ClientApi("/api/v1/users/refresh", { method: "POST" });
-
-  if (!res.ok) throw new Error(await parseError(res));
-  return (await res.json()) as UserRefreshResponse;
-}
+// // 서버 컴포넌트에서 me가 필요할 때
+// export async function getMeServer(): Promise<User | null> {
+//   try {
+//     const res = await ServerApi<{ userInfo: User }>("/users/me", {
+//       method: "GET",
+//       cache: "no-store",
+//     });
+//     assertSuccess(res);
+//     return res.data.userInfo;
+//   } catch (e: any) {
+//     const msg = String(e?.message ?? "");
+//     if (msg.includes("HTTP Error: 401")) return null;
+//     throw e;
+//   }
+// }
