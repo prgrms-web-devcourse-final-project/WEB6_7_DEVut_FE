@@ -1,4 +1,4 @@
-import { apiClient } from "@/shared/api/client";
+import ClientApi from "@/lib/clientApi";
 import type {
   UserRefreshResponse,
   UserSigninRequest,
@@ -6,39 +6,27 @@ import type {
   UserSignupRequest,
   UserSignupResponse,
 } from "../types/auth.types";
-import axios from "axios";
 
-export async function signin(payload: UserSigninRequest) {
-  const res = await apiClient.post<UserSigninResponse>("/api/v1/users/signin", payload);
-  return res.data;
-}
+type ApiErrorBody = { msg?: string; resultCode?: string };
 
-export async function signup(payload: UserSignupRequest) {
-  const res = await apiClient.post<UserSignupResponse>("/api/v1/users/signup", payload);
-  return res.data;
-}
-
-export async function signout() {
-  const res = await apiClient.post("/api/v1/users/signout");
-  return res.data;
-}
-
-export async function getMe() {
+async function parseError(res: Response) {
   try {
-    const res = await apiClient.get<ApiResponse<User>>("/api/v1/users/me");
-    return res.data.data;
-  } catch (e) {
-    // 401은 비로그인이므로 에러가 아니라 null로 처리
-    if (axios.isAxiosError(e) && e.response?.status === 401) {
-      return null;
-    }
-    throw e; // 나머지 에러만 진짜 에러로
+    const data = (await res.json()) as ApiErrorBody;
+    return data?.msg ?? `HTTP ${res.status}`;
+  } catch {
+    const text = await res.text().catch(() => "");
+    return text || `HTTP ${res.status}`;
   }
 }
 
-export async function refreshToken() {
-  const res = await apiClient.post<UserRefreshResponse>("/api/v1/users/refresh");
-  return res.data;
+export async function signin(payload: UserSigninRequest): Promise<UserSigninResponse> {
+  const res = await ClientApi("/api/v1/users/signin", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error(await parseError(res));
+  return (await res.json()) as UserSigninResponse;
 }
 
 // export async function updateMe(payload: {
@@ -50,3 +38,34 @@ export async function refreshToken() {
 //   const res = await apiClient.patch<ApiResponse<User>>("/api/v1/users/me", payload);
 //   return res.data;
 // }
+export async function signup(payload: UserSignupRequest): Promise<UserSignupResponse> {
+  const res = await ClientApi("/api/v1/users/signup", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error(await parseError(res));
+  return (await res.json()) as UserSignupResponse;
+}
+
+export async function signout(): Promise<unknown> {
+  const res = await ClientApi("/api/v1/users/signout", { method: "POST" });
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function getMe(): Promise<User | null> {
+  const res = await ClientApi("/api/v1/users/me", { method: "GET" });
+
+  if (res.status === 401) return null; // 비로그인 = 정상 케이스
+  if (!res.ok) throw new Error(await parseError(res));
+
+  return (await res.json()) as User;
+}
+
+export async function refreshToken(): Promise<UserRefreshResponse> {
+  const res = await ClientApi("/api/v1/users/refresh", { method: "POST" });
+
+  if (!res.ok) throw new Error(await parseError(res));
+  return (await res.json()) as UserRefreshResponse;
+}

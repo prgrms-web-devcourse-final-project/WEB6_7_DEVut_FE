@@ -68,10 +68,10 @@ export async function proxy(request: NextRequest) {
   // /* Helpers                                                                     */
   // /* -------------------------------------------------------------------------- */
   // function isAuthRequiredPath(pathname: string) {
-  //   return AUTH_REQUIRED_PATHS.some((p) => pathname.startsWith(p));
+  //   return AUTH_REQUIRED_PATHS.some(p => pathname.startsWith(p));
   // }
   // function isGuestOnlyPath(pathname: string) {
-  //   return GUEST_ONLY_PATHS.some((p) => pathname.startsWith(p));
+  //   return GUEST_ONLY_PATHS.some(p => pathname.startsWith(p));
   // }
   // function getCookie(request: NextRequest, name: string) {
   //   return request.cookies.get(name)?.value ?? null;
@@ -98,24 +98,18 @@ export async function proxy(request: NextRequest) {
   //     jwt.verify(token, ACCESS_TOKEN_SECRET);
   //     return "valid";
   //   } catch (err) {
-  //     if (err instanceof Error && err.name === "TokenExpiredError")
-  //       return "expired";
+  //     if (err instanceof Error && err.name === "TokenExpiredError") return "expired";
   //     return "invalid";
   //   }
   // }
-  // async function refreshAccessAndContinueOrLogout(
-  //   request: NextRequest,
-  //   refreshToken: string
-  // ) {
+  // async function refreshAccessAndContinueOrLogout(request: NextRequest, refreshToken: string) {
   //   const newAccessToken = await requestNewAccessToken(refreshToken);
   //   if (!newAccessToken) return redirectToLogin(request);
   //   const res = NextResponse.next();
   //   setAccessCookie(res, newAccessToken);
   //   return res;
   // }
-  // async function requestNewAccessToken(
-  //   refreshToken: string
-  // ): Promise<string | null> {
+  // async function requestNewAccessToken(refreshToken: string): Promise<string | null> {
   //   if (!API_URL) return null;
   //   try {
   //     const res = await fetch(`${API_URL}/auth/refresh`, {
