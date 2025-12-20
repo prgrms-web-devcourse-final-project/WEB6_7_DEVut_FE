@@ -7,21 +7,42 @@ import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import CategorySection from "./CategorySection";
 import { useState } from "react";
+import { useDelayedProducts } from "@/features/product/hooks/useDelayedProducts";
 
 interface DelayProductsProps {
-  params: GetProductsParams;
+  initialParams: GetProductsParams;
   initialDelayProducts: ProductCardType[];
 }
 
-export default function DelayProducts({ params, initialDelayProducts }: DelayProductsProps) {
+export default function DelayProducts({ initialParams, initialDelayProducts }: DelayProductsProps) {
   const [category, setCategory] = useState<CategoryKey | null>(null);
-  // tanstack query
+  const [page, setPage] = useState(initialParams.page);
+  const params: GetProductsParams = {
+    ...initialParams,
+    page,
+    category: category ?? undefined,
+  };
+
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useDelayedProducts(params, {
+    initialData:
+      page === initialParams.page && category === null ? initialDelayProducts : undefined,
+  });
+
+  if (isLoading) return <div>일반 경매 목록 불러오는중...</div>;
+  if (error) return <div>목록을 불러오는 중 오류가 발생하였습니다.</div>;
 
   return (
     <>
       <CategorySection
         category={category}
-        setCategory={(category: CategoryKey) => setCategory(category)}
+        setCategory={(category: CategoryKey) => {
+          setCategory(category);
+          setPage(1);
+        }}
       />
       <div className="mt-10">
         <Title size={"sm"} className="font-normal">
@@ -35,7 +56,7 @@ export default function DelayProducts({ params, initialDelayProducts }: DelayPro
           <OrderSwitch />
         </div>
         <ProductsGrid>
-          {initialDelayProducts.map(product => (
+          {products?.map(product => (
             <ProductCard context="CARD" key={product.id} data={product} />
           ))}
         </ProductsGrid>

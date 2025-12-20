@@ -6,18 +6,18 @@ import { auctionItems } from "@/constants/route/auction";
 import { getDelayedProducts } from "@/features/product/api/product.server.api";
 
 export default async function AuctionDelayPage() {
-  const params = {
+  const initialParams = {
     page: 1,
     size: 15,
     category: undefined,
   };
-  const initialDelayProducts = await getDelayedProducts(params);
+  const initialDelayProducts = await getDelayedProducts(initialParams);
 
   return (
     <>
       <PageTabArea items={auctionItems} />
       <ContentContainer bordered={false} className="pt-5">
-        <DelayProducts initialDelayProducts={initialDelayProducts} params={params} />
+        <DelayProducts initialDelayProducts={initialDelayProducts} initialParams={initialParams} />
       </ContentContainer>
     </>
   );
