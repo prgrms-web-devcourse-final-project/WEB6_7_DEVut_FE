@@ -4,7 +4,7 @@ import { useLiveProducts } from "./useLiveProducts";
 // 전체 검색 기능은 추후 기능 도입 될 예정
 interface ProductSearchState {
   auctionType: AuctionType;
-  params: SearchParams;
+  params: GetProductsParams;
 }
 
 export function useSearchProductCards(search: ProductSearchState) {
@@ -23,6 +23,7 @@ export function useSearchProductCards(search: ProductSearchState) {
 
   const delayedQuery = useDelayedProducts(params, {
     enabled: (isDelayed || isAll) && hasSearchCondition,
+    initialData: undefined,
   });
 
   const liveCards = liveQuery.data ?? [];

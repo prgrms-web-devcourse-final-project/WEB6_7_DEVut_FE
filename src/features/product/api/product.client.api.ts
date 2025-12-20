@@ -24,5 +24,13 @@ export const getLiveProduct = async (productId: number) => {
     method: "GET",
   });
 
-  return res.data;
+  return { ...res.data, type: "LIVE" } as LiveProductDetail;
+};
+
+export const getDelayProduct = async (productId: number) => {
+  const res = await ClientApi<DelayProductDetail>(`/auction/delayed/${productId}`, {
+    method: "GET",
+  });
+
+  return { ...res.data, type: "DELAYED" } as DelayProductDetail;
 };

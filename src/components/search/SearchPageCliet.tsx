@@ -11,7 +11,7 @@ import { auctionTypeMapping } from "@/utils/product";
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
   const [auctionType, setAuctionType] = useState<AuctionTypeKOR>("전체");
-  const [params, setParams] = useState<SearchParams>({
+  const [params, setParams] = useState<GetProductsParams>({
     page: 1,
     size: 15,
   });
@@ -21,7 +21,7 @@ export default function SearchPageClient() {
   const hasSearched =
     !!params.name || !!params.category || !!params.minBidPrice || !!params.maxBidPrice;
 
-  const handleRemoveFilter = (key: keyof SearchParams) => {
+  const handleRemoveFilter = (key: keyof GetProductsParams) => {
     setParams(prev => ({
       ...prev,
       [key]: undefined,
@@ -66,7 +66,7 @@ export default function SearchPageClient() {
       {open && (
         <DetailSearch
           onClose={() => setOpen(false)}
-          onSearch={(detailParams: SearchParams) =>
+          onSearch={(detailParams: GetProductsParams) =>
             setParams(prev => ({
               ...prev,
               ...detailParams,
