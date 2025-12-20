@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 import AuthForm from "@/components/auth/AuthForm";
@@ -19,9 +19,38 @@ import Toast, { ToastType } from "@/components/common/Toast";
 export default function LoginPage() {
   return (
     <>
+      <LoginReasonHandler />
       <LoginForm />
     </>
   );
+}
+
+function LoginReasonHandler() {
+  const searchParams = useSearchParams();
+
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+
+    if (!reason) return;
+
+    switch (reason) {
+      case "auth_required":
+        notify("로그인이 필요합니다.", "ERROR");
+        break;
+
+      case "session_expired":
+        notify("세션이 만료되었습니다. 다시 로그인해주세요.", "ERROR");
+        break;
+
+      case "refresh_failed":
+        notify("인증이 만료되었습니다. 다시 로그인해주세요.", "ERROR");
+        break;
+    }
+  }, [searchParams]);
+
+  return null;
 }
 
 function LoginForm() {
@@ -44,7 +73,7 @@ function LoginForm() {
       { email, password },
       {
         onSuccess: data => {
-          notify(`${data.userInfo.nickname} 님 어서오세요!`, "SUCCESS");
+          notify(`${data.userInfo.nickname} 님 환영합니다!`, "SUCCESS");
           router.replace("/");
         },
         onError: (error: any) => {

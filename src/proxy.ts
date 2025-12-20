@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { ServerApi } from "./lib/serverApi";
+
+type LoginRedirectReason =
+  | "auth_required" // 비로그인 상태에서 보호 페이지 접근
+  | "session_expired" // access 만료 + refresh 성공 → 사실상 잘 안 씀
+  | "refresh_failed"; // refresh 토큰도 만료/무효
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const AUTH_REQUIRED_PATHS = ["/", "/mypage", "/wallet", "/message"];
+const AUTH_REQUIRED_PATHS = ["/message", "/mypage", "/notify", "/trade", "/write"];
 const GUEST_ONLY_PATHS = ["/login", "/signup"];
 
 export async function proxy(request: NextRequest) {
@@ -16,6 +20,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname === "/favicon.ico" ||
+    pathname === "/.well-known" ||
     pathname.startsWith("/assets")
   ) {
     return NextResponse.next();
@@ -23,6 +28,10 @@ export async function proxy(request: NextRequest) {
 
   const accessToken = getCookie(request, "accessToken");
   const refreshToken = getCookie(request, "refreshToken");
+  // console.log("PATH:", pathname);
+  // console.log("TOKENS:", { hasAccess: !!accessToken, hasRefresh: !!refreshToken });
+  // console.log("AUTH_REQUIRED:", isAuthRequiredPath(pathname));
+  // console.log("GUEST_ONLY:", isGuestOnlyPath(pathname));
   if (isGuestOnlyPath(pathname)) {
     const res = await handleGuestOnlyRoute(request, accessToken, refreshToken);
     if (res) return res;
@@ -31,41 +40,24 @@ export async function proxy(request: NextRequest) {
   // 1) 인증 필요 없는 경로
   if (!isAuthRequiredPath(pathname)) return NextResponse.next();
 
-  console.log("TOKENS:", {
-    hasAccess: !!accessToken,
-    hasRefresh: !!refreshToken,
-  });
   // 2) 인증 필요 경로: access 없으면 refresh 시도
   if (!accessToken) {
-    console.log("NO ACCESS -> refresh path");
-
-    if (!refreshToken) return redirectToLogin(request);
-    return refreshAccessAndContinueOrLogout(request);
+    if (!refreshToken) return redirectToLogin(request, "auth_required");
+    return refreshAccessAndContinueOrLogout(request, "session_expired");
   }
   // 3) access 검증
   const accessState = verifyAccessToken(accessToken);
-  console.log("ACCESS STATE:", accessState);
-
-  // if (accessState === "valid") {
-  //   console.log("access valid");
-  //   return NextResponse.next();
-  // }
-  // if (accessState === "expired") {
-  //   console.log("refresh try", {
-  //     hasRefresh: !!refreshToken,
-  //     api: `${API_URL}/api/v1/users/refresh`,
-  //   });
-  //   if (!refreshToken) return redirectToLogin(request);
-  //   return refreshAccessAndContinueOrLogout(request);
-  // }
-  // return redirectToLogin(request);
 
   if (accessState === "valid") return NextResponse.next();
 
   // expired/invalid 모두 refreshToken 있으면 재발급 시도
-  if (!refreshToken) return redirectToLogin(request);
-  return refreshAccessAndContinueOrLogout(request);
+  if (!refreshToken) return redirectToLogin(request, "refresh_failed");
+  return refreshAccessAndContinueOrLogout(
+    request,
+    accessState === "expired" ? "session_expired" : "refresh_failed"
+  );
 }
+
 /* -------------------------------------------------------------------------- */
 /* Guest-only                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -99,20 +91,39 @@ async function handleGuestOnlyRoute(
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                     */
 /* -------------------------------------------------------------------------- */
+// function isAuthRequiredPath(pathname: string) {
+//   return AUTH_REQUIRED_PATHS.some(p => pathname === p || pathname.startsWith(p + "/"));
+// }
+function norm(p: string) {
+  if (p === "/") return "/";
+  return p.endsWith("/") ? p.slice(0, -1) : p;
+}
+
 function isAuthRequiredPath(pathname: string) {
-  // '/'는 startsWith면 모든 경로가 매칭되기 때문에 특별취급
-  if (pathname === "/") return true;
-  return AUTH_REQUIRED_PATHS.filter(p => p !== "/").some(p => pathname.startsWith(p));
+  const pn = norm(pathname);
+
+  const hit = AUTH_REQUIRED_PATHS.some(p => {
+    const pp = norm(p);
+    const ok = pn === pp || pn.startsWith(pp + "/");
+    console.log("[MATCH?]", { pn, pp, ok });
+    return ok;
+  });
+
+  return hit;
 }
 function isGuestOnlyPath(pathname: string) {
-  return GUEST_ONLY_PATHS.some(p => pathname.startsWith(p));
+  return GUEST_ONLY_PATHS.some(p => pathname === p || pathname.startsWith(p + "/"));
 }
 function getCookie(request: NextRequest, name: string) {
   return request.cookies.get(name)?.value ?? null;
 }
-function redirectToLogin(request: NextRequest) {
-  const res = NextResponse.redirect(new URL("/login", request.url));
+function redirectToLogin(request: NextRequest, reason = "auth_required") {
+  const url = new URL("/login", request.url);
+  url.searchParams.set("reason", reason);
+
+  const res = NextResponse.redirect(url);
   clearAuthCookies(res);
+
   return res;
 }
 function clearAuthCookies(res: NextResponse) {
@@ -137,9 +148,12 @@ function verifyAccessToken(token: string): "valid" | "expired" | "invalid" {
     return "invalid";
   }
 }
-async function refreshAccessAndContinueOrLogout(request: NextRequest) {
+async function refreshAccessAndContinueOrLogout(
+  request: NextRequest,
+  reasonOnFail: LoginRedirectReason
+) {
   const newAccessToken = await requestNewAccessToken(request);
-  if (!newAccessToken) return redirectToLogin(request);
+  if (!newAccessToken) return redirectToLogin(request, reasonOnFail);
   const res = NextResponse.next();
   setAccessCookie(res, newAccessToken);
   return res;
