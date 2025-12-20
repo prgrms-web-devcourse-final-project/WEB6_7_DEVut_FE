@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import Category from "../../common/Category";
 import ContentContainer from "../../common/ContentContainer";
 
-export default function CategorySection() {
-  const [category, setCategory] = useState<CategoryKey | null>(null);
+interface CategorySectionProps {
+  category: CategoryKey | null;
+  setCategory: (category: CategoryKey) => void;
+}
 
+export default function CategorySection({ category, setCategory }: CategorySectionProps) {
   return (
     <ContentContainer className="border-border-sub/10 shadow-flat-light min-h-0 w-full py-6 md:w-full">
       <div className="mx-auto max-w-[1000px] px-3">

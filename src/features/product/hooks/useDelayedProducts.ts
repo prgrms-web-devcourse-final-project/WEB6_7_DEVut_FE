@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDelayedProducts } from "../api/delayProduct.api";
+import { getDelayedProducts } from "../api/product.client.api";
 
-export function useDelayedProducts(params: GetProductsParams) {
+export function useDelayedProducts(
+  params: GetProductsParams,
+  options?: { enabled?: boolean; initialData: ProductCardType[] | undefined }
+) {
   return useQuery({
     queryKey: ["delayedProducts", params],
     queryFn: () => getDelayedProducts(params),
-    enabled: !!params.name || !!params.category || !!params.minBidPrice || !!params.maxBidPrice,
+    enabled: options?.enabled,
+    initialData: options?.initialData,
     placeholderData: prev => prev,
   });
 }
