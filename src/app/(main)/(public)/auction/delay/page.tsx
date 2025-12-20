@@ -1,4 +1,3 @@
-import CategorySection from "@/components/auction/delay/CategorySection";
 import DelayProducts from "@/components/auction/delay/DelayProducts";
 import ContentContainer from "@/components/common/ContentContainer";
 import PageTabArea from "@/components/common/PageTabArea";
