@@ -27,7 +27,7 @@ export const sidebarItems = [
     label: "검색",
   },
   {
-    path: "/nofity",
+    path: "/notify",
     icon: alarm,
     badgeCount: 0,
     label: "알림",

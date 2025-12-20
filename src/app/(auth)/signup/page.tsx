@@ -24,9 +24,9 @@ type EmailVerifyStatus =
 
 export default function SignUpPage() {
   return (
-    <NoAuthOnly>
-      <SignUpForm />
-    </NoAuthOnly>
+    // <NoAuthOnly>
+    <SignUpForm />
+    // </NoAuthOnly>
   );
 }
 
