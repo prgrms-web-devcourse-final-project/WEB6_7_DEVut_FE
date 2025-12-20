@@ -9,5 +9,5 @@ export default async function DelayProductPage({
   const { productId } = await params;
   const initialDelayProduct = await getDelayProduct(Number(productId));
 
-  return <ProductInfo product={initialDelayProduct} />;
+  return <ProductInfo initialProduct={initialDelayProduct} />;
 }

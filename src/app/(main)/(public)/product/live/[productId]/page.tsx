@@ -9,5 +9,5 @@ export default async function LiveProductPage({
   const { productId } = await params;
   const initialLiveProduct = await getLiveProduct(Number(productId));
 
-  return <ProductInfo product={initialLiveProduct} />;
+  return <ProductInfo initialProduct={initialLiveProduct} />;
 }

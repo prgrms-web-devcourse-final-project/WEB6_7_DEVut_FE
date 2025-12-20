@@ -4,7 +4,6 @@ import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
 import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
-import { useLiveProductDetail } from "@/features/product/hooks/useLiveProductDetail";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
 import { MessageCircle, Star } from "lucide-react";
@@ -12,20 +11,21 @@ import ProductImageCarousel from "./ProductImageCarousel";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
 import { BiddingSectionModal } from "./BiddingSectionModal";
+import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
 interface ProductInfo {
-  product: ProductDetail;
+  initialProduct: ProductDetail;
 }
 
-export default function ProductInfo({ product }: ProductInfo) {
-  // const { data: product, isLoading, isError } = useLiveProductDetail(Number(productId));
+export default function ProductInfo({ initialProduct }: ProductInfo) {
+  const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
 
   console.log(product);
 
-  // if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
-  // if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
+  if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
+  if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
     <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
