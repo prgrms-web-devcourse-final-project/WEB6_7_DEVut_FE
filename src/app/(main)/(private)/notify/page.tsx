@@ -2,7 +2,7 @@ import ContentContainer from "@/components/common/ContentContainer";
 import MileStoneSemiTitle from "@/components/common/MileStoneSemiTitle";
 import NotifyItem from "@/components/notify/notifyItem";
 
-export default function NofityPage() {
+export default function NotifyPage() {
   return (
     <>
       <ContentContainer bordered={false} className="w-[95%] pt-5">

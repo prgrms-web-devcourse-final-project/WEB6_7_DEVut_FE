@@ -79,13 +79,14 @@ export default function MyIntro() {
   };
 
   const handleSignOut = () => {
-    if (!user) {
-      notify("로그인이 만료되었습니다.", "ERROR");
-      router.replace("/login");
-    }
+    // if (!user) {
+    //   notify("로그인이 만료되었습니다.", "ERROR");
+    //   router.replace("/login");
+    // }
 
     signOutMutation.mutate(undefined, {
       onSuccess: () => {
+        notify("다음에 또 만나요!", "SUCCESS");
         router.replace("/");
       },
     });

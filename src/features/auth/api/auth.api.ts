@@ -1,52 +1,50 @@
-import { apiClient } from "@/shared/api/client";
-import type {
-  UserRefreshResponse,
-  UserSigninRequest,
-  UserSigninResponse,
-  UserSignupRequest,
-  UserSignupResponse,
-} from "../types/auth.types";
-import axios from "axios";
+import ClientApi from "@/lib/clientApi";
 
-export async function signin(payload: UserSigninRequest) {
-  const res = await apiClient.post<UserSigninResponse>("/api/v1/users/signin", payload);
-  return res.data;
+import type { UserSignupRequest, UserSignupResponse } from "../types/auth.types";
+
+function isSuccess(resultCode: string) {
+  return resultCode === "OK" || resultCode === "SUCCESS";
 }
 
-export async function signup(payload: UserSignupRequest) {
-  const res = await apiClient.post<UserSignupResponse>("/api/v1/users/signup", payload);
-  return res.data;
-}
-
-export async function signout() {
-  const res = await apiClient.post("/api/v1/users/signout");
-  return res.data;
-}
-
-export async function getMe() {
-  try {
-    const res = await apiClient.get<ApiResponse<User>>("/api/v1/users/me");
-    return res.data.data;
-  } catch (e) {
-    // 401은 비로그인이므로 에러가 아니라 null로 처리
-    if (axios.isAxiosError(e) && e.response?.status === 401) {
-      return null;
-    }
-    throw e; // 나머지 에러만 진짜 에러로
+function assertSuccess<T>(res: ApiResponse<T>) {
+  if (!isSuccess(res.resultCode)) {
+    throw new Error(res.msg || "요청에 실패했습니다.");
   }
+  return res;
 }
 
-export async function refreshToken() {
-  const res = await apiClient.post<UserRefreshResponse>("/api/v1/users/refresh");
-  return res.data;
+// 회원가입 (Client)
+export async function signup(payload: UserSignupRequest): Promise<UserSignupResponse> {
+  const res = await ClientApi<UserSignupResponse["data"]>("/users/signup", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  return assertSuccess(res) as UserSignupResponse;
 }
 
-// export async function updateMe(payload: {
-//   email: string;
-//   nickname: string | null;
-//   birthDate: string;
-//   image: string | null;
-// }) {
-//   const res = await apiClient.patch<ApiResponse<User>>("/api/v1/users/me", payload);
-//   return res.data;
+// 내 정보 조회
+export async function getMe(): Promise<User | null> {
+  const res = await fetch("/api/auth/me", { method: "GET", credentials: "include" });
+  if (res.status === 401) return null;
+  if (!res.ok) throw new Error(await res.text());
+
+  const json = await res.json();
+  return json?.data?.userInfo ?? null;
+}
+
+// // 서버 컴포넌트에서 me가 필요할 때
+// export async function getMeServer(): Promise<User | null> {
+//   try {
+//     const res = await ServerApi<{ userInfo: User }>("/users/me", {
+//       method: "GET",
+//       cache: "no-store",
+//     });
+//     assertSuccess(res);
+//     return res.data.userInfo;
+//   } catch (e: any) {
+//     const msg = String(e?.message ?? "");
+//     if (msg.includes("HTTP Error: 401")) return null;
+//     throw e;
+//   }
 // }
