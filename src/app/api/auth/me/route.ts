@@ -17,8 +17,10 @@ export async function GET() {
       Cookie: cookieHeader,
     },
     cache: "no-store",
+    redirect: "manual",
   });
-
+  const url = `${API_URL}/api/v1/users/me`;
+  console.log("[ME ROUTE] upstream url:", url);
   const json = await upstream.json().catch(() => null);
 
   return NextResponse.json(json, { status: upstream.status });

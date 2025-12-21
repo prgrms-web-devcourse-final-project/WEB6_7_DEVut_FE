@@ -105,7 +105,7 @@ function isAuthRequiredPath(pathname: string) {
   const hit = AUTH_REQUIRED_PATHS.some(p => {
     const pp = norm(p);
     const ok = pn === pp || pn.startsWith(pp + "/");
-    console.log("[MATCH?]", { pn, pp, ok });
+    // console.log("[MATCH?]", { pn, pp, ok });
     return ok;
   });
 

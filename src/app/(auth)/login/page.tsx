@@ -83,7 +83,9 @@ function LoginForm() {
       }
     );
   };
-
+  const kakaoLogin = () =>
+    (window.location.href = "http://localhost:8080/oauth2/authorization/kakao");
+  const naverLogin = () => {};
   const googleLogin = () => {};
   return (
     <AuthForm>
@@ -129,16 +131,16 @@ function LoginForm() {
         <DashDivider label="또는" />
 
         {/* 소셜 로그인 */}
-        <Button type="button" className="shadow-flat bg-yellow-300">
+        <Button onClick={kakaoLogin} type="button" className="shadow-flat bg-yellow-300">
           <Image src={kakao} alt="kakao" className="mr-2" />
           <span>카카오 로그인</span>
         </Button>
 
-        <Button type="button" className="shadow-flat bg-green-500">
+        <Button onClick={naverLogin} type="button" className="shadow-flat bg-green-500">
           <span>N 네이버 로그인</span>
         </Button>
 
-        <Button type="button" className="shadow-flat">
+        <Button onClick={googleLogin} type="button" className="shadow-flat">
           <Image src={google} alt="google" className="mr-2" />
           <span>Google 로그인</span>
         </Button>
