@@ -6,9 +6,6 @@ export function useMe() {
     queryKey: ["me"],
     queryFn: getMe,
     retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
     staleTime: 60_000,
   });
 }

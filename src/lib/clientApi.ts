@@ -20,7 +20,15 @@ export default async function ClientApi<T>(
     credentials: "include",
   });
   if (!res.ok) {
-    throw new Error(`HTTP Error: ${res.status}`);
+    const body = (await res.json().catch(() => null)) as ApiErrorBody | null;
+
+    // 서버가 JSON을 줬으면 그걸 throw (onError에서 err.data.password로 꺼낼 수 있게)
+    if (body) throw body;
+
+    // JSON이 아니면 텍스트라도
+    const text = await res.text().catch(() => "");
+    throw { msg: text || `HTTP Error: ${res.status}`, resultCode: String(res.status), data: null };
   }
+
   return (await res.json()) as ApiResponse<T>;
 }

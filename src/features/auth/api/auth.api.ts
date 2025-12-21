@@ -3,7 +3,7 @@ import ClientApi from "@/lib/clientApi";
 import type { UserSignupRequest, UserSignupResponse } from "../types/auth.types";
 
 function isSuccess(resultCode: string) {
-  return resultCode === "OK" || resultCode === "SUCCESS";
+  return resultCode === "OK" || resultCode === "SUCCESS" || resultCode === "200";
 }
 
 function assertSuccess<T>(res: ApiResponse<T>) {
@@ -30,7 +30,7 @@ export async function getMe(): Promise<User | null> {
   if (!res.ok) throw new Error(await res.text());
 
   const json = await res.json();
-  return json?.data?.userInfo ?? null;
+  return (json?.data ?? null) as User | null;
 }
 
 // // 서버 컴포넌트에서 me가 필요할 때
