@@ -3,7 +3,7 @@ import ClientApi from "@/lib/clientApi";
 import type { UserSignupRequest, UserSignupResponse } from "../types/auth.types";
 
 function isSuccess(resultCode: string) {
-  return resultCode === "OK" || resultCode === "SUCCESS";
+  return resultCode === "OK" || resultCode === "SUCCESS" || resultCode === "200";
 }
 
 function assertSuccess<T>(res: ApiResponse<T>) {

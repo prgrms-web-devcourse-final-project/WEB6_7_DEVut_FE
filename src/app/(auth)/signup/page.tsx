@@ -9,12 +9,14 @@ import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import { useEffect, useState } from "react";
 import { isSamePassword, isValidEmail, isValidPassword } from "@/utils/validation";
-import { NoAuthOnly } from "@/features/auth/model/auth.guard";
+// import { NoAuthOnly } from "@/features/auth/model/auth.guard";
 import { useSignUp } from "@/features/auth/hooks/useSignUp";
 import DashDivider from "@/components/common/DashDivider";
 import { useIssueEmailCode } from "@/features/auth/hooks/useIssueEmailCode";
 import { useVerifyEmailCode } from "@/features/auth/hooks/useVerifyEmailCode";
 import { formatMMSS, getRemainingSeconds } from "@/utils/getRemainingTime";
+import Toast from "@/components/common/Toast";
+import ToastProvider from "@/providers/ToastProvider";
 
 type EmailVerifyStatus =
   | "idle" // 아무것도 안 함
@@ -35,6 +37,8 @@ function SignUpForm() {
   const signUp = useSignUp();
   const issue = useIssueEmailCode();
   const verify = useVerifyEmailCode();
+
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const [email, setEmail] = useState("");
   const [emailCode, setEmailCode] = useState("");
@@ -80,7 +84,7 @@ function SignUpForm() {
           setVerifyStatus("sent");
           setEmailCodeErr(null);
 
-          const expiresAt = res.data.expiresAt;
+          const expiresAt = res.expiresAt;
           const sec = getRemainingSeconds(expiresAt);
           setRemainSec(sec);
         },
@@ -161,12 +165,13 @@ function SignUpForm() {
     signUp.mutate(
       { email, password, nickname },
       {
-        onError: (err: any) => {
-          const msg = err?.response?.data?.data.password ?? "회원가입에 실패했습니다.";
-          setErrorMsg(msg);
-        },
         onSuccess: () => {
+          notify("회원가입이 완료되었습니다.", "SUCCESS");
           route.push("/login");
+        },
+        onError: (err: any) => {
+          const msg = err?.data?.password ?? err?.message ?? "회원가입에 실패했습니다.";
+          setErrorMsg(msg);
         },
       }
     );
@@ -239,13 +244,13 @@ function SignUpForm() {
           */}
           <DashDivider />
           <Input
-            type="text"
+            type="password"
             placeholder="비밀번호"
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
           <Input
-            type="text"
+            type="password"
             placeholder="비밀번호 확인"
             value={passwordConfirm}
             onChange={e => setPasswordConfirm(e.target.value)}

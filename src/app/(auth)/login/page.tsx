@@ -76,8 +76,8 @@ function LoginForm() {
           notify(`${data.userInfo.nickname} 님 환영합니다!`, "SUCCESS");
           router.replace("/");
         },
-        onError: (error: any) => {
-          const msg = error?.message ?? "이메일 또는 비밀번호를 확인해주세요.";
+        onError: () => {
+          const msg = "이메일 또는 비밀번호를 확인해주세요.";
           setErrorMsg(msg);
         },
       }
