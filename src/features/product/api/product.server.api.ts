@@ -13,7 +13,6 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
 export const getLiveProduct = async (productId: number) => {
   const res = await ServerApi<LiveProductDetail>(`/auction/live/${productId}`, {
     method: "GET",
-    next: { revalidate: 60 },
   });
 
   return { ...res.data, type: "LIVE" } as LiveProductDetail;
@@ -22,7 +21,6 @@ export const getLiveProduct = async (productId: number) => {
 export const getDelayProduct = async (productId: number) => {
   const res = await ServerApi<DelayProductDetail>(`/auction/delayed/${productId}`, {
     method: "GET",
-    next: { revalidate: 60 },
   });
 
   return { ...res.data, type: "DELAYED" } as DelayProductDetail;

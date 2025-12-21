@@ -7,11 +7,18 @@ import BizzAmount from "../common/BizzAmount";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
 import { MessageCircle, SquarePen, Star } from "lucide-react";
-import ProductImageCarousel from "./ProductImageCarousel";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
 import { BiddingSectionModal } from "./BiddingSectionModal";
 import { useProductDetail } from "@/features/product/hooks/useProductDetail";
+
+import dynamic from "next/dynamic";
+import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
+
+const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
+  ssr: false,
+  loading: () => <ProductImageCarouselSkeleton />,
+});
 
 interface ProductInfo {
   initialProduct: ProductDetail;
@@ -23,10 +30,10 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
 
-  const path = product.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product.id}`;
-  const sellerId = product.type === "LIVE" ? product.sellerId : product.sellerUserId;
+  const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
+  const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
 
-  console.log(me);
+  console.log(sellerId);
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -82,7 +89,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
 
-                {product.type === "LIVE" && (
+                {product?.type === "LIVE" && (
                   <>
                     <div className="text-title-sub font-bold">라이브 시작</div>
                     <div className="text-title-main-dark">
@@ -91,7 +98,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   </>
                 )}
 
-                {product.type === "DELAYED" && (
+                {product?.type === "DELAYED" && (
                   <>
                     <div className="text-title-sub font-bold">마감 시간</div>
                     <div className="text-title-main-dark">
@@ -108,7 +115,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               찜 {product?.likeCount}
             </Button>
             {/* 라이브 */}
-            {product.type === "LIVE" && (
+            {product?.type === "LIVE" && (
               <>
                 {product?.auctionStatus === "BEFORE_BIDDING" && (
                   <Button className="flex-1" disabled>
@@ -131,7 +138,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             )}
 
             {/* 지연(일반) */}
-            {product.type === "DELAYED" && (
+            {product?.type === "DELAYED" && (
               <>
                 <BiddingSectionModal
                   isOpen={isBidOpen}

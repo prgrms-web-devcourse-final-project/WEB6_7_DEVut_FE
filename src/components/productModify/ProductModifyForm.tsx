@@ -116,7 +116,7 @@ export default function ProductModifyForm({ product }: ProductModifyFormProps) {
         <ImageUploader files={images} onChange={setImages} />
       </ContentContainer>
 
-      <div className="mx-auto flex w-[95%] justify-end gap-5">
+      <div className="mx-auto flex w-[95%] max-w-[1440px] justify-end gap-5">
         <Button
           className="bg-btn-active text-white"
           type="submit"

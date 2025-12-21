@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 interface ConditionOption {
   value: ItemCondition;
   label: string;
