@@ -57,7 +57,6 @@ export default function WriteForm() {
       return;
     }
 
-    console.log(formatIsoDateTime(endDate, endTime));
 
     const newFiles = images.filter(i => i instanceof File) as File[];
     const imageUrls = await uploadImages(newFiles, "auctions");

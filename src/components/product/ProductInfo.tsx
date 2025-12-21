@@ -23,6 +23,11 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
 
+  const path = product.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product.id}`;
+  const sellerId = product.type === "LIVE" ? product.sellerId : product.sellerUserId;
+
+  console.log(me);
+
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
 
@@ -53,17 +58,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   className="text-title-main-dark text-2xl font-bold md:text-3xl"
                 />
 
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const logPath =
-                      product.type === "LIVE"
-                        ? `/product/live/${product.id}/bidsLog`
-                        : `/product/${product.id}/bidsLog`;
-
-                    route.push(logPath);
-                  }}
-                >
+                <Button size="sm" onClick={() => route.push(`${path}/bidsLog`)}>
                   경매 기록
                 </Button>
               </div>
@@ -154,8 +149,12 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </>
             )}
 
-            {me ? (
-              <Button className="flex-1" leftIcon={<SquarePen size={18} />}>
+            {me?.id === sellerId ? (
+              <Button
+                className="flex-1"
+                leftIcon={<SquarePen size={18} />}
+                onClick={() => route.push(`${path}/modify`)}
+              >
                 수정하기
               </Button>
             ) : (
