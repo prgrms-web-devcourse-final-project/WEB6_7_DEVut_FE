@@ -86,7 +86,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
                 <div className="text-title-main-dark">{product?.region}</div>
 
                 <div className="text-title-sub font-bold">직거래</div>
-                <div className="text-title-main-dark">통합 되어야 함</div>
+                <div className="text-title-main-dark">{product?.preferredPlace}</div>
 
                 {product.type === "LIVE" && (
                   <>

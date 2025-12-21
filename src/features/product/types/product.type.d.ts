@@ -50,6 +50,7 @@ interface ProductDetailBase {
   deliveryInclude: boolean;
   directDealAvailable: boolean;
   region: string;
+  preferredPlace: string;
   images: string[];
   likeCount: number;
 }
@@ -57,7 +58,6 @@ interface ProductDetailBase {
 interface LiveProductDetail extends ProductDetailBase {
   type: "LIVE";
   liveTime: string;
-  preferredPlace: string; // 라이브에만 "장소" 필드가 있음
   sellerId: number; // 통합 필요
 }
 
