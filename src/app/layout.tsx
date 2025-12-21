@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/css/globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import Script from "next/script";
 
 const font = localFont({
   src: [
@@ -38,6 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <Script src="https://js.tosspayments.com/v2/standard" strategy="afterInteractive" />
+      </head>
       <body className={`${font.className} min-h-screen`}>
         <div className="bg-bg-main mx-auto min-h-screen w-full">
           <QueryProvider>{children}</QueryProvider>
