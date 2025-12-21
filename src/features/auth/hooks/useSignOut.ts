@@ -7,8 +7,7 @@ export function useSignOut() {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      // me 캐시를 비워서 즉시 비로그인 상태로
-      qc.removeQueries({ queryKey: ["me"] });
+      qc.setQueryData(["me"], null);
     },
   });
 }

@@ -10,16 +10,8 @@ export function useSignIn() {
 
   return useMutation({
     mutationFn: login,
-    // onSuccess: async () => {
-    // const meRes = await qc.fetchQuery({
-    //   queryKey: ["me"],
-    //   queryFn: getMe,
-    // });
-    // setUser(meRes);
-    // setHydrated(true);
-    // },
-    // onError: () => {
-    // setHydrated(true);
-    // },
+    onSuccess: async () => {
+      qc.invalidateQueries({ queryKey: ["me"] });
+    },
   });
 }

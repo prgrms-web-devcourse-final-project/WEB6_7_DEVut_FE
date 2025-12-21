@@ -3,10 +3,8 @@ export type IssueEmailCodeRequest = {
 };
 
 export type IssueEmailCodeResponse = {
-  data: {
-    remainingSeconds: number;
-    expiresAt: string;
-  };
+  remainingSeconds: number;
+  expiresAt: string;
 };
 
 export type VerifyEmailCodeRequest = {
