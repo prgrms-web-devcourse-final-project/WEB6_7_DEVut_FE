@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { MessageCircle, Star } from "lucide-react";
+import { MessageCircle, SquarePen, Star } from "lucide-react";
 import ProductImageCarousel from "./ProductImageCarousel";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
@@ -15,14 +15,13 @@ import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
 interface ProductInfo {
   initialProduct: ProductDetail;
+  me: User | null;
 }
 
-export default function ProductInfo({ initialProduct }: ProductInfo) {
+export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
-
-  console.log(product);
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -155,10 +154,15 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
               </>
             )}
 
-            {/* 내가 등록한 물품이면 수정하기 버튼으로.. */}
-            <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
-              대화하기
-            </Button>
+            {me ? (
+              <Button className="flex-1" leftIcon={<SquarePen size={18} />}>
+                수정하기
+              </Button>
+            ) : (
+              <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+                대화하기
+              </Button>
+            )}
           </div>
         </div>
       </div>
