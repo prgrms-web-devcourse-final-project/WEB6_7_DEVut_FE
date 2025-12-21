@@ -47,10 +47,12 @@ export default function Button({
   children,
   leftIcon,
   rightIcon,
+  type = "button",
   ...props
 }: ButtonProps) {
   return (
     <button
+      type={type}
       className={twMerge(buttonVariants({ variant, size, fullWidth }), className)}
       disabled={disabled || isLoading}
       {...props}

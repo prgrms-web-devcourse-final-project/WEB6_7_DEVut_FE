@@ -10,15 +10,14 @@ import Textarea from "@/components/common/TextArea";
 import ImageUploader from "@/components/write/ImageUploader";
 import calendar from "@/assets/images/sidebar/calendar.png";
 import Image from "next/image";
-import { DayPicker } from "react-day-picker";
-import { formatYmd } from "@/utils/date";
+import { formatIsoDateTime, formatYmd, getMinEndDate } from "@/utils/date";
 import ItemStatusRadio from "./ItemStatusRadio";
 import { useCreateAuctionProduct } from "@/features/auction/hooks/useCreateAuctionProduct";
 import Toast, { ToastType } from "../common/Toast";
 import { useUploadImages } from "@/features/image/hooks/useUploadImages";
 import { useRouter } from "next/navigation";
+import EndDatePicker from "./EndDatePicker";
 
-type AuctionKind = "live" | "delay";
 export default function WriteForm() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<CategoryKey | null>(null);
@@ -29,9 +28,10 @@ export default function WriteForm() {
   const [images, setImages] = useState<File[]>([]);
   const [startPrice, setStartPrice] = useState(0);
   const [deliveryInclude, setDeliveryInclude] = useState(true);
-  const [auctionKind, setAuctionKind] = useState<AuctionKind>("live");
+  const [auctionKind, setAuctionKind] = useState<AuctionType>("LIVE");
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date>(getMinEndDate);
+  const [endTime, setEndTime] = useState("12:00");
 
   const notify = (message: string, type: ToastType) => Toast({ message, type });
   const router = useRouter();
@@ -54,39 +54,52 @@ export default function WriteForm() {
       notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
       return;
     }
-    // if (auctionKind === "delay" && !endDate) return;
     if (images.length === 0) {
       notify("최소 한 장의 이미지를 업로드해주세요.", "ERROR");
       return;
     }
 
+    console.log(formatIsoDateTime(endDate, endTime));
+
     const imageUrls = await uploadImages(images, "auctions");
 
-    mutate(
-      {
-        name: title,
-        category,
-        itemStatus: condition,
-        description,
-        initPrice: startPrice,
-        deliveryInclude,
-        liveTime: auctionKind === "live" ? "2025-12-20T15:30:00" : (endDate?.toISOString() ?? ""),
-        directDealAvailable: true,
-        region,
-        preferredPlace,
-        images: imageUrls,
+    const formBase = {
+      name: title,
+      category,
+      itemStatus: condition,
+      description,
+      deliveryInclude,
+      directDealAvailable: true,
+      region,
+      preferredPlace,
+      images: imageUrls,
+    };
+
+    const form: CreateProductForm =
+      auctionKind === "LIVE"
+        ? {
+            ...formBase,
+            type: "LIVE",
+            liveTime: "2025-12-30T15:30:00",
+            initPrice: startPrice,
+          }
+        : {
+            ...formBase,
+            type: "DELAYED",
+            endTime: formatIsoDateTime(endDate, endTime),
+            startPrice,
+          };
+
+    mutate(form, {
+      onSuccess: data => {
+        notify("상품이 성공적으로 등록되었습니다.", "SUCCESS");
+        router.replace(form.type === "LIVE" ? `/product/live/${data.id}` : `/product/${data.id}`);
       },
-      {
-        onSuccess: data => {
-          notify("상품이 성공적으로 등록되었습니다.", "SUCCESS");
-          router.replace(`/product/live/${data.id}`);
-        },
-        onError: error => {
-          notify("상품 등록에 실패했습니다. 다시 시도해주세요.", "ERROR");
-          console.error("Error creating auction product:", error);
-        },
-      }
-    );
+      onError: error => {
+        notify("상품 등록에 실패했습니다.", "ERROR");
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -200,22 +213,22 @@ export default function WriteForm() {
             <div className="grid w-full grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
               <Button
                 fullWidth={true}
-                variant={auctionKind === "live" ? "selected" : "primary"}
-                onClick={() => setAuctionKind("live")}
+                variant={auctionKind === "LIVE" ? "selected" : "primary"}
+                onClick={() => setAuctionKind("LIVE")}
               >
                 <span className="text-title-main text-xl whitespace-nowrap">라이브 경매</span>
               </Button>
 
               <Button
                 fullWidth={true}
-                variant={auctionKind === "delay" ? "selected" : "primary"}
-                onClick={() => setAuctionKind("delay")}
+                variant={auctionKind === "DELAYED" ? "selected" : "primary"}
+                onClick={() => setAuctionKind("DELAYED")}
               >
                 <span className="text-title-main text-xl whitespace-nowrap">일반 경매</span>
               </Button>
             </div>
           </div>
-          {auctionKind === "live" && (
+          {auctionKind === "LIVE" && (
             <>
               <p className="text-title-sub2 text-lg">시작 일시 선택</p>
               <div>
@@ -233,43 +246,32 @@ export default function WriteForm() {
               </div>
             </>
           )}
-          {auctionKind === "delay" && (
-            <>
+          {auctionKind === "DELAYED" && (
+            <div className="relative">
               <p className="text-title-sub2 text-lg">마감 일시 선택</p>
-              <div>
-                <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
-                  <Button onClick={() => setCalendarOpen(prev => !prev)}>
-                    {endDate ? formatYmd(endDate) : "날짜"}{" "}
-                  </Button>
-                  {calendarOpen && (
-                    <div className="text-title-main absolute z-30 mt-2 rounded-xl bg-white p-4 shadow-2xl">
-                      <DayPicker
-                        mode="single"
-                        selected={endDate}
-                        disabled={{ before: new Date() }}
-                        onSelect={date => {
-                          if (!date) return;
-                          setEndDate(date);
-                          setCalendarOpen(false);
-                        }}
-                        classNames={{
-                          day: "rounded-md transition-colors",
-                          day_button:
-                            "h-9 w-9 rounded-md transition-colors hover:bg-border-sub/20 hover:shadow-flat-light rounded-md",
-                          disabled: "text-border-sub/40 cursor-not-allowed opacity-50",
-                          selected: "bg-border-sub2 text-white hover:bg-border-sub2",
-                          today: "ring ring-border-sub2 rounded-md",
-                          caption: "flex relative items-center justify-between px-2",
-                          caption_label: "text-lg flex font-black justify-center",
-                          nav: "absolute inset-x-2 flex items-center justify-between gap-2",
-                          nav_button: "size-8 rounded-md transition hover:bg-border-sub",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
+              <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
+                <Button onClick={() => setCalendarOpen(prev => !prev)}>
+                  {endDate ? formatYmd(endDate) : "날짜"}{" "}
+                </Button>
+                {calendarOpen && (
+                  <EndDatePicker
+                    endDate={endDate}
+                    onSelect={(date: Date | undefined) => {
+                      if (!date) return;
+                      setEndDate(date);
+                      setCalendarOpen(false);
+                    }}
+                  />
+                )}
+                <Input
+                  className="text-center"
+                  type="time"
+                  step={1800}
+                  value={endTime}
+                  onChange={e => setEndTime(e.target.value)}
+                />
               </div>
-            </>
+            </div>
           )}
 
           <div className="mt-12 flex w-full justify-end gap-5">

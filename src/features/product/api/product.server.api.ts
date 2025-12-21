@@ -1,5 +1,5 @@
 import { ServerApi } from "@/lib/serverApi";
-import { mapDelayedProductToCard } from "../mapper/productCard";
+import { mapDelayedProductToCard, mapLiveProductToCard } from "../mapper/productCard";
 
 export const getDelayedProducts = async (params: GetProductsParams) => {
   const res = await ServerApi<DelayProductResponse>("/auction/delayed", {
@@ -24,4 +24,20 @@ export const getDelayProduct = async (productId: number) => {
   });
 
   return { ...res.data, type: "DELAYED" } as DelayProductDetail;
+};
+
+export const getLiveHotProducts = async () => {
+  const res = await ServerApi<LiveProductResponse>(`/auction/live/hot`, {
+    method: "GET",
+  });
+
+  return res.data.liveItems.map(mapLiveProductToCard);
+};
+
+export const getDelayHotProducts = async () => {
+  const res = await ServerApi<DelayProductResponse>(`/auction/delayed/hot`, {
+    method: "GET",
+  });
+
+  return res.data.delayedItems.map(mapDelayedProductToCard);
 };
