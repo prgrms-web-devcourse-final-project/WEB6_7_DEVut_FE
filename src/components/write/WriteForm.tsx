@@ -2,21 +2,19 @@
 
 import { useState } from "react";
 import Button from "@/components/common/Button";
-import Category from "@/components/common/Category";
 import ContentContainer from "@/components/common/ContentContainer";
 import Input from "@/components/common/Input";
 import PriceInput from "@/components/common/PriceInput";
-import Textarea from "@/components/common/TextArea";
 import ImageUploader from "@/components/write/ImageUploader";
 import calendar from "@/assets/images/sidebar/calendar.png";
 import Image from "next/image";
 import { formatIsoDateTime, formatYmd, getMinEndDate } from "@/utils/date";
-import ItemStatusRadio from "./ItemStatusRadio";
 import { useCreateAuctionProduct } from "@/features/auction/hooks/useCreateAuctionProduct";
 import Toast, { ToastType } from "../common/Toast";
 import { useUploadImages } from "@/features/image/hooks/useUploadImages";
 import { useRouter } from "next/navigation";
 import EndDatePicker from "./EndDatePicker";
+import WriteBaseForm from "./WriteBaseForm";
 
 export default function WriteForm() {
   const [title, setTitle] = useState("");
@@ -25,7 +23,7 @@ export default function WriteForm() {
   const [description, setDescription] = useState("");
   const [region, setRegion] = useState("");
   const [preferredPlace, setPreferredPlace] = useState("");
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<(string | File)[]>([]);
   const [startPrice, setStartPrice] = useState(0);
   const [deliveryInclude, setDeliveryInclude] = useState(true);
   const [auctionKind, setAuctionKind] = useState<AuctionType>("LIVE");
@@ -61,7 +59,8 @@ export default function WriteForm() {
 
     console.log(formatIsoDateTime(endDate, endTime));
 
-    const imageUrls = await uploadImages(images, "auctions");
+    const newFiles = images.filter(i => i instanceof File) as File[];
+    const imageUrls = await uploadImages(newFiles, "auctions");
 
     const formBase = {
       name: title,
@@ -104,62 +103,20 @@ export default function WriteForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <ContentContainer className="flex flex-col gap-5 p-8">
-        <div>
-          <p className="text-title-sub text-2xl">상품 정보</p>
-        </div>
-        <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">상품명</p>
-          <Input
-            placeholder="상품명을 입력해주세요"
-            maxLength={40}
-            onChange={e => setTitle(e.target.value)}
-            value={title}
-          />
-        </div>
-        <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">카테고리</p>
-          <Category
-            name="categoryRadio"
-            value={category}
-            onChange={setCategory}
-            className="flex gap-2 overflow-x-auto whitespace-nowrap sm:flex-wrap"
-          />
-        </div>
-        <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">상품상태</p>
-          <ItemStatusRadio condition={condition} setCondition={setCondition} />
-        </div>
-        <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">설명</p>
-          <Textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="상품에 대한 설명을 자세히 적어주세요."
-          />
-        </div>
-        <div className="flex w-full flex-col gap-6 md:flex-row md:gap-10">
-          <div className="w-full space-y-2">
-            <p className="text-title-sub2 text-lg">지역</p>
-            <Input
-              placeholder="지역을 적어주세요."
-              maxLength={40}
-              onChange={e => setRegion(e.target.value)}
-              value={region}
-            />
-          </div>
-
-          <div className="w-full space-y-2">
-            <p className="text-title-sub2 text-lg">선호 장소</p>
-            <Input
-              placeholder="선호하는 장소를 입력해주세요. ( 직거래 )"
-              maxLength={40}
-              onChange={e => setPreferredPlace(e.target.value)}
-              value={preferredPlace}
-            />
-          </div>
-        </div>
-      </ContentContainer>
+      <WriteBaseForm
+        title={title}
+        onChangeTitle={setTitle}
+        category={category}
+        onChangeCategory={setCategory}
+        condition={condition}
+        onChangeCondition={setCondition}
+        description={description}
+        onChangeDescription={setDescription}
+        region={region}
+        onChangeRegion={setRegion}
+        preferredPlace={preferredPlace}
+        onChangePreferredPlace={setPreferredPlace}
+      />
 
       <ContentContainer className="flex flex-col gap-5 p-8">
         <div>

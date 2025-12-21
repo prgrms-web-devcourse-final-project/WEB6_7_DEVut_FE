@@ -33,7 +33,7 @@ export default function ItemStatusRadio({
   setCondition,
 }: {
   condition: ItemCondition;
-  setCondition: Dispatch<SetStateAction<ItemCondition>>;
+  setCondition: (value: ItemCondition) => void;
 }) {
   return (
     <>
