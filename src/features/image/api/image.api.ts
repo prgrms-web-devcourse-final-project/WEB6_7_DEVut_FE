@@ -1,7 +1,7 @@
 import ClientApi from "@/lib/clientApi";
 
 export const getPresignedUrl = async (body: GetPresignedUrlRequest) => {
-  const res = await ClientApi("/images/upload", {
+  const res = await ClientApi<PresignedUrlData>("/images/upload", {
     method: "POST",
     body: JSON.stringify(body),
   });
