@@ -30,7 +30,7 @@ export async function getMe(): Promise<User | null> {
   if (!res.ok) throw new Error(await res.text());
 
   const json = await res.json();
-  return json?.data?.userInfo ?? null;
+  return (json?.data ?? null) as User | null;
 }
 
 // // 서버 컴포넌트에서 me가 필요할 때
