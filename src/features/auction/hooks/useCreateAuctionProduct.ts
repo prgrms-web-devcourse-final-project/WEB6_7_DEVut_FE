@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { createDelayProduct, createLiveProduct } from "../api/createAuctionProduct.api";
+import { createDelayProduct, createLiveProduct } from "../api/auctionProduct.api";
 import { mapToCreateDelayProductRequest, mapToCreateLiveProductRequest } from "../mapper/createAuctionProduct";
 
 export const useCreateAuctionProduct = () =>

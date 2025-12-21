@@ -6,23 +6,34 @@ import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { MessageCircle, Star } from "lucide-react";
-import ProductImageCarousel from "./ProductImageCarousel";
+import { MessageCircle, SquarePen, Star } from "lucide-react";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
 import { BiddingSectionModal } from "./BiddingSectionModal";
 import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
+import dynamic from "next/dynamic";
+import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
+
+const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
+  ssr: false,
+  loading: () => <ProductImageCarouselSkeleton />,
+});
+
 interface ProductInfo {
   initialProduct: ProductDetail;
+  me: User | null;
 }
 
-export default function ProductInfo({ initialProduct }: ProductInfo) {
+export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
 
-  console.log(product);
+  const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
+  const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
+
+  console.log(sellerId);
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -54,17 +65,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
                   className="text-title-main-dark text-2xl font-bold md:text-3xl"
                 />
 
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const logPath =
-                      product.type === "LIVE"
-                        ? `/product/live/${product.id}/bidsLog`
-                        : `/product/${product.id}/bidsLog`;
-
-                    route.push(logPath);
-                  }}
-                >
+                <Button size="sm" onClick={() => route.push(`${path}/bidsLog`)}>
                   경매 기록
                 </Button>
               </div>
@@ -88,7 +89,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
 
-                {product.type === "LIVE" && (
+                {product?.type === "LIVE" && (
                   <>
                     <div className="text-title-sub font-bold">라이브 시작</div>
                     <div className="text-title-main-dark">
@@ -97,7 +98,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
                   </>
                 )}
 
-                {product.type === "DELAYED" && (
+                {product?.type === "DELAYED" && (
                   <>
                     <div className="text-title-sub font-bold">마감 시간</div>
                     <div className="text-title-main-dark">
@@ -114,7 +115,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
               찜 {product?.likeCount}
             </Button>
             {/* 라이브 */}
-            {product.type === "LIVE" && (
+            {product?.type === "LIVE" && (
               <>
                 {product?.auctionStatus === "BEFORE_BIDDING" && (
                   <Button className="flex-1" disabled>
@@ -137,7 +138,7 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
             )}
 
             {/* 지연(일반) */}
-            {product.type === "DELAYED" && (
+            {product?.type === "DELAYED" && (
               <>
                 <BiddingSectionModal
                   isOpen={isBidOpen}
@@ -155,10 +156,19 @@ export default function ProductInfo({ initialProduct }: ProductInfo) {
               </>
             )}
 
-            {/* 내가 등록한 물품이면 수정하기 버튼으로.. */}
-            <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
-              대화하기
-            </Button>
+            {me?.id === sellerId ? (
+              <Button
+                className="flex-1"
+                leftIcon={<SquarePen size={18} />}
+                onClick={() => route.push(`${path}/modify`)}
+              >
+                수정하기
+              </Button>
+            ) : (
+              <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+                대화하기
+              </Button>
+            )}
           </div>
         </div>
       </div>

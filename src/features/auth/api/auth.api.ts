@@ -33,18 +33,4 @@ export async function getMe(): Promise<User | null> {
   return (json?.data ?? null) as User | null;
 }
 
-// // 서버 컴포넌트에서 me가 필요할 때
-// export async function getMeServer(): Promise<User | null> {
-//   try {
-//     const res = await ServerApi<{ userInfo: User }>("/users/me", {
-//       method: "GET",
-//       cache: "no-store",
-//     });
-//     assertSuccess(res);
-//     return res.data.userInfo;
-//   } catch (e: any) {
-//     const msg = String(e?.message ?? "");
-//     if (msg.includes("HTTP Error: 401")) return null;
-//     throw e;
-//   }
-// }
+
