@@ -10,13 +10,15 @@ interface ProductModifyFormProps {
   product: ProductDetail;
 }
 export default function ProductModifyForm({ product }: ProductModifyFormProps) {
-  const [title, setTitle] = useState(product.name);
-  const [category, setCategory] = useState<CategoryKey | null>(product.category);
+  const [title, setTitle] = useState(product.name || "");
+  const [category, setCategory] = useState<CategoryKey | null>(product.category ?? null);
   const [condition, setCondition] = useState<ItemCondition>(product.itemStatus);
-  const [description, setDescription] = useState(product.description);
-  const [region, setRegion] = useState(product.region);
-  const [preferredPlace, setPreferredPlace] = useState(product.preferredPlace);
-  const [images, setImages] = useState<(string | File)[]>(product.images);
+  const [description, setDescription] = useState(product.description || "");
+  const [region, setRegion] = useState(product.region || "");
+  const [preferredPlace, setPreferredPlace] = useState(product.preferredPlace || "");
+  const [images, setImages] = useState<(string | File)[]>(
+    Array.isArray(product.images) ? product.images : []
+  );
 
   return (
     <form className="mb-10 flex flex-col gap-8">
