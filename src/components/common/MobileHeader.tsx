@@ -21,7 +21,7 @@ export default function MobileHeader() {
 
   return (
     <>
-      <div className="border-border-sub2 bg-content-area flex items-center justify-between border-b px-4 py-3 md:hidden">
+      <div className="border-border-sub2 bg-content-area fixed top-0 left-0 z-30 flex w-full items-center justify-between border-b px-4 py-3 md:hidden">
         <div className="flex items-center gap-3">
           <button onClick={() => setOpen(true)} className="text-2xl font-bold">
             <TextAlignJustify />
