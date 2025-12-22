@@ -14,7 +14,6 @@ interface ProductImageCarouselProps {
 export default function ProductImageCarousel({ images, className }: ProductImageCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
 
-  const dummyImages = Array.from({ length: 6 });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleSelect = useCallback(() => {
@@ -38,10 +37,10 @@ export default function ProductImageCarousel({ images, className }: ProductImage
     <div className={twMerge("w-full", className)}>
       <div ref={emblaRef} className="overflow-hidden">
         <div className="flex">
-          {dummyImages.map((_, idx) => (
+          {images?.map((image, idx) => (
             <div key={idx} className="min-w-0 flex-[0_0_100%]">
               <WrapperImage
-                src={test}
+                src={image ?? test}
                 alt={`product image ${idx + 1}`}
                 className="aspect-square w-full md:max-h-[520px]"
               />
@@ -51,7 +50,7 @@ export default function ProductImageCarousel({ images, className }: ProductImage
       </div>
 
       <div className="mt-3 flex justify-center gap-2">
-        {dummyImages.map((_, idx) => (
+        {images?.map((_, idx) => (
           <button
             key={idx}
             onClick={() => emblaApi?.scrollTo(idx)}

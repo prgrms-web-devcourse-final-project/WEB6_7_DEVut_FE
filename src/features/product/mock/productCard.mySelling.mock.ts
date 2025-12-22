@@ -10,6 +10,7 @@ export const productCardMock_MY_SELLING: ProductCardType[] = [
     href: "/product/10",
     badge: { image: delayBadge, alt: "일반 경매" },
     status: { kind: "status", status: "IN_DEAL" },
+    type: "DELAYED",
   },
   {
     id: 11,
@@ -19,6 +20,7 @@ export const productCardMock_MY_SELLING: ProductCardType[] = [
     href: "/product/11",
     badge: { image: delayBadge, alt: "일반 경매" },
     status: { kind: "status", status: "PURCHASE_CONFIRMED" },
+    type: "DELAYED",
   },
   {
     id: 12,
@@ -28,5 +30,6 @@ export const productCardMock_MY_SELLING: ProductCardType[] = [
     href: "/product/12",
     badge: { image: delayBadge, alt: "일반 경매" },
     status: { kind: "status", status: "FAILED" },
+    type: "DELAYED",
   },
 ];

@@ -13,7 +13,7 @@ export default function MyWish() {
         </Title>
         <ProductsGrid>
           {productCardMock_DELAYED.map(product => (
-            <ProductCard context="CARD" key={product.id} data={product} />
+            <ProductCard context="CARD" key={product.id} product={product} />
           ))}
         </ProductsGrid>
       </ContentContainer>

@@ -30,10 +30,10 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
 
+  // 추후 리팩토링 (DTO 통합)
   const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
   const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
-
-  console.log(sellerId);
+  const price = product?.type === "LIVE" ? 1000000 : product?.currentPrice;
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -43,7 +43,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
       <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-stretch">
         <ProductImageCarousel images={product?.images} className="w-full" />
 
-        <div className="flex flex-col gap-5 md:h-full md:justify-between">
+        <div className="flex flex-col gap-5 md:h-full">
           <div className="flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
               <h1 className="text-title-main-dark text-2xl leading-snug font-bold md:text-3xl">
@@ -60,7 +60,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
               <div className="mt-2 flex items-end justify-between">
                 <BizzAmount
-                  amount={1000000}
+                  amount={price || 100000}
                   iconSize="lg"
                   className="text-title-main-dark text-2xl font-bold md:text-3xl"
                 />
@@ -110,7 +110,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-3">
             <Button className="flex-1" leftIcon={<Star />}>
               찜 {product?.likeCount}
             </Button>

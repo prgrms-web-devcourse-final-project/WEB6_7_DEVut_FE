@@ -1,7 +1,11 @@
+import Skeleton from "react-loading-skeleton";
+
 export default function ProductImageCarouselSkeleton() {
   return (
     <div className="w-full">
-      <div className="bg-content-gray aspect-square w-full animate-pulse rounded-xl md:max-h-[520px]" />
+      <div className="aspect-square w-full md:max-h-[520px]">
+        <Skeleton className="block h-full w-full rounded-xl" />
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { useMe } from "@/features/auth/hooks/useMe";
 export default function Sidebar() {
   const { data: user } = useMe();
   return (
-    <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 rounded-md pt-2 pb-2 md:flex">
+    <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 overflow-visible rounded-md pt-2 pb-2 md:flex">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
         <Image
           src={BBLogoBackground}

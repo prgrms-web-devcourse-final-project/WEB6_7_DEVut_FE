@@ -1,8 +1,8 @@
 import ContentContainer from "@/components/common/ContentContainer";
 import DelayPopularProducts from "@/components/home/DelayPopularProducts";
-import LivePopularProducts from "@/components/home/LivePopularProducts";
 import HomeBanner from "@/components/home/HomeBanner";
 import { getDelayHotProducts, getLiveHotProducts } from "@/features/product/api/product.server.api";
+import LivePopularProductsSection from "@/components/home/LivePopularProductsSection";
 
 import SocialLoginSuccessHandler from "@/components/auth/SocialLoginSuccessHandler";
 
@@ -18,7 +18,7 @@ export default async function Home() {
     <ContentContainer bordered={false} className="pt-5">
       <SocialLoginSuccessHandler />
       <HomeBanner />
-      <LivePopularProducts />
+      <LivePopularProductsSection liveHotProducts={liveHotProducts} />
       <DelayPopularProducts />
     </ContentContainer>
   );
