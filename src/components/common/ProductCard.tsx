@@ -13,6 +13,7 @@ import BizzAmount from "./BizzAmount";
 import ProductStatus from "./ProductStatus";
 
 import test from "@/assets/images/auction/auctioneer.svg";
+import WrapperImage from "./WrapperImage";
 
 export default function ProductCard({
   data,
@@ -28,7 +29,7 @@ export default function ProductCard({
   return (
     <Link href={data.href} className={twMerge("relative cursor-pointer", className)}>
       <button
-        className="absolute top-4 left-4 z-20 transition-transform hover:scale-105 active:scale-90"
+        className="absolute top-5 left-5 z-20 transition-transform hover:scale-105 active:scale-90"
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();
@@ -45,7 +46,7 @@ export default function ProductCard({
 
       <div className="flex h-full w-full flex-col rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
         <div className="relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2">
-          <BaseImage src={test} alt={data.title} />
+          <WrapperImage src={test} alt={data.title} />
 
           {data.badge && (
             <div className="absolute top-3 right-3 z-10">
