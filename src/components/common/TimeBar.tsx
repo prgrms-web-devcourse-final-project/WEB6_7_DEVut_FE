@@ -17,7 +17,6 @@ const timeBarCva = cva(
       auctionType: {
         LIVE: "",
         DELAYED: "",
-        ALL: "",
       },
     },
     compoundVariants: [
@@ -51,26 +50,31 @@ interface TimeBarProps {
 }
 
 export function TimeBar({ context, auctionType, time, label }: TimeBarProps) {
-  const [remainMs, setRemainMs] = useState(() => {
-    return new Date(time).getTime() - Date.now();
-  });
+  const [remainMs, setRemainMs] = useState<number | null>(null);
 
   useEffect(() => {
     const target = new Date(time).getTime();
 
-    const timer = setInterval(() => {
+    const update = () => {
       setRemainMs(target - Date.now());
-    }, 1000);
+    };
+
+    update();
+    const timer = setInterval(update, 1000);
 
     return () => clearInterval(timer);
   }, [time]);
 
+  const displayAuctionType = (auctionType === "ALL" ? "DELAYED" : auctionType) as
+    | "LIVE"
+    | "DELAYED";
+
   return (
-    <div className={timeBarCva({ context, auctionType })}>
+    <div className={timeBarCva({ context, auctionType: displayAuctionType })}>
       <Clock size={16} className="text-custom-dark-brown" />
       <span>
         {label && <span className="mr-1">{label}</span>}
-        {delayAuctionformatRemain(remainMs)}
+        {remainMs === null ? "— — : — — : — —" : delayAuctionformatRemain(remainMs)}
       </span>
     </div>
   );

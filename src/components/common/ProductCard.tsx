@@ -8,7 +8,6 @@ import { twMerge } from "tailwind-merge";
 import fullStar from "@/assets/common/fullStar.svg";
 import emptyStar from "@/assets/common/emptyStar.svg";
 
-import BaseImage from "./BaseImage";
 import BizzAmount from "./BizzAmount";
 import ProductStatus from "./ProductStatus";
 
@@ -46,7 +45,7 @@ export default function ProductCard({
 
       <div className="flex h-full w-full flex-col rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
         <div className="relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2">
-          <WrapperImage src={test} alt={data.title} />
+          <WrapperImage src={data.image ?? test} alt={data.title} />
 
           {data.badge && (
             <div className="absolute top-3 right-3 z-10">
