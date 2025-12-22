@@ -7,7 +7,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Sidebar />
       <div className="flex w-full flex-col">
         <MobileHeader />
-        <div className="h-fit min-h-screen w-full overflow-hidden rounded-md pt-14 md:pt-0">
+        <div className="h-fit min-h-screen w-full overflow-x-visible overflow-y-hidden rounded-md pt-14 md:pt-0">
           {children}
         </div>
       </div>

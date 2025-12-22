@@ -21,7 +21,7 @@ export default function MobileHeader() {
 
   return (
     <>
-      <div className="border-border-sub2 bg-content-area fixed top-0 left-0 z-30 flex w-full items-center justify-between border-b px-4 py-3 md:hidden">
+      <div className="border-border-sub2 bg-content-area fixed top-0 left-0 z-30 flex w-full items-center justify-between px-4 py-3 md:hidden">
         <div className="flex items-center gap-3">
           <button onClick={() => setOpen(true)} className="text-2xl font-bold">
             <TextAlignJustify />
@@ -56,7 +56,7 @@ export default function MobileHeader() {
                 className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
               >
                 <Image src={item.icon} alt={item.label} width={24} height={24} />
-                <span className="text-base font-medium">{item.label}</span>
+                <span className="ml-2 text-base font-medium">{item.label}</span>
               </Link>
             ))}
 
@@ -71,7 +71,7 @@ export default function MobileHeader() {
                 width={24}
                 height={24}
               />
-              <span className="text-base font-medium">{me ? "내정보" : "로그인"}</span>
+              <span className="ml-2 text-base font-medium">{me ? "내정보" : "로그인"}</span>
             </Link>
           </div>
 
@@ -82,7 +82,7 @@ export default function MobileHeader() {
             className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
           >
             <Image src={sound} alt="소리" width={24} height={24} />
-            <span className="text-base font-medium">사운드</span>
+            <span className="ml-2 text-base font-medium">사운드</span>
           </button>
         </div>
       </div>

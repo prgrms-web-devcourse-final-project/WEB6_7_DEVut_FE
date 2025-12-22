@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { twMerge } from "tailwind-merge";
-import { Tooltip } from "react-tooltip";
+import TooltipPortal from "./TooltipPortal";
 
 interface SideBarItemProps {
   src: StaticImport;
@@ -39,12 +39,9 @@ export default function SideBarItem({ src, path, badgeCount, label, onClose }: S
         </div>
       </Link>
 
-      <Tooltip
+      <TooltipPortal
         id={tooltipId}
-        place="right"
-        delayShow={0}
-        delayHide={0}
-        className="bg-content-area! text-title-main-dark! z-50! p-4! py-3! text-lg! duration-0!"
+        className="bg-content-area! text-title-main-dark! p-4 py-2! text-lg!"
       />
     </>
   );
