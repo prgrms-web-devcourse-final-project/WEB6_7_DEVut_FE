@@ -10,4 +10,5 @@ interface ProductCardType {
     alt: string;
   };
   status?: ProductStatusData;
+  type: AuctionType;
 }

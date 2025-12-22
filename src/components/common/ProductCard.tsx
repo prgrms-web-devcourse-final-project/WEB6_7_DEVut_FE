@@ -62,7 +62,7 @@ export default function ProductCard({
 
         {data.status && (
           <div className="mt-2 mb-3 w-[90%] self-center">
-            <ProductStatus context={context} status={data.status} />
+            <ProductStatus context={context} status={data.status} auctionType={data.type} />
           </div>
         )}
       </div>

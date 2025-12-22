@@ -1,31 +1,76 @@
+"use client";
+
+import { delayAuctionformatRemain } from "@/utils/getRemainingTime";
+import { cva } from "class-variance-authority";
 import { Clock } from "lucide-react";
-import { twMerge } from "tailwind-merge";
+import { useEffect, useState } from "react";
+
+const timeBarCva = cva(
+  "flex h-[33.53px] w-full items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px]",
+  {
+    variants: {
+      context: {
+        CARD: "",
+        MY_BUYING: "",
+        MY_SELLING: "",
+      },
+      auctionType: {
+        LIVE: "",
+        DELAYED: "",
+        ALL: "",
+      },
+    },
+    compoundVariants: [
+      {
+        context: "CARD",
+        auctionType: "LIVE",
+        className: "bg-custom-orange text-title-main",
+      },
+      {
+        context: "CARD",
+        auctionType: "DELAYED",
+        className: "bg-custom-brown text-title-main-dark",
+      },
+      {
+        context: ["MY_BUYING", "MY_SELLING"],
+        className: "bg-custom-brown text-title-main-dark",
+      },
+    ],
+    defaultVariants: {
+      context: "CARD",
+      auctionType: "DELAYED",
+    },
+  }
+);
 
 interface TimeBarProps {
+  context: ProductContext;
+  auctionType: AuctionType;
   time: string;
   label?: string;
-  variant?: "default" | "warning";
-  className?: string;
 }
 
-const variantStyle: Record<NonNullable<TimeBarProps["variant"]>, string> = {
-  default: "bg-custom-brown text-[#4F382A]",
-  warning: "bg-custom-orange text-[#4F382A]",
-};
+export function TimeBar({ context, auctionType, time, label }: TimeBarProps) {
+  const [remainMs, setRemainMs] = useState(() => {
+    return new Date(time).getTime() - Date.now();
+  });
 
-export function TimeBar({ time, label, variant = "default", className }: TimeBarProps) {
+  useEffect(() => {
+    const target = new Date(time).getTime();
+
+    const timer = setInterval(() => {
+      setRemainMs(target - Date.now());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [time]);
+
   return (
-    <div
-      className={twMerge(
-        "flex h-[33.53px] w-full items-center justify-center gap-1 rounded-[3px] border-2 border-[#4F382A] text-[13px]",
-        variantStyle[variant],
-        className
-      )}
-    >
-      <Clock size={16} />
+    <div className={timeBarCva({ context, auctionType })}>
+      <Clock size={16} className="text-custom-dark-brown" />
       <span>
         {label && <span className="mr-1">{label}</span>}
-        {time}
+        {delayAuctionformatRemain(remainMs)}
       </span>
     </div>
   );

@@ -13,8 +13,8 @@ export const productCardMock_LIVE: ProductCardType[] = [
     status: {
       kind: "time",
       time: "2025-09-20 19:00",
-      label: "라이브 시작",
     },
+    type: "LIVE",
   },
   {
     id: 102,
@@ -26,8 +26,8 @@ export const productCardMock_LIVE: ProductCardType[] = [
     status: {
       kind: "time",
       time: "2025-09-20 20:00",
-      label: "라이브 시작",
     },
+    type: "LIVE",
   },
   {
     id: 103,
@@ -39,8 +39,8 @@ export const productCardMock_LIVE: ProductCardType[] = [
     status: {
       kind: "time",
       time: "2025-09-21 18:30",
-      label: "라이브 시작",
     },
+    type: "LIVE",
   },
 
   // ===== 라이브 진행 중 =====
@@ -52,6 +52,7 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/104",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
   {
     id: 105,
@@ -61,6 +62,7 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/105",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
   {
     id: 106,
@@ -70,6 +72,7 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/106",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
   {
     id: 107,
@@ -79,6 +82,7 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/107",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
   {
     id: 108,
@@ -88,6 +92,7 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/108",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
   {
     id: 109,
@@ -97,5 +102,6 @@ export const productCardMock_LIVE: ProductCardType[] = [
     href: "/auction/live/109",
     badge: { image: liveBadge, alt: "라이브 경매" },
     status: { kind: "status", status: "IN_PROGRESS" },
+    type: "LIVE",
   },
 ];
