@@ -54,7 +54,7 @@ export default function LivePopularProducts() {
                 key={product.id}
                 className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]"
               >
-                <ProductCard context="CARD" key={product.id} data={product} />
+                <ProductCard context="CARD" key={product.id} product={product} />
               </div>
             ))}
           </div>

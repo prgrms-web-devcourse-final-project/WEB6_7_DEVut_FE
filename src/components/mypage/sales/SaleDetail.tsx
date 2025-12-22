@@ -36,7 +36,7 @@ export default function SaleDetail() {
 
       <ProductsGrid>
         {productCardMock_MY_SELLING.map(product => (
-          <ProductCard context="MY_SELLING" key={product.id} data={product} />
+          <ProductCard context="MY_SELLING" key={product.id} product={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

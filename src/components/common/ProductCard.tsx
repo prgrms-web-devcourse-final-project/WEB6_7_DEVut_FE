@@ -15,18 +15,18 @@ import test from "@/assets/images/auction/auctioneer.svg";
 import WrapperImage from "./WrapperImage";
 
 export default function ProductCard({
-  data,
+  product,
   context,
   className,
 }: {
-  data: ProductCardType;
+  product: ProductCardType;
   context: ProductContext;
   className?: string;
 }) {
-  const [star, setStar] = useState<boolean>(!!data.isWish);
+  const [star, setStar] = useState<boolean>(!!product.isWish);
 
   return (
-    <Link href={data.href} className={twMerge("relative cursor-pointer", className)}>
+    <Link href={product.href} className={twMerge("relative cursor-pointer", className)}>
       <button
         className="absolute top-5 left-5 z-20 transition-transform hover:scale-105 active:scale-90"
         onClick={e => {
@@ -45,26 +45,28 @@ export default function ProductCard({
 
       <div className="flex h-full w-full flex-col rounded-md border-2 border-[#4F382A] bg-[#FDF6E9] shadow-[1.5px_1.5px_0px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.01] active:scale-[0.99]">
         <div className="relative aspect-214/134 w-full overflow-hidden rounded-[3px] p-2">
-          <WrapperImage src={data.image ?? test} alt={data.title} />
+          <WrapperImage src={product.image ?? test} alt={product.title} />
 
-          {data.badge && (
+          {product.badge && (
             <div className="absolute top-3 right-3 z-10">
-              <Image src={data.badge.image} alt={data.badge.alt} />
+              <Image src={product.badge.image} alt={product.badge.alt} />
             </div>
           )}
         </div>
 
-        <div className="text-title-main-dark mt-2 flex w-full flex-col px-2">
-          <p className="text-[12px] opacity-70">입찰가</p>
-          <BizzAmount amount={1000000} className="text-custom-orange-dark font-bold" />
-          <p className="text-[14px]">{data.title}</p>
-        </div>
-
-        {data.status && (
-          <div className="mt-2 mb-3 w-[90%] self-center">
-            <ProductStatus context={context} status={data.status} auctionType={data.type} />
+        <div className="flex flex-1 flex-col px-2">
+          <div className="text-title-main-dark mt-2">
+            <p className="text-[12px] opacity-70">입찰가</p>
+            <BizzAmount amount={product.amount} className="text-custom-orange-dark font-bold" />
+            <p className="mt-2 line-clamp-2 min-h-10 text-[14px] leading-snug">{product.title}</p>
           </div>
-        )}
+
+          {product.status && (
+            <div className="mt-auto mb-3 w-[98%] self-center">
+              <ProductStatus context={context} status={product.status} auctionType={product.type} />
+            </div>
+          )}
+        </div>
       </div>
     </Link>
   );
