@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 interface ConditionOption {
   value: ItemCondition;
   label: string;
@@ -33,7 +31,7 @@ export default function ItemStatusRadio({
   setCondition,
 }: {
   condition: ItemCondition;
-  setCondition: Dispatch<SetStateAction<ItemCondition>>;
+  setCondition: (value: ItemCondition) => void;
 }) {
   return (
     <>

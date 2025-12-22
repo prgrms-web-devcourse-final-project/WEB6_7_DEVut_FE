@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -19,7 +19,9 @@ import Toast, { ToastType } from "@/components/common/Toast";
 export default function LoginPage() {
   return (
     <>
-      <LoginReasonHandler />
+      <Suspense fallback={null}>
+        <LoginReasonHandler />
+      </Suspense>
       <LoginForm />
     </>
   );
