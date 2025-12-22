@@ -47,6 +47,10 @@ function LoginReasonHandler() {
       case "refresh_failed":
         notify("인증이 만료되었습니다. 다시 로그인해주세요.", "ERROR");
         break;
+
+      case "social_failed":
+        notify("소셜 로그인에 실패했습니다.", "ERROR");
+        break;
     }
   }, [searchParams]);
 
@@ -83,10 +87,15 @@ function LoginForm() {
       }
     );
   };
-  const kakaoLogin = () =>
-    (window.location.href = "http://localhost:8080/oauth2/authorization/kakao");
-  const naverLogin = () => {};
-  const googleLogin = () => {};
+  const kakaoLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+  };
+  const naverLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  };
+  const googleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
   return (
     <AuthForm>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">

@@ -4,6 +4,8 @@ import LivePopularProducts from "@/components/home/LivePopularProducts";
 import HomeBanner from "@/components/home/HomeBanner";
 import { getDelayHotProducts, getLiveHotProducts } from "@/features/product/api/product.server.api";
 
+import SocialLoginSuccessHandler from "@/components/auth/SocialLoginSuccessHandler";
+
 export default async function Home() {
   const [liveHotProducts, delayHotProducts] = await Promise.all([
     getLiveHotProducts(),
@@ -14,6 +16,7 @@ export default async function Home() {
   console.log("일반 인기 상품:", delayHotProducts);
   return (
     <ContentContainer bordered={false} className="pt-5">
+      <SocialLoginSuccessHandler />
       <HomeBanner />
       <LivePopularProducts />
       <DelayPopularProducts />
