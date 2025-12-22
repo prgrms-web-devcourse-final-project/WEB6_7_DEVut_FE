@@ -8,6 +8,9 @@ export function useSignOut() {
     mutationFn: logout,
     onSuccess: () => {
       qc.setQueryData(["me"], null);
+      qc.removeQueries({
+        queryKey: ["me"],
+      });
     },
   });
 }
