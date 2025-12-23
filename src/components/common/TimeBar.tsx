@@ -68,13 +68,18 @@ export function TimeBar({ context, auctionType, time, label }: TimeBarProps) {
   const displayAuctionType = (auctionType === "ALL" ? "DELAYED" : auctionType) as
     | "LIVE"
     | "DELAYED";
+  const isEnded = remainMs !== null && remainMs <= 0;
 
   return (
     <div className={timeBarCva({ context, auctionType: displayAuctionType })}>
       <Clock size={16} className="text-custom-dark-brown" />
       <span>
         {label && <span className="mr-1">{label}</span>}
-        {remainMs === null ? "— — : — — : — —" : delayAuctionformatRemain(remainMs)}
+        {remainMs === null
+          ? "— — : — — : — —"
+          : isEnded
+            ? "마감"
+            : delayAuctionformatRemain(remainMs)}
       </span>
     </div>
   );

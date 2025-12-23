@@ -54,6 +54,7 @@ export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => 
   };
 
   switch (item.auctionStatus) {
+    case "BEFORE_BIDDING":
     case "IN_PROGRESS":
       return {
         ...base,

@@ -9,11 +9,12 @@ import { statusMapping } from "@/utils/product";
 import { MessageCircle, SquarePen, Star } from "lucide-react";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
-import { BiddingSectionModal } from "./BiddingSectionModal";
 import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
 import dynamic from "next/dynamic";
 import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
+import DelayedBidSection from "./DelayedBidSection";
+import DelayedEndTimer from "./DelayedEndTimer";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -98,14 +99,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   </>
                 )}
 
-                {product?.type === "DELAYED" && (
-                  <>
-                    <div className="text-title-sub font-bold">마감 시간</div>
-                    <div className="text-title-main-dark">
-                      {formatDateTime(product?.endTime || "")}
-                    </div>
-                  </>
-                )}
+                {product?.type === "DELAYED" && <DelayedEndTimer endTime={product?.endTime} />}
               </div>
             </div>
           </div>
@@ -137,23 +131,16 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </>
             )}
 
-            {/* 지연(일반) */}
+            {/* 지연(일반), 본인이 등록한 물건일 때 disable */}
             {product?.type === "DELAYED" && (
-              <>
-                <BiddingSectionModal
-                  isOpen={isBidOpen}
-                  onClose={() => setIsBidOpen(false)}
-                  currentBid={1000000}
-                  minBid={1000000}
-                  onConfirmBid={() => {}}
-                />
-                <Button
-                  className="bg-custom-brown flex-1 text-white"
-                  onClick={() => setIsBidOpen(true)}
-                >
-                  입찰하기
-                </Button>
-              </>
+              <DelayedBidSection
+                isOpen={isBidOpen}
+                modalToggle={(bool: boolean) => setIsBidOpen(bool)}
+                currentBid={product.currentPrice}
+                user={me}
+                sellerId={sellerId}
+                auctionStatus={product.auctionStatus}
+              />
             )}
 
             {me?.id === sellerId ? (
