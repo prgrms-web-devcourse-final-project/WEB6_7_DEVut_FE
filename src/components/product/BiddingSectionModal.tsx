@@ -12,7 +12,8 @@ interface BiddingSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentBid: number;
-  onConfirmBid: (amount: number) => void;
+  onConfirmBid: (amount: BidDelayProductRequest) => void;
+  isPending: boolean;
 }
 
 export const BiddingSectionModal = ({
@@ -20,18 +21,20 @@ export const BiddingSectionModal = ({
   onClose,
   currentBid,
   onConfirmBid,
+  isPending,
 }: BiddingSectionModalProps) => {
   const unit = getBidUnit(currentBid);
   const minBid = currentBid + unit;
-  const [bidAmount, setBidAmount] = useState(minBid);
+  const [bidPrice, setBidPrice] = useState(minBid);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleConfirm = () => {
-    if (bidAmount < minBid)
+    if (bidPrice < minBid)
       return notify(`최소 입찰가는 ${minBid.toLocaleString()}원입니다.`, "INFO");
 
-    onConfirmBid(bidAmount);
+    onConfirmBid({ bidPrice });
+    setIsConfirmOpen(false);
   };
 
   if (!isOpen) return null;
@@ -41,7 +44,7 @@ export const BiddingSectionModal = ({
       <div className="flex justify-center">
         <button
           className="flex cursor-pointer items-center justify-center text-gray-500 hover:text-gray-700"
-          onClick={onClose}
+          onClick={isPending ? undefined : onClose}
         >
           <ChevronDown size={24} />
         </button>
@@ -57,24 +60,24 @@ export const BiddingSectionModal = ({
 
         <PriceInput
           placeholder="최고가 이상으로 입찰해주세요."
-          onChange={setBidAmount}
-          value={bidAmount}
+          onChange={setBidPrice}
+          value={bidPrice}
         />
 
         <Button
           className="bg-custom-orange w-full cursor-pointer rounded py-2 text-white hover:scale-100 disabled:bg-gray-300"
-          disabled={bidAmount < minBid}
+          disabled={bidPrice < minBid || isPending}
           onClick={() => {
             setIsConfirmOpen(true);
           }}
         >
-          입찰 확정
+          {isPending ? "입찰 중..." : "입찰 확정"}
         </Button>
 
         <ConfirmModal
           isOpen={isConfirmOpen}
           title="입찰 확인"
-          message={`정말 ${bidAmount.toLocaleString()} Bizz으로 입찰하시겠습니까?`}
+          message={`정말 ${bidPrice.toLocaleString()} Bizz으로 입찰하시겠습니까?`}
           confirmText="입찰"
           cancelText="취소"
           onConfirm={handleConfirm}

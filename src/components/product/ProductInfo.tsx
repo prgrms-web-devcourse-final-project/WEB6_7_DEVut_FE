@@ -34,7 +34,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   // 추후 리팩토링 (DTO 통합)
   const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
   const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
-  const price = product?.type === "LIVE" ? 1000000 : product?.currentPrice;
+  const currentPrice = product?.type === "LIVE" ? 1000000 : product?.currentPrice;
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -61,7 +61,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
               <div className="mt-2 flex items-end justify-between">
                 <BizzAmount
-                  amount={price || 100000}
+                  amount={currentPrice || 100000}
                   iconSize="lg"
                   className="text-title-main-dark text-2xl font-bold md:text-3xl"
                 />
@@ -84,11 +84,20 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   {product?.deliveryInclude ? "포함" : "미포함"}
                 </div>
 
-                <div className="text-title-sub font-bold">지역</div>
-                <div className="text-title-main-dark">{product?.region}</div>
+                <div className="text-title-sub font-bold">장소</div>
+                <div className="text-title-main-dark">{`${product?.region}`}</div>
 
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
+
+                {product?.type === "DELAYED" && product.startPrice && (
+                  <>
+                    <div className="text-title-sub font-bold">시작가</div>
+                    <div className="text-title-main-dark">
+                      {product?.startPrice.toLocaleString()}
+                    </div>
+                  </>
+                )}
 
                 {product?.type === "LIVE" && (
                   <>
@@ -134,6 +143,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             {/* 지연(일반), 본인이 등록한 물건일 때 disable */}
             {product?.type === "DELAYED" && (
               <DelayedBidSection
+                productId={product.id}
                 isOpen={isBidOpen}
                 modalToggle={(bool: boolean) => setIsBidOpen(bool)}
                 currentBid={product.currentPrice}
