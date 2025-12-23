@@ -3,9 +3,12 @@
 import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
+import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
+  const { data: history } = useHistoryPayments();
   const [status, setStatus] = useState("전체");
+  console.log(history)
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
