@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 const toNumberString = (s: string) => s.replace(/[^\d]/g, "");
@@ -14,13 +15,17 @@ type Props = {
 };
 
 export default function PriceInput({ placeholder, className = "", value, onChange }: Props) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div className="relative flex items-center">
       <input
         type="text"
         inputMode="numeric"
         placeholder={placeholder}
-        value={toComma(value)}
+        value={isFocused ? (value ?? "") : toComma(value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         onChange={e => {
           const digits = toNumberString(e.target.value);
           onChange(digits ? Number(digits) : 0);

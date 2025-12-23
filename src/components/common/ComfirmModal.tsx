@@ -27,9 +27,14 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black opacity-30" onClick={onCancel} />
+
       <div className="z-10 w-[90%] max-w-sm rounded-lg bg-white p-6 shadow-lg">
-        {title && <h3 className="mb-2 text-center text-lg font-semibold">{title}</h3>}
-        <p className="mb-4 text-center text-base">{message}</p>
+        {title && (
+          <h3 className="text-title-main-dark mb-2 text-center text-lg font-semibold">{title}</h3>
+        )}
+
+        <p className="text-title-sub2 mb-4 text-center">{message}</p>
+
         <div className="flex justify-between gap-3">
           <Button
             className="bg-custom-orange flex-1 rounded border-none py-2 text-white"
@@ -37,7 +42,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           >
             {confirmText}
           </Button>
-          <Button className="bg-content-gray flex-1 rounded border-none py-2" onClick={onCancel}>
+
+          <Button
+            className="bg-content-gray text-title-main-dark flex-1 rounded border-none py-2"
+            onClick={onCancel}
+          >
             {cancelText}
           </Button>
         </div>
