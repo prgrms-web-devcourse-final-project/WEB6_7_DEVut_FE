@@ -7,7 +7,7 @@ import { productCardMock_DELAYED } from "@/features/product/mock/productCard.del
 export default function MyWish() {
   return (
     <>
-      <ContentContainer className="flex min-h-[370px] flex-col justify-between gap-3">
+      <ContentContainer className="flex min-h-[370px] flex-col justify-between gap-3 border-none">
         <Title size="lg" className="px-2">
           찜 목록
         </Title>

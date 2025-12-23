@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateMe } from "../api/updateMe.api";
 import Toast from "@/components/common/Toast";
 
-export function useUpdateMe() {
+export const useUpdateMe = () => {
   const qc = useQueryClient();
 
   return useMutation({
@@ -18,4 +18,4 @@ export function useUpdateMe() {
       Toast({ message, type: "ERROR" });
     },
   });
-}
+};

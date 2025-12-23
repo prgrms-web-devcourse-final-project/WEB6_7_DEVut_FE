@@ -11,6 +11,7 @@
   "dependencies": {
     "@radix-ui/react-slider": "^1.3.6",
     "@tanstack/react-query": "^5.90.12",
+    "@tosspayments/payment-widget-sdk": "^0.12.1",
     "axios": "^1.13.2",
     "class-variance-authority": "^0.7.1",
     "date-fns": "^4.1.0",
