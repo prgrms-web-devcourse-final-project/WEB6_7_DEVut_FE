@@ -40,14 +40,14 @@ export const BiddingSectionModal = ({
     <div className="border-border-sub fixed inset-x-0 bottom-0 z-50 border-t bg-white px-6 pt-2 pb-8 shadow-lg">
       <div className="flex justify-center">
         <button
-          className="flex cursor-pointer items-center justify-center p-2 text-gray-500 hover:text-gray-700"
+          className="flex cursor-pointer items-center justify-center text-gray-500 hover:text-gray-700"
           onClick={onClose}
         >
           <ChevronDown size={24} />
         </button>
       </div>
 
-      <div className="mx-auto max-w-[1440px] space-y-3">
+      <div className="mx-auto max-w-[1440px] space-y-5">
         <h2 className="text-title-main text-lg">입찰하기</h2>
 
         <div className="space-y-1">
