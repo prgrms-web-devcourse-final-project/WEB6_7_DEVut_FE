@@ -1,29 +1,28 @@
-
 import StatusBar from "./StatusBar";
 import { TimeBar } from "./TimeBar";
 
 interface ProductStatusProps {
   context: ProductContext;
   status: ProductStatusData;
+  auctionType: AuctionType;
 }
 
-export default function ProductStatus({ context, status }: ProductStatusProps) {
-  if (status.kind === "time") {
-    return <TimeBar time={status.time} label={status.label ?? ""} variant="warning" />;
-  }
-
-  return (
-    <StatusBar
-      status={status.status ?? "BEFORE_BIDDING"}
-      label={getStatusLabel(context, status.status)}
-    />
-  );
-}
-
-function getStatusLabel(context: ProductContext, status: AuctionStatus): string {
+function getStatusLabel(
+  context: ProductContext,
+  status: AuctionStatus,
+  auctionType?: AuctionType
+): string {
   if (context === "CARD") {
-    if (status === "IN_PROGRESS") return "라이브 진행 중";
-    return "라이브 종료";
+    const isLive = auctionType === "LIVE";
+
+    if (isLive) {
+      if (status === "BEFORE_BIDDING") return "라이브 예정";
+      if (status === "IN_PROGRESS") return "라이브 진행 중";
+      return "라이브 종료";
+    }
+
+    if (status === "IN_PROGRESS") return "경매 진행 중";
+    return "경매 종료";
   }
 
   if (context === "MY_SELLING") {
@@ -45,4 +44,26 @@ function getStatusLabel(context: ProductContext, status: AuctionStatus): string 
     PURCHASE_CONFIRMED: "구매 확정",
     FAILED: "경매 종료",
   }[status];
+}
+
+export default function ProductStatus({ context, status, auctionType }: ProductStatusProps) {
+  if (status.kind === "time" && auctionType === "DELAYED") {
+    return (
+      <TimeBar
+        context={context}
+        auctionType={auctionType}
+        time={status.time}
+        label={status.label}
+      />
+    );
+  }
+
+  // 그 외는 전부 StatusBar
+  const auctionStatus = status.kind === "status" ? status.status : "BEFORE_BIDDING";
+
+  const label = getStatusLabel(context, auctionStatus, auctionType);
+
+  return (
+    <StatusBar context={context} auctionType={auctionType} status={auctionStatus} label={label} />
+  );
 }

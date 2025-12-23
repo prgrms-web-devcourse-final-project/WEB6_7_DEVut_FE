@@ -12,7 +12,7 @@ import { useState } from "react";
 
 interface DetailSearchProps {
   onClose: () => void;
-  onSearch: (detailParams: SearchParams) => void;
+  onSearch: (detailParams: GetProductsParams) => void;
 }
 
 export default function DetailSearch({ onClose, onSearch }: DetailSearchProps) {

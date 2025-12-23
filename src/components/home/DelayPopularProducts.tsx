@@ -10,7 +10,7 @@ export default function DelayPopularProducts() {
       <Title>일반 인기 상품</Title>
       <ProductsGrid>
         {productCardMock_DELAYED.map(product => (
-          <ProductCard context="CARD" key={product.id} data={product} />
+          <ProductCard context="CARD" key={product.id} product={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

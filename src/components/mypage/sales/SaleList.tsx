@@ -34,7 +34,7 @@ export default function SaleList() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
           {shownProducts.map(product => (
-            <ProductCard context="CARD" key={product.id} data={product} />
+            <ProductCard context="CARD" key={product.id} product={product} />
           ))}
         </ProductsGrid>
 

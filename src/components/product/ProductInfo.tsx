@@ -2,26 +2,38 @@
 
 import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
-import { useLiveProductDetail } from "@/features/product/hooks/useLiveProductDetail";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { MessageCircle, Star } from "lucide-react";
-import ProductImageCarousel from "./ProductImageCarousel";
+import { MessageCircle, SquarePen, Star } from "lucide-react";
 import { formatDateTime } from "@/utils/date";
 import { useState } from "react";
 import { BiddingSectionModal } from "./BiddingSectionModal";
+import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
-export default function ProductInfo({ productId }: { productId: string }) {
-  const { data: product, isLoading, isError } = useLiveProductDetail(Number(productId));
+import dynamic from "next/dynamic";
+import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
 
-  const pathname = usePathname();
-  const isLivePath = pathname.split("/")[2] === "live";
+const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
+  ssr: false,
+  loading: () => <ProductImageCarouselSkeleton />,
+});
 
+interface ProductInfo {
+  initialProduct: ProductDetail;
+  me: User | null;
+}
+
+export default function ProductInfo({ initialProduct, me }: ProductInfo) {
+  const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
-
   const [isBidOpen, setIsBidOpen] = useState(false);
+
+  // 추후 리팩토링 (DTO 통합)
+  const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
+  const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
+  const price = product?.type === "LIVE" ? 1000000 : product?.currentPrice;
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -31,7 +43,7 @@ export default function ProductInfo({ productId }: { productId: string }) {
       <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-stretch">
         <ProductImageCarousel images={product?.images} className="w-full" />
 
-        <div className="flex flex-col gap-5 md:h-full md:justify-between">
+        <div className="flex flex-col gap-5 md:h-full">
           <div className="flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
               <h1 className="text-title-main-dark text-2xl leading-snug font-bold md:text-3xl">
@@ -48,12 +60,12 @@ export default function ProductInfo({ productId }: { productId: string }) {
 
               <div className="mt-2 flex items-end justify-between">
                 <BizzAmount
-                  amount={1000000}
+                  amount={price || 100000}
                   iconSize="lg"
                   className="text-title-main-dark text-2xl font-bold md:text-3xl"
                 />
 
-                <Button size="sm" onClick={() => route.push(`/product/live/${productId}/bidsLog`)}>
+                <Button size="sm" onClick={() => route.push(`${path}/bidsLog`)}>
                   경매 기록
                 </Button>
               </div>
@@ -77,12 +89,20 @@ export default function ProductInfo({ productId }: { productId: string }) {
                 <div className="text-title-sub font-bold">직거래</div>
                 <div className="text-title-main-dark">{product?.preferredPlace}</div>
 
-                {/* 라이브, 일반 분기 나중에 */}
-                {isLivePath && (
+                {product?.type === "LIVE" && (
                   <>
-                    <div className="text-title-sub font-bold">경매 시작</div>
+                    <div className="text-title-sub font-bold">라이브 시작</div>
                     <div className="text-title-main-dark">
                       {formatDateTime(product?.liveTime || "")}
+                    </div>
+                  </>
+                )}
+
+                {product?.type === "DELAYED" && (
+                  <>
+                    <div className="text-title-sub font-bold">마감 시간</div>
+                    <div className="text-title-main-dark">
+                      {formatDateTime(product?.endTime || "")}
                     </div>
                   </>
                 )}
@@ -90,12 +110,12 @@ export default function ProductInfo({ productId }: { productId: string }) {
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-3">
             <Button className="flex-1" leftIcon={<Star />}>
               찜 {product?.likeCount}
             </Button>
             {/* 라이브 */}
-            {/* {isLivePath && (
+            {product?.type === "LIVE" && (
               <>
                 {product?.auctionStatus === "BEFORE_BIDDING" && (
                   <Button className="flex-1" disabled>
@@ -115,26 +135,40 @@ export default function ProductInfo({ productId }: { productId: string }) {
                   </Button>
                 )}
               </>
-            )} */}
+            )}
 
             {/* 지연(일반) */}
-            <BiddingSectionModal
-              isOpen={isBidOpen}
-              onClose={() => setIsBidOpen(false)}
-              currentBid={1000000}
-              minBid={1000000}
-              onConfirmBid={() => {}}
-            />
-            <Button
-              className="bg-custom-brown flex-1 text-white"
-              onClick={() => setIsBidOpen(true)}
-            >
-              입찰하기
-            </Button>
+            {product?.type === "DELAYED" && (
+              <>
+                <BiddingSectionModal
+                  isOpen={isBidOpen}
+                  onClose={() => setIsBidOpen(false)}
+                  currentBid={1000000}
+                  minBid={1000000}
+                  onConfirmBid={() => {}}
+                />
+                <Button
+                  className="bg-custom-brown flex-1 text-white"
+                  onClick={() => setIsBidOpen(true)}
+                >
+                  입찰하기
+                </Button>
+              </>
+            )}
 
-            <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
-              대화하기
-            </Button>
+            {me?.id === sellerId ? (
+              <Button
+                className="flex-1"
+                leftIcon={<SquarePen size={18} />}
+                onClick={() => route.push(`${path}/modify`)}
+              >
+                수정하기
+              </Button>
+            ) : (
+              <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+                대화하기
+              </Button>
+            )}
           </div>
         </div>
       </div>

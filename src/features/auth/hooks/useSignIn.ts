@@ -1,14 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signin } from "../api/auth.api";
+import { login } from "../api/login.api";
+// import { useAuthStore } from "../model/auth.store";
+import { getMe } from "../api/auth.api"; // 또는 /me 호출 함수
 
 export function useSignIn() {
   const qc = useQueryClient();
+  // const setUser = useAuthStore(s => s.setUser);
+  // const setHydrated = useAuthStore(s => s.setHydrated);
 
   return useMutation({
-    mutationFn: signin,
+    mutationFn: login,
     onSuccess: async () => {
-      // 로그인 성공하면 me를 다시 받아오게 해서 화면 갱신
-      await qc.invalidateQueries({ queryKey: ["me"] });
+      qc.invalidateQueries({ queryKey: ["me"] });
     },
   });
 }

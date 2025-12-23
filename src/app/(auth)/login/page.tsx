@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 import AuthForm from "@/components/auth/AuthForm";
@@ -19,9 +19,44 @@ import Toast, { ToastType } from "@/components/common/Toast";
 export default function LoginPage() {
   return (
     <>
+      <Suspense fallback={null}>
+        <LoginReasonHandler />
+      </Suspense>
       <LoginForm />
     </>
   );
+}
+
+function LoginReasonHandler() {
+  const searchParams = useSearchParams();
+
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+
+    if (!reason) return;
+
+    switch (reason) {
+      case "auth_required":
+        notify("로그인이 필요합니다.", "ERROR");
+        break;
+
+      case "session_expired":
+        notify("세션이 만료되었습니다. 다시 로그인해주세요.", "ERROR");
+        break;
+
+      case "refresh_failed":
+        notify("인증이 만료되었습니다. 다시 로그인해주세요.", "ERROR");
+        break;
+
+      case "social_failed":
+        notify("소셜 로그인에 실패했습니다.", "ERROR");
+        break;
+    }
+  }, [searchParams]);
+
+  return null;
 }
 
 function LoginForm() {
@@ -44,18 +79,25 @@ function LoginForm() {
       { email, password },
       {
         onSuccess: data => {
-          notify(`${data.data.userInfo.nickname} 님 어서오세요!`, "SUCCESS");
+          notify(`${data.userInfo.nickname} 님 환영합니다!`, "SUCCESS");
           router.replace("/");
         },
-        onError: (error: any) => {
-          const msg = error?.response?.data?.msg ?? "이메일 또는 비밀번호를 확인해주세요.";
+        onError: () => {
+          const msg = "이메일 또는 비밀번호를 확인해주세요.";
           setErrorMsg(msg);
         },
       }
     );
   };
-
-  const googleLogin = () => {};
+  const kakaoLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+  };
+  const naverLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  };
+  const googleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
   return (
     <AuthForm>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -100,16 +142,16 @@ function LoginForm() {
         <DashDivider label="또는" />
 
         {/* 소셜 로그인 */}
-        <Button type="button" className="shadow-flat bg-yellow-300">
+        <Button onClick={kakaoLogin} type="button" className="shadow-flat bg-yellow-300">
           <Image src={kakao} alt="kakao" className="mr-2" />
           <span>카카오 로그인</span>
         </Button>
 
-        <Button type="button" className="shadow-flat bg-green-500">
+        <Button onClick={naverLogin} type="button" className="shadow-flat bg-green-500">
           <span>N 네이버 로그인</span>
         </Button>
 
-        <Button type="button" className="shadow-flat">
+        <Button onClick={googleLogin} type="button" className="shadow-flat">
           <Image src={google} alt="google" className="mr-2" />
           <span>Google 로그인</span>
         </Button>

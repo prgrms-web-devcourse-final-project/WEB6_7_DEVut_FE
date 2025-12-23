@@ -50,7 +50,7 @@ export default function SearchResult({
         <div className="mt-10">
           <ProductsGrid>
             {cards.map((product, index) => (
-              <ProductCard context="CARD" key={index} data={product} />
+              <ProductCard context="CARD" key={index} product={product} />
             ))}
           </ProductsGrid>
         </div>

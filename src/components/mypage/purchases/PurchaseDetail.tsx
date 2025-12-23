@@ -36,7 +36,7 @@ export default function PurchaseDetail() {
 
       <ProductsGrid>
         {productCardMock_MY_BUYING.map(product => (
-          <ProductCard context="MY_BUYING" key={product.id} data={product} />
+          <ProductCard context="MY_BUYING" key={product.id} product={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

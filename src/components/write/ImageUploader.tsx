@@ -7,8 +7,8 @@ import camera from "@/assets/camera.svg";
 import WrapperImage from "../common/WrapperImage";
 
 interface ImageUploaderProps {
-  files: File[];
-  onChange: (files: File[]) => void;
+  files: (File | string)[];
+  onChange: (files: (File | string)[]) => void;
   max?: number;
 }
 
@@ -22,10 +22,21 @@ export default function ImageUploader({ files, onChange, max = 5 }: ImageUploade
 
   const previews = useMemo(
     () =>
-      files.map(file => ({
-        file,
-        url: URL.createObjectURL(file),
-      })),
+      files.map(file => {
+        if (typeof file === "string") {
+          return {
+            key: file,
+            url: file,
+            isNew: false,
+          };
+        }
+
+        return {
+          key: `${file.name}-${file.lastModified}`,
+          url: URL.createObjectURL(file),
+          isNew: true,
+        };
+      }),
     [files]
   );
 
@@ -46,7 +57,11 @@ export default function ImageUploader({ files, onChange, max = 5 }: ImageUploade
 
   useEffect(() => {
     return () => {
-      previews.forEach(p => URL.revokeObjectURL(p.url));
+      previews.forEach(p => {
+        if (p.isNew) {
+          URL.revokeObjectURL(p.url);
+        }
+      });
     };
   }, [previews]);
 
@@ -80,7 +95,7 @@ export default function ImageUploader({ files, onChange, max = 5 }: ImageUploade
       {previews.length > 0 && (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {previews.map((p, idx) => (
-            <div key={p.url} className="relative">
+            <div key={p.key} className="relative">
               <WrapperImage src={p.url} rounded="lg" className="h-[120px] w-full object-cover" />
 
               <button

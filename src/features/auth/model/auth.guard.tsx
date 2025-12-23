@@ -1,4 +1,3 @@
-// src/features/auth/model/auth.guard.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -7,7 +6,7 @@ import { useMe } from "../hooks/useMe";
 import Toast, { ToastType } from "@/components/common/Toast";
 const notify = (message: string, type: ToastType) => Toast({ message, type });
 
-//  로그인 필요한 페이지용
+// 로그인 필요한 페이지용
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { data, isLoading } = useMe();
   const router = useRouter();

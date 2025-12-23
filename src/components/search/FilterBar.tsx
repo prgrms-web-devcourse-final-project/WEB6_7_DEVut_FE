@@ -1,8 +1,8 @@
 import { getCategoryLabel } from "@/utils/category";
 
 type FilterBarProps = {
-  params: SearchParams;
-  onRemove: (key: keyof SearchParams) => void;
+  params: GetProductsParams;
+  onRemove: (key: keyof GetProductsParams) => void;
   onReset: () => void;
 };
 

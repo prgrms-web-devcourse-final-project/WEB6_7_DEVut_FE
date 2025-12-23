@@ -16,7 +16,7 @@ export default function WrapperImage({
   className,
 }: WrapperImageProps) {
   return (
-    <div className="border-border-sub2 bg-content-gray shadow-flat h-full w-full rounded-lg border-[1.8px] p-1.5">
+    <div className="border-border-sub2 bg-content-gray h-full w-full rounded-lg border-2">
       <BaseImage src={src} alt={alt} rounded={rounded} className={twMerge("", className)} />
     </div>
   );
