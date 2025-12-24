@@ -6,11 +6,12 @@ import Input from "@/components/common/Input";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useState } from "react";
 import TossPaymentButton from "./TossPaymentButton";
+import PriceInput from "@/components/common/PriceInput";
 
 export default function BizzBalance() {
   const { data: user } = useMe();
 
-  const [chargeBizz, setChargeBizz] = useState<string>("");
+  const [chargeBizz, setChargeBizz] = useState<number>(0);
 
   return (
     <ContentContainer
@@ -27,16 +28,12 @@ export default function BizzBalance() {
 
       {/* 버튼 영역 */}
       <div className="flex w-full max-w-[520px] flex-col justify-end gap-3 md:flex-row md:px-3">
-        <Input
+        <PriceInput
           placeholder="충전 또는 출금할 금액 입력"
           value={chargeBizz}
-          type="text"
-          onChange={e => {
-            const v = e.target.value.replace(/[^0-9]/g, "");
-            setChargeBizz(v);
-          }}
+          onChange={setChargeBizz}
           className="h-9 md:w-full"
-        ></Input>
+        ></PriceInput>
         <TossPaymentButton amount={chargeBizz} user={user} />
       </div>
     </ContentContainer>

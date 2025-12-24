@@ -1,8 +1,7 @@
 "use client";
 
 import { useApprovePayments } from "@/features/payments/hooks/useApprovePayments";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Success() {
