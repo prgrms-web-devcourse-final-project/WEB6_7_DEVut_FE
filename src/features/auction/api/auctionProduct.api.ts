@@ -46,9 +46,9 @@ export const bidDelayProduct = async (body: BidDelayProductRequest, productId: n
     body: JSON.stringify(body),
   });
 
-  if (res.resultCode !== "200") {
-    throw new ApiError(res.resultCode, res.msg);
-  }
+  // if (res.resultCode !== "200") {
+  //   throw new ApiError(res.resultCode, res.msg);
+  // }
 
   return res.data;
 };
