@@ -14,23 +14,6 @@ interface DelayProductsProps {
 }
 
 export default function DelayProducts({ initialDelayProducts }: DelayProductsProps) {
-  // const [category, setCategory] = useState<CategoryKey | null>(null);
-  // const [page, setPage] = useState(initialParams.page);
-  // const params: GetProductsParams = {
-  //   ...initialParams,
-  //   page,
-  //   category: category ?? undefined,
-  // };
-
-  // const {
-  //   data: products,
-  //   isLoading,
-  //   error,
-  // } = useDelayedProducts(params, {
-  //   initialData:
-  //     page === initialParams.page && category === null ? initialDelayProducts : undefined,
-  // });
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
