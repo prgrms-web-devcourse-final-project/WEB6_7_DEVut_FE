@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { useLayoutEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Tooltip as BaseTooltip } from "react-tooltip";
 
 interface TooltipPortalProps {
@@ -11,24 +11,24 @@ interface TooltipPortalProps {
 }
 
 export default function TooltipPortal({ id, place = "right", className }: TooltipPortalProps) {
-  const [container] = useState(() => {
-    if (typeof document === "undefined") return null;
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-    return div;
-  });
+  const [container, setContainer] = useState<HTMLElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setContainer(el);
+
     return () => {
-      if (container) {
-        document.body.removeChild(container);
+      if (el.parentNode === document.body) {
+        document.body.removeChild(el);
       }
     };
-  }, [container]);
+  }, []);
 
   if (!container) return null;
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <BaseTooltip id={id} place={place} className={className} style={{ zIndex: 999999 }} />,
     container
   );
