@@ -28,16 +28,20 @@ export const approvePayments = async (
 };
 
 export const historyPayments = async (): Promise<HistoryPaymentsResponse> => {
-  const res = await ClientApi<HistoryPaymentsResponse>(
-    "/payments/history/api/v1/payments/history?startDate=2025-12-01T00:00:00%2B09:00&endDate=2025-12-31T00:00:00%2B09:00&PaymentStatus=SUCCESS&page=0&size=20",
-    {
-      method: "GET",
-    }
-  );
+  const res = await ClientApi<HistoryPaymentsResponse>("/payments/history", {
+    method: "GET",
+    params: {
+      startDate: "2025-12-01",
+      endDate: "2025-12-31",
+      PaymentStatus: "SUCCESS",
+      page: 0,
+      size: 20,
+    },
+  });
 
-  // if (res.resultCode !== "200") {
-  //   throw new Error(res.msg);
-  // }
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
 
   return res.data;
 };

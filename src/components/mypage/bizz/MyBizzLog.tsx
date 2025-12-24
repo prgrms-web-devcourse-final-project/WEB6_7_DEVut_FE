@@ -8,7 +8,7 @@ import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
   const { data: history } = useHistoryPayments();
   const [status, setStatus] = useState("전체");
-  console.log(history)
+  console.log(history);
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
@@ -26,10 +26,9 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
         <div>잔액</div>
       </div>
       <div className="mt-1 flex flex-col gap-3">
-        <BizzLogCard />
-        <BizzLogCard />
-        <BizzLogCard />
-        <BizzLogCard />
+        {history?.payments.map(log => (
+          <BizzLogCard key={log.paymentId} log={log} />
+        ))}
       </div>
     </div>
   );
