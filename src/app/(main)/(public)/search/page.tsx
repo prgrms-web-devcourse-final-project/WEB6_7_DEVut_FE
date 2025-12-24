@@ -1,5 +1,6 @@
 import ContentContainer from "@/components/common/ContentContainer";
 import SearchPageClient from "@/components/search/SearchPageCliet";
+import { Suspense } from "react";
 
 export default function SearchPage() {
   return (
@@ -9,7 +10,9 @@ export default function SearchPage() {
           <p className="-translate-y-0.5 font-bold">검색</p>
         </div>
 
-        <SearchPageClient />
+        <Suspense fallback={null}>
+          <SearchPageClient />
+        </Suspense>
       </div>
     </ContentContainer>
   );
