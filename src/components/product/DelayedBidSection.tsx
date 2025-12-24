@@ -39,7 +39,7 @@ export default function DelayedBidSection({
       },
       onError: error => {
         modalToggle(true);
-        console.log(error.msg);
+        notify(error.msg, "INFO");
       },
     });
   };
