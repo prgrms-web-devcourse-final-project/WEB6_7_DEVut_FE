@@ -30,12 +30,17 @@ export default function SideBarItem({ src, path, badgeCount, label, onClose }: S
           data-tooltip-id={tooltipId}
           data-tooltip-content={label}
           className={twMerge(
-            `border-border-sub2 flex h-[50px] items-center justify-center border-[3px] p-3 shadow-[2px_2px_0_rgba(0,0,0,0.25)] transition-all active:translate-y-0.5 active:shadow-none`,
+            `border-border-sub2 relative flex h-[50px] items-center justify-center border-[3px] p-3 shadow-[2px_2px_0_rgba(0,0,0,0.25)] transition-all active:translate-y-0.5 active:shadow-none`,
             isActive(path) &&
               `bg-content-area translate-y-0 shadow-[inset_2px_2px_0_rgba(0,0,0,0.25)]`
           )}
         >
           <Image src={src} alt={path} width={22} height={22} />
+          {typeof badgeCount === "number" && badgeCount > 0 && (
+            <span className="bg-custom-red absolute -top-2 -right-2 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-xs leading-none font-bold text-white">
+              {badgeCount > 99 ? "99+" : badgeCount}
+            </span>
+          )}
         </div>
       </Link>
 
