@@ -1,8 +1,10 @@
 import MobileHeader from "@/components/common/MobileHeader";
 import Sidebar from "@/components/common/SideBar";
+import NotificationProvider from "@/providers/NotificationProvider";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
+    <NotificationProvider>
     <div className="flex">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
@@ -11,6 +13,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
       </div>
-    </div>
+    </NotificationProvider>
   );
 }
