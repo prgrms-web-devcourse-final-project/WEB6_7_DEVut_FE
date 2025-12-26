@@ -1,6 +1,6 @@
 "use client";
 
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import { Tooltip as BaseTooltip } from "react-tooltip";
 import { getPortalRoot } from "@/utils/portal";
 
@@ -15,7 +15,7 @@ export default function TooltipPortal({ id, place = "right", className }: Toolti
 
   if (!portalRoot) return null;
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <BaseTooltip id={id} place={place} className={className} style={{ zIndex: 999999 }} />,
     portalRoot
   );

@@ -6,11 +6,18 @@ import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMySell } from "@/features/mypage/hooks/useMySell";
 import { productCardMock_MY_SELLING } from "@/features/product/mock/productCard.mySelling.mock";
+import { myPageCardMapping } from "@/utils/myPageCardMapping";
+import { se } from "date-fns/locale";
 import { useState } from "react";
 
 export default function SaleDetail() {
+  const { data: mySells } = useMySell();
   const [status, setStatus] = useState("전체");
+
+  const newMySells = myPageCardMapping({ card: mySells });
+  const sellItems = newMySells ?? [];
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -35,8 +42,8 @@ export default function SaleDetail() {
       </div>
 
       <ProductsGrid>
-        {productCardMock_MY_SELLING.map(product => (
-          <ProductCard context="MY_SELLING" key={product.id} product={product} />
+        {sellItems.map((product, index) => (
+          <ProductCard context="MY_SELLING" key={index} product={product} />
         ))}
       </ProductsGrid>
       <Pagenation />

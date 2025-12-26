@@ -4,12 +4,17 @@ import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMySell } from "@/features/mypage/hooks/useMySell";
 import { productCardMock_LIVE } from "@/features/product/mock/productCard.live.mock";
+import { myPageCardMapping } from "@/utils/myPageCardMapping";
 import { useEffect, useState } from "react";
 
 export default function SaleList() {
+  const { data: mySells } = useMySell();
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
+
+  const newMySells = myPageCardMapping({ card: mySells });
 
   useEffect(() => {
     const updateCount = () => {
@@ -25,17 +30,21 @@ export default function SaleList() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const shownProducts = expanded
-    ? productCardMock_LIVE
-    : productCardMock_LIVE.slice(0, visibleCount);
+  const sellItems = newMySells ?? [];
+  const shownProducts = expanded ? sellItems : sellItems.slice(0, visibleCount);
+
   return (
     <>
       <Title size="lg">판매중인 목록</Title>
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
-          {shownProducts.map(product => (
-            <ProductCard context="CARD" key={product.id} product={product} />
-          ))}
+          {shownProducts.map((product, index) =>
+            product.type === "LIVE" ? (
+              <ProductCard context="CARD" key={index} product={product} />
+            ) : (
+              ""
+            )
+          )}
         </ProductsGrid>
 
         {productCardMock_LIVE.length > visibleCount && (
