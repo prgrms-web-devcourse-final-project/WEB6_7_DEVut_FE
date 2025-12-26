@@ -97,7 +97,7 @@ export default function MyIntro() {
   return (
     <ContentContainer className="mt-5 flex min-h-[370px] flex-col justify-between">
       <div className="mx-auto flex w-[90%] flex-col gap-10 gap-y-0 sm:w-[80%] md:flex-row md:gap-20">
-        <div className="mx-auto flex min-h-[280px] w-full max-w-[180px] flex-col justify-center gap-6 md:mx-0 md:w-[25%] md:min-w-[130px]">
+        <div className="mx-auto flex min-h-[280px] w-full max-w-[180px] flex-col justify-center gap-6 py-5 md:mx-0 md:w-[25%] md:min-w-[130px]">
           <div className="group relative aspect-square w-full">
             <WrapperImage src={previewImageSrc} alt="profile" />
 
