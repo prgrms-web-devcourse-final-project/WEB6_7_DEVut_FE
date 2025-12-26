@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 type LoginRedirectReason =
   | "auth_required" // 비로그인 상태에서 보호 페이지 접근
-  | "session_expired" // access 만료 + refresh 성공 → 사실상 잘 안 씀
+  | "session_expired" // access 만료 + refresh 성공
   | "refresh_failed"; // refresh 토큰도 만료/무효
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
@@ -12,6 +12,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const AUTH_REQUIRED_PATHS = ["/message", "/mypage", "/notify", "/trade", "/write"];
 const GUEST_ONLY_PATHS = ["/login", "/signup"];
+
+const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -74,10 +76,11 @@ async function handleGuestOnlyRoute(
   // refresh가 "살아있으면" 새 access 받아서 로그인 상태로 보고 메인으로 이동,
   // refresh가 "죽었으면" 쿠키 정리하고 /login 접근 허용
   if (refreshToken) {
-    const newAccess = await requestNewAccessToken(request);
-    if (newAccess) {
+    const newTokens = await requestNewAccessToken(request);
+    if (newTokens) {
       const res = NextResponse.redirect(new URL("/", request.url));
-      setAccessCookie(res, newAccess);
+      setAccessCookie(res, newTokens.accessToken);
+      setRefreshCookie(res, newTokens.refreshToken);
       return res;
     }
     // refresh도 만료/invalid → 쿠키 삭제하고 /login 접근 허용
@@ -139,6 +142,16 @@ function setAccessCookie(res: NextResponse, token: string) {
     maxAge: 60 * 10,
   });
 }
+
+function setRefreshCookie(res: NextResponse, token: string) {
+  res.cookies.set("refreshToken", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: REFRESH_TOKEN_MAX_AGE,
+  });
+}
 function verifyAccessToken(token: string): "valid" | "expired" | "invalid" {
   try {
     jwt.verify(token, ACCESS_TOKEN_SECRET);
@@ -152,13 +165,16 @@ async function refreshAccessAndContinueOrLogout(
   request: NextRequest,
   reasonOnFail: LoginRedirectReason
 ) {
-  const newAccessToken = await requestNewAccessToken(request);
-  if (!newAccessToken) return redirectToLogin(request, reasonOnFail);
+  const newTokens = await requestNewAccessToken(request);
+  if (!newTokens) return redirectToLogin(request, reasonOnFail);
   const res = NextResponse.next();
-  setAccessCookie(res, newAccessToken);
+  setAccessCookie(res, newTokens.accessToken);
+  setRefreshCookie(res, newTokens.refreshToken);
   return res;
 }
-async function requestNewAccessToken(request: NextRequest): Promise<string | null> {
+async function requestNewAccessToken(
+  request: NextRequest
+): Promise<{ accessToken: string; refreshToken: string } | null> {
   if (!API_URL) return null;
 
   const cookieHeader = request.cookies
@@ -185,7 +201,12 @@ async function requestNewAccessToken(request: NextRequest): Promise<string | nul
     const json = await res.json();
     console.log("REFRESH OK", json);
 
-    return json.data?.accessToken ?? null;
+    const accessToken = json.data?.accessToken;
+    const refreshToken = json.data?.refreshToken;
+
+    if (!accessToken || !refreshToken) return null;
+
+    return { accessToken, refreshToken };
   } catch (e) {
     console.error("refresh failed", e);
     return null;

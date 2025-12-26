@@ -1,21 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { socialLogin } from "@/features/auth/api/socialLogin.api";
 
 export default function OAuth2SuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <OAuth2Success />
+    </Suspense>
+  );
+}
+function OAuth2Success() {
   const router = useRouter();
   const qc = useQueryClient();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    (async () => {
-      await qc.invalidateQueries({ queryKey: ["me"] });
-      await qc.refetchQueries({ queryKey: ["me"] });
+    const tempToken = searchParams.get("tempToken");
+    if (!tempToken) return;
 
+    (async () => {
+      await socialLogin(tempToken);
+      await qc.invalidateQueries({ queryKey: ["me"] });
       router.replace("/?status=social_success");
     })();
-  }, [qc, router]);
+  }, [searchParams]);
 
   return null;
 }

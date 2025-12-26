@@ -39,7 +39,7 @@ export default function LivePopularProducts() {
       <div className="flex items-center">
         <Title size="lg">라이브 인기 상품</Title>
         <button
-          className="bg-btn-default shadow-flat border-border-main mb-4 ml-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-[9999] border-3 transition-all outline-none hover:scale-105 active:scale-95"
+          className="bg-btn-default shadow-flat border-border-main mr-1 mb-4 ml-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-3 transition-all outline-none hover:scale-105 active:scale-95"
           onClick={() => router.push("/write")}
         >
           <Image src={write} alt="글 작성" width={20} height={20} />

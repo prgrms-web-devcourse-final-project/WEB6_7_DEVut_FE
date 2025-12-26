@@ -11,6 +11,7 @@ export const useApprovePayments = () => {
 
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
+      qc.invalidateQueries({ queryKey: ["history-payments"] });
       Toast({ message: "결제를 완료하였습니다.", type: "SUCCESS" });
 
       router.push("/mypage/bizz");

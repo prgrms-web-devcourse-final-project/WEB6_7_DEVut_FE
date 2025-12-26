@@ -6,7 +6,7 @@ export default function TossPaymentButton({
   amount,
   user,
 }: {
-  amount: string;
+  amount: number;
   user: User | null | undefined;
 }) {
   const createPayments = useCreatePayments();
@@ -17,9 +17,8 @@ export default function TossPaymentButton({
 
   const requestPayment = async () => {
     const customerKey = `user_${user?.id}`;
-    const numericAmount = Number(amount);
 
-    if (!numericAmount || numericAmount <= 0) {
+    if (!amount || amount <= 0) {
       notify("금액을 입력해 주세요.", "INFO");
       return;
     }
@@ -31,7 +30,7 @@ export default function TossPaymentButton({
 
     createPayments.mutate(
       {
-        amount: numericAmount,
+        amount,
       },
       {
         onSuccess: async res => {

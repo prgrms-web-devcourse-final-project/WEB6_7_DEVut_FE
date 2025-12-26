@@ -6,20 +6,24 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import CategorySection from "./CategorySection";
-import { useState } from "react";
 import { useDelayedProducts } from "@/features/product/hooks/useDelayedProducts";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface DelayProductsProps {
-  initialParams: GetProductsParams;
   initialDelayProducts: ProductCardType[];
 }
 
-export default function DelayProducts({ initialParams, initialDelayProducts }: DelayProductsProps) {
-  const [category, setCategory] = useState<CategoryKey | null>(null);
-  const [page, setPage] = useState(initialParams.page);
+export default function DelayProducts({ initialDelayProducts }: DelayProductsProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const page = Number(searchParams.get("page") ?? 1);
+  const category = searchParams.get("category") as CategoryKey;
+
   const params: GetProductsParams = {
-    ...initialParams,
     page,
+    size: 15,
     category: category ?? undefined,
   };
 
@@ -28,9 +32,22 @@ export default function DelayProducts({ initialParams, initialDelayProducts }: D
     isLoading,
     error,
   } = useDelayedProducts(params, {
-    initialData:
-      page === initialParams.page && category === null ? initialDelayProducts : undefined,
+    initialData: page === 1 && !category ? initialDelayProducts : undefined,
   });
+
+  const updateParams = (next: { page?: number; category?: string }) => {
+    const sp = new URLSearchParams(searchParams.toString());
+
+    Object.entries(next).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") {
+        sp.delete(key);
+      } else {
+        sp.set(key, String(value));
+      }
+    });
+
+    router.push(`${pathname}?${sp.toString()}`, { scroll: false });
+  };
 
   if (isLoading) return <div>일반 경매 목록 불러오는중...</div>;
   if (error) return <div>목록을 불러오는 중 오류가 발생하였습니다.</div>;
@@ -39,10 +56,7 @@ export default function DelayProducts({ initialParams, initialDelayProducts }: D
     <>
       <CategorySection
         category={category}
-        setCategory={(category: CategoryKey) => {
-          setCategory(category);
-          setPage(1);
-        }}
+        setCategory={category => updateParams({ category, page: 1 })}
       />
       <div className="mt-10">
         <Title size={"sm"} className="font-normal">
