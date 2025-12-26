@@ -12,8 +12,8 @@ export const myWish = async (): Promise<MyWishResponse> => {
   return res.data;
 };
 
-export const mySell = async (): Promise<MyWishResponse> => {
-  const res = await ClientApi<MyWishResponse>("/users/me/likes", {
+export const mySell = async (): Promise<MySellResponse> => {
+  const res = await ClientApi<MySellResponse>("/users/me/items", {
     method: "GET",
   });
 
