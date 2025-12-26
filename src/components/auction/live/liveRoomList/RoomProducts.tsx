@@ -24,7 +24,7 @@ export default function RoomProducts() {
   ]);
 
   return (
-    <div className="border-border-sub bg-content-area h-[200px] w-full overflow-hidden border-t py-2 sm:h-[220px]">
+    <div className="h-[200px] w-full overflow-hidden border-t bg-[#432818] py-2 sm:h-[220px]">
       <div className="h-full px-3">
         <div ref={emblaRef} className="h-full w-full">
           <div className="flex h-full">

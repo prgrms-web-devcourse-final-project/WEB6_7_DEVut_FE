@@ -32,5 +32,3 @@ export async function getMe(): Promise<User | null> {
   const json = await res.json();
   return (json?.data ?? null) as User | null;
 }
-
-
