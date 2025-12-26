@@ -88,6 +88,7 @@ export default function MyIntro() {
       onSuccess: () => {
         notify("다음에 또 만나요!", "SUCCESS");
         router.replace("/");
+        router.refresh();
       },
     });
   };

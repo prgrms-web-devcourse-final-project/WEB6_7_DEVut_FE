@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Tooltip as BaseTooltip } from "react-tooltip";
+import { getPortalRoot } from "@/utils/portal";
 
 interface TooltipPortalProps {
   id: string;
@@ -11,25 +11,12 @@ interface TooltipPortalProps {
 }
 
 export default function TooltipPortal({ id, place = "right", className }: TooltipPortalProps) {
-  const [container] = useState(() => {
-    if (typeof document === "undefined") return null;
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-    return div;
-  });
+  const portalRoot = getPortalRoot();
 
-  useEffect(() => {
-    return () => {
-      if (container) {
-        document.body.removeChild(container);
-      }
-    };
-  }, [container]);
-
-  if (!container) return null;
+  if (!portalRoot) return null;
 
   return ReactDOM.createPortal(
     <BaseTooltip id={id} place={place} className={className} style={{ zIndex: 999999 }} />,
-    container
+    portalRoot
   );
 }
