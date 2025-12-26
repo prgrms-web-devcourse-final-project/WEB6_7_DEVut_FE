@@ -15,7 +15,10 @@ export default async function Home() {
   console.log("라이브 인기 상품:", liveHotProducts);
   console.log("일반 인기 상품:", delayHotProducts);
   return (
-    <ContentContainer bordered={false} className="pt-5">
+    <ContentContainer
+      bordered={false}
+      className="flex h-full min-h-[calc(100vh-75px)] flex-col overflow-hidden pt-5"
+    >
       <SocialLoginSuccessHandler />
       <HomeBanner />
       <LivePopularProductsSection liveHotProducts={liveHotProducts} />
