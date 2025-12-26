@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { getUnreadCount } from "./api/notify.client.api";
+import { getUnreadCount } from "../api/notify.client.api";
 
 interface NotificationStore {
   unreadCount: number;
