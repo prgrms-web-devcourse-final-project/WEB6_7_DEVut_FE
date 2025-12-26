@@ -63,8 +63,8 @@ function LoginReasonHandler() {
 function LoginForm() {
   const router = useRouter();
   const signIn = useSignIn();
-  const socialLogin = useSocialLogin();
-  const searchParams = useSearchParams();
+  // const socialLogin = useSocialLogin();
+  // const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
