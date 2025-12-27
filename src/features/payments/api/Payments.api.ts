@@ -32,7 +32,7 @@ export const historyPayments = async (): Promise<HistoryPaymentsResponse> => {
     method: "GET",
     params: {
       startDate: "2025-12-01",
-      endDate: "2025-12-31",
+      endDate: "2026-01-10",
       PaymentStatus: "SUCCESS",
       page: 0,
       size: 20,
