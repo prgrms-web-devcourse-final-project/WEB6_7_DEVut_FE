@@ -15,8 +15,8 @@ export const createWithdrawal = async (
   return res.data;
 };
 
-export const historyWithdrawals = async (): Promise<HistoryPaymentsResponse> => {
-  const res = await ClientApi<HistoryPaymentsResponse>("/admin/withdrawals", {
+export const historyWithdrawals = async (): Promise<HistoryWithdrawalsResponse> => {
+  const res = await ClientApi<HistoryWithdrawalsResponse>("/admin/withdrawals", {
     method: "GET",
   });
 

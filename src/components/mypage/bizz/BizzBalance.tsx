@@ -2,7 +2,6 @@
 
 import BizzAmount from "@/components/common/BizzAmount";
 import ContentContainer from "@/components/common/ContentContainer";
-import Input from "@/components/common/Input";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useState } from "react";
 import TossPaymentButton from "./TossPaymentButton";
@@ -34,7 +33,7 @@ export default function BizzBalance() {
           placeholder="충전 또는 출금할 금액 입력"
           value={chargeBizz}
           onChange={setChargeBizz}
-          className="h-9 md:w-full"
+          className="h-9 md:w-[290px]"
         ></PriceInput>
         <TossPaymentButton amount={chargeBizz} user={user} onClick={() => setOpen(true)} />
         {open && <CreateWithdrawal onClose={() => setOpen(false)} />}
