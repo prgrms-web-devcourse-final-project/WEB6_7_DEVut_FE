@@ -48,7 +48,7 @@ export default function WithdrawConfirm({
 
       <div className="flex gap-3">
         <Button className="flex-1" onClick={onBack}>
-          취소
+          뒤로가기
         </Button>
         <Button
           className="bg-custom-orange flex-1 text-white shadow-[4px_4px_0px_#5C3A21]"

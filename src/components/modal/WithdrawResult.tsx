@@ -2,7 +2,7 @@ import Button from "../common/Button";
 
 export default function WithdrawResult({ onClose }: { onClose: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-6 p-10 text-center">
+    <div className="flex flex-col items-center gap-6 p-28 text-center">
       <div className="text-custom-orange text-4xl">✓</div>
 
       <h2 className="text-border-main text-xl font-bold">출금 요청 완료</h2>

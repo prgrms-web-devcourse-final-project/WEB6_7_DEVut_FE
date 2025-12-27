@@ -20,7 +20,7 @@ export const historyWithdrawals = async (): Promise<HistoryWithdrawalsResponse> 
     method: "GET",
   });
 
-  if (res.resultCode !== "200") {
+  if (res.resultCode === "W002") {
     throw new Error(res.msg);
   }
 
