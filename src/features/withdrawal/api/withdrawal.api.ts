@@ -14,3 +14,15 @@ export const createWithdrawal = async (
 
   return res.data;
 };
+
+export const historyWithdrawals = async (): Promise<HistoryPaymentsResponse> => {
+  const res = await ClientApi<HistoryPaymentsResponse>("/admin/withdrawals", {
+    method: "GET",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};

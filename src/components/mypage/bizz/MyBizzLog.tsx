@@ -4,9 +4,12 @@ import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
 import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments";
+import CreateWithdrawal from "@/components/modal/CreateWithdrawal";
+import { useHistoryWithdrawals } from "@/features/withdrawal/hooks/useHistoryWithdrawals";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
-  const { data: history } = useHistoryPayments();
+  const { data: paymentsHistory } = useHistoryPayments();
+  const { data: withdrawalsHistory } = useHistoryWithdrawals();
   const [status, setStatus] = useState("전체");
   console.log(history);
   return (
@@ -26,8 +29,11 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
         <div>잔액</div>
       </div>
       <div className="mt-1 flex flex-col gap-3">
-        {history?.payments.map(log => (
+        {paymentsHistory?.payments.map(log => (
           <BizzLogCard key={log.paymentId} log={log} />
+        ))}
+        {withdrawalsHistory?.withdrawals.map(log => (
+          <BizzLogCard key={log.withdrawalId} log={log} />
         ))}
       </div>
     </div>

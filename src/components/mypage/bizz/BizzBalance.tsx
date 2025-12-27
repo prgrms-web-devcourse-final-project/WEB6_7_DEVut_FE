@@ -7,8 +7,10 @@ import { useMe } from "@/features/auth/hooks/useMe";
 import { useState } from "react";
 import TossPaymentButton from "./TossPaymentButton";
 import PriceInput from "@/components/common/PriceInput";
+import CreateWithdrawal from "@/components/modal/CreateWithdrawal";
 
 export default function BizzBalance() {
+  const [open, setOpen] = useState(false);
   const { data: user } = useMe();
 
   const [chargeBizz, setChargeBizz] = useState<number>(0);
@@ -34,7 +36,8 @@ export default function BizzBalance() {
           onChange={setChargeBizz}
           className="h-9 md:w-full"
         ></PriceInput>
-        <TossPaymentButton amount={chargeBizz} user={user} />
+        <TossPaymentButton amount={chargeBizz} user={user} onClick={() => setOpen(true)} />
+        {open && <CreateWithdrawal onClose={() => setOpen(false)} />}
       </div>
     </ContentContainer>
   );
