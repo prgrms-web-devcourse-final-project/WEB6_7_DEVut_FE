@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { login } from "../api/login.api";
+import { socialLogin } from "../api/socialLogin.api";
 
-export function useSignIn() {
+export function useSocialLogin() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: login,
+    mutationFn: socialLogin,
     onSuccess: async () => {
       qc.invalidateQueries({ queryKey: ["me"] });
     },

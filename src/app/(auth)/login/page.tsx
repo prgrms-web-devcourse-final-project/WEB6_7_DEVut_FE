@@ -15,6 +15,7 @@ import BBlogoSet from "@/assets/common/BBlogoSet.svg";
 
 import { useSignIn } from "@/features/auth/hooks/useSignIn";
 import Toast, { ToastType } from "@/components/common/Toast";
+import { useSocialLogin } from "@/features/auth/hooks/useSocialLogin";
 
 export default function LoginPage() {
   return (
@@ -62,6 +63,8 @@ function LoginReasonHandler() {
 function LoginForm() {
   const router = useRouter();
   const signIn = useSignIn();
+  // const socialLogin = useSocialLogin();
+  // const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -91,7 +94,6 @@ function LoginForm() {
   };
   const kakaoLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/kakao`;
-    console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
   };
   const naverLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/naver`;
