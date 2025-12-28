@@ -19,7 +19,7 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
-        <OptionDropdown label={status}>
+        <OptionDropdown label={status} className="cursor-pointer">
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("충전")}>충전</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("출금")}>출금</OptionDropdown.Item>
