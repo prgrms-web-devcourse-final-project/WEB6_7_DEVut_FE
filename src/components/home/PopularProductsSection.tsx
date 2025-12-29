@@ -29,8 +29,10 @@ export default function PopularProductsSection({
   return (
     <div className="flex flex-col gap-7">
       <HomeBannerClient />
-      <LivePopularProductsClient products={liveHotProducts} />
-      <DelayPopularProductsClient products={delayHotProducts} />
+      <div className="flex flex-col gap-12">
+        <LivePopularProductsClient products={liveHotProducts} />
+        <DelayPopularProductsClient products={delayHotProducts} />
+      </div>
     </div>
   );
 }

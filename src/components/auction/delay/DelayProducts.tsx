@@ -8,6 +8,7 @@ import Title from "@/components/common/Title";
 import CategorySection from "./CategorySection";
 import { useDelayedProducts } from "@/features/product/hooks/useDelayedProducts";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getCategoryLabel } from "@/utils/category";
 
 interface DelayProductsProps {
   initialDelayProducts: ProductCardType[];
@@ -64,7 +65,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
             카테고리
             <span className="mx-3">&gt;</span>
           </span>
-          <span className="underline underline-offset-8">엔터테이너먼트</span>
+          <span className="underline underline-offset-8">{getCategoryLabel(category)}</span>
         </Title>
         <div className="h-[15px] w-[90%] text-right">
           <OrderSwitch />
