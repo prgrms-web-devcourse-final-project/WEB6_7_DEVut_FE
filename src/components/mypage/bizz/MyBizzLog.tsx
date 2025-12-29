@@ -32,9 +32,15 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
         <div>잔액</div>
       </div>
       <div className="mt-1 flex flex-col gap-3">
-        {logs.map(log => (
-          <BizzLogCard key={log.id} log={log} />
-        ))}
+        {status === "전체"
+          ? logs.map(log => <BizzLogCard key={log.id} log={log} />)
+          : status === "충전"
+            ? logs
+                .filter(log => log.label === "충전")
+                .map(log => <BizzLogCard key={log.id} log={log} />)
+            : logs
+                .filter(log => log.label === "출금")
+                .map(log => <BizzLogCard key={log.id} log={log} />)}
       </div>
     </div>
   );
