@@ -59,7 +59,7 @@ export default function PopularProductsCarousel({
 
         <Link
           href={href}
-          className="text-border-sub2 hover:text-title-main text-sm font-medium transition hover:underline"
+          className="text-border-sub2/60 hover:text-title-main translate-y-2 text-[12px] font-medium transition hover:underline"
         >
           더 보러가기
         </Link>
