@@ -67,6 +67,7 @@ interface DelayProductDetail extends ProductDetailBase {
   currentPrice: number;
   endTime: string;
   sellerUserId: number;
+  buyNowPrice: number;
 }
 
 type ProductDetail = LiveProductDetail | DelayProductDetail;

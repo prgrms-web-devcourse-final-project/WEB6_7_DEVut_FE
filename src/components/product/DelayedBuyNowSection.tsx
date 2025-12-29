@@ -1,38 +1,37 @@
-import { useBidDelayProduct } from "@/features/auction/hooks/useBidDelayProduct";
 import Button from "../common/Button";
 import Toast from "../common/Toast";
-import { BiddingSectionModal } from "./BiddingSectionModal";
+import { BuyNowSectionModal } from "./BuyNowSectionModal";
+import { useBuyNowDelayProduct } from "@/features/auction/hooks/useBuyNowDelayProduct";
 
-interface DelayedBidSectionProps {
+interface DelayedBuyNowSectionProps {
   productId: number;
   isOpen: boolean;
   modalToggle: (bool: boolean) => void;
-  currentBid: number;
+  buyNowPrice: number;
   auctionStatus: AuctionStatus;
 }
 
-export default function DelayedBidSection({
+export default function DelayedBuyNowSection({
   productId,
   isOpen,
   modalToggle,
-  currentBid,
+  buyNowPrice,
   auctionStatus,
-}: DelayedBidSectionProps) {
+}: DelayedBuyNowSectionProps) {
   const onSale = auctionStatus === "BEFORE_BIDDING" || auctionStatus === "IN_PROGRESS";
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
-  const { mutate: bid, isPending } = useBidDelayProduct(productId);
+  const { mutate: buyNow, isPending } = useBuyNowDelayProduct(productId);
 
-  const handleConfirmBid = (bidPrice: BidDelayProductRequest) => {
+  const handleConfirmBid = () => {
     if (!onSale) return notify("마감 된 경매 상품 입니다.", "INFO");
-
-    bid(bidPrice, {
+    buyNow(undefined, {
       onSuccess: () => {
-        modalToggle(true);
-        notify("입찰을 성공하였습니다!", "SUCCESS");
+        modalToggle(false);
+        notify("구매를 성공하였습니다!", "SUCCESS");
       },
       onError: (error: unknown) => {
-        modalToggle(true);
+        modalToggle(false);
         const { msg } = error as ResponseBase;
         notify(msg, "ERROR");
       },
@@ -41,20 +40,20 @@ export default function DelayedBidSection({
 
   return (
     <>
-      <BiddingSectionModal
+      <BuyNowSectionModal
         isOpen={isOpen}
         onClose={() => modalToggle(false)}
-        currentBid={currentBid}
+        price={buyNowPrice}
         onConfirmBid={handleConfirmBid}
         isPending={isPending}
       />
 
       <Button
-        className="bg-custom-brown flex-1 text-white"
+        className="bg-custom-dark-brown border-border-sub flex-1 text-white"
         onClick={() => modalToggle(true)}
         disabled={isPending}
       >
-        {onSale ? "입찰하기" : "마감"}
+        {onSale ? "즉시 구매" : "마감"}
       </Button>
     </>
   );
