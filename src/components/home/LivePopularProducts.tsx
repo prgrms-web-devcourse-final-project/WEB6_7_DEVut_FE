@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import write from "@/assets/home/write.svg";
 import { useRouter } from "next/navigation";
-import { productCardMock_LIVE } from "@/features/product/mock/productCard.live.mock";
 
-export default function LivePopularProducts() {
+export default function LivePopularProducts({ products }: { products: ProductCardType[] }) {
   const router = useRouter();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
     Autoplay({
@@ -49,7 +48,7 @@ export default function LivePopularProducts() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full overflow-x-hidden border px-3 py-4 md:w-full">
         <div ref={emblaRef} className="w-full overflow-hidden py-2">
           <div className="flex gap-4 px-4">
-            {productCardMock_LIVE.map(product => (
+            {products.map(product => (
               <div
                 key={product.id}
                 className="w-[40%] min-w-[220px] shrink-0 sm:w-[48%] lg:w-[23%]"
