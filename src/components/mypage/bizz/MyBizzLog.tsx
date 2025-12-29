@@ -4,17 +4,23 @@ import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
 import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments";
+import { useHistoryWithdrawals } from "@/features/withdrawal/hooks/useHistoryWithdrawals";
+import { mapPaymentsToBizzLog, mapWithdrawalsToBizzLog } from "@/utils/myBizzLogMapping";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
-  const { data: history } = useHistoryPayments();
+  const { data: paymentsHistory } = useHistoryPayments();
+  const { data: withdrawalsHistory } = useHistoryWithdrawals();
   const [status, setStatus] = useState("전체");
-  console.log(history);
+
+  const logs: BizzLogItem[] = [
+    ...mapPaymentsToBizzLog(paymentsHistory?.payments),
+    ...mapWithdrawalsToBizzLog(withdrawalsHistory?.withdrawals),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
         <OptionDropdown label={status}>
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("구매")}>구매</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("충전")}>충전</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("출금")}>출금</OptionDropdown.Item>
         </OptionDropdown>
@@ -26,8 +32,8 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
         <div>잔액</div>
       </div>
       <div className="mt-1 flex flex-col gap-3">
-        {history?.payments.map(log => (
-          <BizzLogCard key={log.paymentId} log={log} />
+        {logs.map(log => (
+          <BizzLogCard key={log.id} log={log} />
         ))}
       </div>
     </div>
