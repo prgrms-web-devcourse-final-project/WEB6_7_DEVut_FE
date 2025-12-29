@@ -14,7 +14,10 @@ import Toast, { ToastType } from "../common/Toast";
 import { useUploadImages } from "@/features/image/hooks/useUploadImages";
 import { useRouter } from "next/navigation";
 import EndDatePicker from "./EndDatePicker";
+
 import WriteBaseForm from "./WriteBaseForm";
+import Modal from "@/components/common/Modal";
+import WeeklySchedule from "@/components/schedule/WeeklySchedule";
 
 export default function WriteForm() {
   const [title, setTitle] = useState("");
@@ -30,6 +33,7 @@ export default function WriteForm() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [endDate, setEndDate] = useState<Date>(getMinEndDate);
   const [endTime, setEndTime] = useState("12:00");
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   const notify = (message: string, type: ToastType) => Toast({ message, type });
   const router = useRouter();
@@ -48,15 +52,14 @@ export default function WriteForm() {
       notify("상품명을 입력해주세요.", "ERROR");
       return;
     }
-    if (startPrice <= 0) {
-      notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
-      return;
-    }
     if (images.length === 0) {
       notify("최소 한 장의 이미지를 업로드해주세요.", "ERROR");
       return;
     }
-
+    if (startPrice <= 0) {
+      notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
+      return;
+    }
 
     const newFiles = images.filter(i => i instanceof File) as File[];
     const imageUrls = await uploadImages(newFiles, "auctions");
@@ -195,6 +198,8 @@ export default function WriteForm() {
                   <Button
                     fullWidth={true}
                     leftIcon={<Image className="size-5" src={calendar} alt="calendar" />}
+                    onClick={() => setIsScheduleModalOpen(true)}
+                    type="button"
                   >
                     시간표 보러가기
                   </Button>
@@ -238,10 +243,20 @@ export default function WriteForm() {
             >
               등록하기
             </Button>
-            <Button className="bg-content-gray">등록취소</Button>
+            <Button className="bg-content-gray" onClick={() => router.back()}>
+              등록취소
+            </Button>
           </div>
         </div>
       </ContentContainer>
+
+      <Modal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+        className="max-w-[1200px]"
+      >
+        <WeeklySchedule />
+      </Modal>
     </form>
   );
 }
