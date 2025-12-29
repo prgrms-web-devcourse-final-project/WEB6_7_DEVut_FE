@@ -10,16 +10,26 @@ export default function BidsLog({ log }: { log: ProductBidsLogItem[] }) {
         <div>입찰일시</div>
         <div>입찰금액</div>
       </div>
-      <div className="mt-1 flex flex-col gap-3">
-        {log.map(item => (
-          <BidsLogCard key={item.id} {...item} />
-        ))}
+      <div className="mt-1">
+        {log.length === 0 ? (
+          <div className="text-title-sub2 flex flex-col items-center justify-center gap-2 py-16 text-sm">
+            <p>입찰 내역이 없습니다.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {log.map(item => (
+              <BidsLogCard key={item.id} {...item} />
+            ))}
+          </div>
+        )}
       </div>
-      <div className="border-btn-default mt-4 flex justify-center border-t-3 py-3">
-        <Button className="w-[120px] rounded-4xl" size={"sm"} leftIcon={<RotateCw size={18} />}>
-          새로고침
-        </Button>
-      </div>
+      {log.length !== 0 && (
+        <div className="border-btn-default mt-4 flex justify-center border-t-3 py-3">
+          <Button className="w-[120px] rounded-4xl" size={"sm"} leftIcon={<RotateCw size={18} />}>
+            새로고침
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
