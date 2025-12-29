@@ -43,13 +43,13 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
   return (
     <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
-      <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-stretch">
+      <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch">
         <ProductImageCarousel images={product?.images} className="w-full" />
 
-        <div className="flex flex-col gap-5 md:h-full">
+        <div className="flex flex-col gap-5 lg:h-full">
           <div className="flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="text-title-main-dark text-2xl leading-snug font-bold md:text-3xl">
+              <h1 className="text-title-main-dark text-2xl leading-snug font-bold lg:text-3xl">
                 {product?.name}
               </h1>
 
@@ -67,7 +67,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                     <BizzAmount
                       amount={currentPrice || 100000}
                       iconSize="lg"
-                      className="text-title-main-dark text-2xl font-bold md:text-3xl"
+                      className="text-title-main-dark text-2xl font-bold lg:text-3xl"
                     />
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                         <BizzAmount
                           amount={product?.buyNowPrice}
                           iconSize="lg"
-                          className="text-title-main-dark text-2xl font-bold md:text-3xl"
+                          className="text-title-main-dark text-2xl font-bold lg:text-3xl"
                         />
                       </div>
                     </div>
@@ -95,7 +95,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </div>
             </div>
 
-            <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm md:text-base">
+            <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm lg:text-base">
               <div className="grid grid-cols-[80px_1fr] gap-x-3 gap-y-5">
                 <div className="text-title-sub">상품상태</div>
                 <div className="text-title-main-dark">
