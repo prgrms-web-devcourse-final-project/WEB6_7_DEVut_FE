@@ -8,7 +8,7 @@ export default function RootProvider({ children }: { children: React.ReactNode }
   return (
     <QueryProvider>
       <ProgressProvider
-        height="3px"
+        height="4px"
         color="var(--color-custom-dark-brown)"
         options={{ showSpinner: false }}
         shallowRouting
