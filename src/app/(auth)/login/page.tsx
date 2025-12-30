@@ -84,6 +84,7 @@ function LoginForm() {
         onSuccess: data => {
           notify(`${data.userInfo.nickname} 님 환영합니다!`, "SUCCESS");
           router.replace("/");
+          router.refresh();
         },
         onError: () => {
           const msg = "이메일 또는 비밀번호를 확인해주세요.";
