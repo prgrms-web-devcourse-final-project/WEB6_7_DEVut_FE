@@ -4,6 +4,7 @@ import calendar from "@/assets/images/sidebar/calendar.png";
 import search from "@/assets/images/sidebar/search.png";
 import alarm from "@/assets/images/sidebar/alarm.png";
 import message from "@/assets/images/sidebar/message.png";
+import write from "@/assets/images/sidebar/plus.png";
 
 export const sidebarItems = [
   {
@@ -36,5 +37,10 @@ export const sidebarItems = [
     path: "/message",
     icon: message,
     label: "채팅",
+  },
+  {
+    path: "/write",
+    icon: write,
+    label: "상품 등록",
   },
 ];

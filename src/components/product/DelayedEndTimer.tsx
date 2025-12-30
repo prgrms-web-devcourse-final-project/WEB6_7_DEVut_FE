@@ -27,7 +27,7 @@ export default function DelayedEndTimer({ endTime }: DelayedEndTimerProps) {
 
   return (
     <>
-      <div className="text-title-sub font-bold">{isEnded ? "마감 시간" : "남은 시간"}</div>
+      <div className="text-title-sub">{isEnded ? "마감 시간" : "남은 시간"}</div>
 
       <div className={`text-title-main-dark ${isEnded ? "text-custom-red font-bold" : ""}`}>
         {remainMs === null

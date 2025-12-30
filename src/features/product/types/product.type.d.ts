@@ -67,6 +67,21 @@ interface DelayProductDetail extends ProductDetailBase {
   currentPrice: number;
   endTime: string;
   sellerUserId: number;
+  buyNowPrice: number;
 }
 
 type ProductDetail = LiveProductDetail | DelayProductDetail;
+
+// 입찰 기록 아이템
+interface ProductBidsLogItem {
+  id: number;
+  delayedItemId: number;
+  bidderNickname: string;
+  bidPrice: number;
+  createdAt: string;
+}
+
+interface ProductBidsLogResponse {
+  bids: ProductBidsLogItem[];
+  totalCount: number;
+}

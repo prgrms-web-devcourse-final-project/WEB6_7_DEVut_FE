@@ -39,16 +39,29 @@ export const modifyDelayProduct = async (body: CreateDelayProductRequest, produc
   return res.data;
 };
 
-// 상품 입찰
+// 일반 상품 입찰
 export const bidDelayProduct = async (body: BidDelayProductRequest, productId: number) => {
   const res = await ClientApi<BidDelayProductResponse>(`/auction/delayed/${productId}/bid`, {
     method: "POST",
     body: JSON.stringify(body),
   });
 
-  // if (res.resultCode !== "200") {
-  //   throw new ApiError(res.resultCode, res.msg);
-  // }
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};
+
+// 일반 상품 즉시 구매
+export const buyNowDelayProduct = async (productId: number) => {
+  const res = await ClientApi<BuyNowDelayProductResponse>(`/auction/delayed/${productId}/buy-now`, {
+    method: "POST",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
 
   return res.data;
 };

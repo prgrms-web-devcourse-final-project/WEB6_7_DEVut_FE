@@ -1,19 +1,13 @@
 import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
-import Pagenation from "../common/Pagenation";
-import ProductCard from "../common/ProductCard";
-import ProductsGrid from "../common/ProductsGrid";
-import Title from "../common/Title";
+import PopularProductsCarousel from "../product/PopularProductsCarousel";
 
-export default function DelayPopularProducts() {
+export default function DelayPopularProducts({ products }: { products: ProductCardType[] }) {
   return (
-    <div className="mt-10">
-      <Title>일반 인기 상품</Title>
-      <ProductsGrid>
-        {productCardMock_DELAYED.map(product => (
-          <ProductCard context="CARD" key={product.id} product={product} />
-        ))}
-      </ProductsGrid>
-      <Pagenation />
-    </div>
+    <PopularProductsCarousel
+      title="일반 인기 상품"
+      products={productCardMock_DELAYED}
+      autoplayDelay={5000}
+      href="/auction/delay"
+    />
   );
 }
