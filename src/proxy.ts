@@ -140,6 +140,7 @@ function setAccessCookie(res: NextResponse, token: string) {
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS면 켜기
     maxAge: 60 * 10,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 }
 
@@ -150,6 +151,7 @@ function setRefreshCookie(res: NextResponse, token: string) {
     path: "/",
     secure: process.env.NODE_ENV === "production",
     maxAge: REFRESH_TOKEN_MAX_AGE,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 }
 function verifyAccessToken(token: string): "valid" | "expired" | "invalid" {
