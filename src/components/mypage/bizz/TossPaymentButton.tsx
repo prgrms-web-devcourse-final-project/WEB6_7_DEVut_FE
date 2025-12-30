@@ -5,9 +5,11 @@ import { useCreatePayments } from "@/features/payments/hooks/useCreatePayments";
 export default function TossPaymentButton({
   amount,
   user,
+  onClick,
 }: {
   amount: number;
   user: User | null | undefined;
+  onClick: () => void;
 }) {
   const createPayments = useCreatePayments();
 
@@ -71,7 +73,9 @@ export default function TossPaymentButton({
           충전
         </Button>
 
-        <Button className="bg-custom-red h-9 w-full text-white md:w-22">출금</Button>
+        <Button className="bg-custom-red h-9 w-full text-white md:w-22" onClick={onClick}>
+          출금
+        </Button>
       </div>
     </>
   );

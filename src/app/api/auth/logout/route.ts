@@ -9,7 +9,7 @@ export async function POST() {
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.shop" : undefined,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 
   response.cookies.set("refreshToken", "", {
@@ -18,7 +18,7 @@ export async function POST() {
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.shop" : undefined,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 
   return response;
