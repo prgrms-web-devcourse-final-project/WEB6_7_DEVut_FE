@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
 import DelayedBidSection from "./DelayedBidSection";
 import DelayedEndTimer from "./DelayedEndTimer";
+import DelayedBuyNowSection from "./DelayedBuyNowSection";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -30,6 +31,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
   const [isBidOpen, setIsBidOpen] = useState(false);
+  const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
 
   // 추후 리팩토링 (DTO 통합)
   const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
@@ -41,13 +43,13 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
   return (
     <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
-      <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-stretch">
+      <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch">
         <ProductImageCarousel images={product?.images} className="w-full" />
 
-        <div className="flex flex-col gap-5 md:h-full">
+        <div className="flex flex-col gap-5 lg:h-full">
           <div className="flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="text-title-main-dark text-2xl leading-snug font-bold md:text-3xl">
+              <h1 className="text-title-main-dark text-2xl leading-snug font-bold lg:text-3xl">
                 {product?.name}
               </h1>
 
@@ -56,43 +58,61 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </span>
             </div>
 
-            <div className="bg-content-gray border-border-sub2 rounded-xl border p-5">
-              <p className="text-title-sub2 text-sm">현재가</p>
+            <div className="bg-content-gray border-border-sub2 flex justify-between rounded-xl border p-5">
+              <div className="flex h-full items-center gap-8">
+                <div>
+                  <p className="text-title-sub2 text-sm">현재가</p>
 
-              <div className="mt-2 flex items-end justify-between">
-                <BizzAmount
-                  amount={currentPrice || 100000}
-                  iconSize="lg"
-                  className="text-title-main-dark text-2xl font-bold md:text-3xl"
-                />
+                  <div className="mt-2 flex items-end justify-between">
+                    <BizzAmount
+                      amount={currentPrice || 100000}
+                      iconSize="lg"
+                      className="text-title-main-dark text-2xl font-bold lg:text-3xl"
+                    />
+                  </div>
+                </div>
+                {product?.type === "DELAYED" && (
+                  <>
+                    <div className="border-border-sub2 h-[50%] rotate-15 border" />
+                    <div>
+                      <p className="text-title-sub2 text-sm">즉시 구매가</p>
 
+                      <div className="mt-2 flex items-end justify-between">
+                        <BizzAmount
+                          amount={product?.buyNowPrice}
+                          iconSize="lg"
+                          className="text-title-main-dark text-2xl font-bold lg:text-3xl"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="flex items-end">
                 <Button size="sm" onClick={() => route.push(`${path}/bidsLog`)}>
                   경매 기록
                 </Button>
               </div>
             </div>
 
-            <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm md:text-base">
+            <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm lg:text-base">
               <div className="grid grid-cols-[80px_1fr] gap-x-3 gap-y-5">
-                <div className="text-title-sub font-bold">상품상태</div>
+                <div className="text-title-sub">상품상태</div>
                 <div className="text-title-main-dark">
                   {statusMapping(product?.itemStatus || "NEW")}
                 </div>
 
-                <div className="text-title-sub font-bold">배송비</div>
+                <div className="text-title-sub">배송비</div>
                 <div className="text-title-main-dark">
                   {product?.deliveryInclude ? "포함" : "미포함"}
                 </div>
 
-                <div className="text-title-sub font-bold">장소</div>
-                <div className="text-title-main-dark">{`${product?.region}`}</div>
-
-                <div className="text-title-sub font-bold">직거래</div>
-                <div className="text-title-main-dark">{product?.preferredPlace}</div>
+                <div className="text-title-sub">장소</div>
+                <div className="text-title-main-dark">{`${product?.region} / ${product?.preferredPlace}`}</div>
 
                 {product?.type === "DELAYED" && product.startPrice && (
                   <>
-                    <div className="text-title-sub font-bold">시작가</div>
+                    <div className="text-title-sub">시작가</div>
                     <div className="text-title-main-dark">
                       {product?.startPrice.toLocaleString()}
                     </div>
@@ -142,15 +162,29 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
             {/* 지연(일반), 본인이 등록한 물건일 때 disable */}
             {product?.type === "DELAYED" && (
-              <DelayedBidSection
-                productId={product.id}
-                isOpen={isBidOpen}
-                modalToggle={(bool: boolean) => setIsBidOpen(bool)}
-                currentBid={product.currentPrice}
-                user={me}
-                sellerId={sellerId}
-                auctionStatus={product.auctionStatus}
-              />
+              <>
+                <DelayedBidSection
+                  productId={product.id}
+                  isOpen={isBidOpen}
+                  modalToggle={(bool: boolean) => {
+                    setIsBidOpen(bool);
+                    setIsBuyNowOpen(false);
+                  }}
+                  currentBid={product.currentPrice}
+                  auctionStatus={product.auctionStatus}
+                />
+
+                <DelayedBuyNowSection
+                  productId={product.id}
+                  isOpen={isBuyNowOpen}
+                  modalToggle={(bool: boolean) => {
+                    setIsBuyNowOpen(bool);
+                    setIsBidOpen(false);
+                  }}
+                  buyNowPrice={product.buyNowPrice}
+                  auctionStatus={product.auctionStatus}
+                />
+              </>
             )}
 
             {me?.id === sellerId ? (

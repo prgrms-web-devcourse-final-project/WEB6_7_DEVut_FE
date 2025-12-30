@@ -8,3 +8,10 @@ interface BidDelayProductResponse {
   bidPrice: number;
   createdAt: string;
 }
+interface BuyNowDelayProductResponse {
+  id: number;
+  delayedItemId: number;
+  bidderNickname: string;
+  bidPrice: number;
+  createdAt: string;
+}

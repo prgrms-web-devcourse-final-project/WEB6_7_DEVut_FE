@@ -1,6 +1,9 @@
-interface ApiResponse<T> {
+interface ResponseBase {
   resultCode: string;
   msg: string;
+}
+
+interface ApiResponse<T> extends ResponseBase {
   data: T;
 }
 type Params = Record<string, string | number | boolean | undefined>;
