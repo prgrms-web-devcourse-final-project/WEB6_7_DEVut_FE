@@ -15,6 +15,10 @@ export const useCreateWithdrawal = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
       qc.invalidateQueries({ queryKey: ["history-withdrawals"] });
+      Toast({
+        message: "출금 요청이 완료되었습니다.",
+        type: "SUCCESS",
+      });
     },
     onError: err => {
       Toast({

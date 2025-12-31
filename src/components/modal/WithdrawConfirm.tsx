@@ -1,7 +1,6 @@
 import { useCreateWithdrawal } from "@/features/withdrawal/hooks/useCreateWithdrawal";
 import Button from "../common/Button";
 import ContentContainer from "../common/ContentContainer";
-import { useApproveWithdrawal } from "@/features/withdrawal/hooks/useApproveWithdrawal";
 
 type formType = {
   amount: number;
@@ -20,7 +19,6 @@ export default function WithdrawConfirm({
   onConfirm: () => void;
 }) {
   const createWithdrawal = useCreateWithdrawal();
-  const approveWithdrawal = useApproveWithdrawal();
 
   const handleCreateWithdrawal = () => {
     createWithdrawal?.mutate(
@@ -31,8 +29,7 @@ export default function WithdrawConfirm({
         accountHolder: form.owner,
       },
       {
-        onSuccess: res => {
-          approveWithdrawal.mutate({ withdrawalId: res.withDrawId });
+        onSuccess: () => {
           onConfirm();
         },
       }

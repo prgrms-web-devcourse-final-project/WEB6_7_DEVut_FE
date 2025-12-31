@@ -26,19 +26,3 @@ export const historyWithdrawals = async (): Promise<HistoryWithdrawalsResponse> 
 
   return res.data;
 };
-
-export const approveWithdrawal = async <ApproveWithdrawalResponse>({
-  withdrawalId,
-}: {
-  withdrawalId: number;
-}) => {
-  const res = await ClientApi<ApproveWithdrawalResponse>(
-    `/admin/withdrawals/${withdrawalId}/approve`,
-    {
-      method: "POST",
-      params: { withdrawalId },
-    }
-  );
-
-  return res.data;
-};

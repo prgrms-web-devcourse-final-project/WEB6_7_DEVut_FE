@@ -16,6 +16,26 @@ export default function SaleDetail() {
 
   const newMySells = myPageCardMapping({ card: mySells });
   const sellItems = newMySells ?? [];
+
+  const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
+    전체: "ALL",
+    잔금대기: "PAYMENT_PENDING",
+    "거래 중": "IN_DEAL",
+    "판매 확정": "PURCHASE_CONFIRMED",
+    유찰: "FAILED",
+  };
+
+  const filteredItems = sellItems.filter(product => {
+    if (product.status.kind !== "status") return false;
+
+    if (product.status.status === "IN_PROGRESS") return false;
+    if (product.status.status === "BEFORE_BIDDING") return false;
+
+    if (status === "전체") return true;
+
+    return product.status.status === STATUS_MAP[status];
+  });
+
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -30,23 +50,17 @@ export default function SaleDetail() {
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("잔금대기")}>잔금대기</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("거래 중")}>거래 중</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("거래 완료")}>
-            거래 완료
-          </OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("판매 확정")}>
             판매 확정
           </OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("유찰")}>유찰</OptionDropdown.Item>
         </OptionDropdown>
       </div>
 
       <ProductsGrid>
-        {sellItems.map((product, index) =>
-          product.status.kind === "status" && product.status.status !== "IN_PROGRESS" ? (
-            <ProductCard context="MY_SELLING" key={index} product={product} />
-          ) : (
-            ""
-          )
-        )}
+        {filteredItems.map((product, index) => (
+          <ProductCard key={index} context="MY_SELLING" product={product} />
+        ))}
       </ProductsGrid>
       <Pagenation />
     </div>

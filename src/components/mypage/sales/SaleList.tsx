@@ -40,7 +40,8 @@ export default function SaleList() {
         <ProductsGrid>
           {shownProducts.map((product, index) =>
             product.status.kind === "time" ||
-            (product.status.kind === "status" && product.status.status === "IN_PROGRESS") ? (
+            (product.status.kind === "status" && product.status.status === "IN_PROGRESS") ||
+            (product.status.kind === "status" && product.status.status === "BEFORE_BIDDING") ? (
               <ProductCard context="MY_SELLING" key={index} product={product} />
             ) : (
               ""
