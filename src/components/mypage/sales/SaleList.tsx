@@ -13,7 +13,7 @@ export default function SaleList() {
   const { data: mySells } = useMySell();
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
-
+  console.log(mySells);
   const newMySells = myPageCardMapping({ card: mySells });
 
   useEffect(() => {
@@ -39,8 +39,9 @@ export default function SaleList() {
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
           {shownProducts.map((product, index) =>
-            product.type === "LIVE" ? (
-              <ProductCard context="CARD" key={index} product={product} />
+            product.status.kind === "time" ||
+            (product.status.kind === "status" && product.status.status === "IN_PROGRESS") ? (
+              <ProductCard context="MY_SELLING" key={index} product={product} />
             ) : (
               ""
             )

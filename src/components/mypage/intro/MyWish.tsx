@@ -8,8 +8,6 @@ import { myPageCardMapping } from "@/utils/myPageCardMapping";
 
 export default function MyWish() {
   const { data: myWish } = useMyWish();
-  console.log("MyWish 컴포넌트 실행 ", myWish);
-
   const newMyWish = myPageCardMapping({ card: myWish });
 
   return (

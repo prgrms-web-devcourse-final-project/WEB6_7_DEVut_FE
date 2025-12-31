@@ -7,9 +7,7 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { productCardMock_MY_SELLING } from "@/features/product/mock/productCard.mySelling.mock";
 import { myPageCardMapping } from "@/utils/myPageCardMapping";
-import { se } from "date-fns/locale";
 import { useState } from "react";
 
 export default function SaleDetail() {
@@ -42,9 +40,13 @@ export default function SaleDetail() {
       </div>
 
       <ProductsGrid>
-        {sellItems.map((product, index) => (
-          <ProductCard context="MY_SELLING" key={index} product={product} />
-        ))}
+        {sellItems.map((product, index) =>
+          product.status.kind === "status" && product.status.status !== "IN_PROGRESS" ? (
+            <ProductCard context="MY_SELLING" key={index} product={product} />
+          ) : (
+            ""
+          )
+        )}
       </ProductsGrid>
       <Pagenation />
     </div>

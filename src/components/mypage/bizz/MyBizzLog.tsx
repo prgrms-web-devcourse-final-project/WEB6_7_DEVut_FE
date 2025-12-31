@@ -23,6 +23,8 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("충전")}>충전</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("출금")}>출금</OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("구매")}>구매</OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("판매")}>판매</OptionDropdown.Item>
         </OptionDropdown>
       )}
       <div className="border-border-sub2 text-border-sub2 bg-content-gray mt-3 grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg border-2 px-4 py-2 text-center font-bold">

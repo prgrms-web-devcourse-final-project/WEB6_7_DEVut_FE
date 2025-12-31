@@ -5,9 +5,12 @@ interface Wish {
   category: string;
   initPrice: number;
   instantBuyPrice: null;
-  likes: number;
+  auctionStatus: AuctionStatus;
   image: string;
   createdAt: string;
+  currentPrice: number;
+  endTime: string;
+  wish: boolean;
 }
 
 interface MyWishResponse {
