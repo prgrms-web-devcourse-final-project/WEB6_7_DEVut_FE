@@ -2,7 +2,7 @@ import test from "@/assets/vintage.png";
 import BizzAmount from "@/components/common/BizzAmount";
 import Image from "next/image";
 
-export default function AuctionProduct() {
+export default function AuctionProduct({ product }: { product: LiveAuctionProduct | undefined }) {
   return (
     <div className="absolute inset-x-0 z-20 flex justify-center" style={{ bottom: "15%" }}>
       <div
@@ -15,7 +15,7 @@ export default function AuctionProduct() {
         <div className="pointer-events-none absolute inset-x-[1.2em] -bottom-[0.9em] h-[0.9em] rounded-full bg-black/45 blur-md" />
 
         <div className="relative z-10 p-[1em]">
-          <p>오토바이 카메라</p>
+          <p>{product?.name}</p>
           <div className="border-border-main my-2 border" />
           <div className="border-border-sub2 mb-2 border-[1.5px]">
             <div className="relative aspect-4/3 w-full">
@@ -25,7 +25,7 @@ export default function AuctionProduct() {
 
           <div className="border-border-sub2 border-[0.14em] px-3 py-[0.6em]">
             <p className="text-[0.85em] opacity-70">현재 입찰가</p>
-            <BizzAmount amount={123000} />
+            <BizzAmount amount={product?.currentPrice as string | number} />
           </div>
         </div>
       </div>

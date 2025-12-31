@@ -3,10 +3,14 @@ import LiveChatItem, { LiveChatItemProps } from "./LiveChatItem";
 
 export default function LiveChatList({ messages }: { messages: LiveChatItemProps[] }) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const prevLengthRef = useRef(messages.length);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messages.length > prevLengthRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevLengthRef.current = messages.length;
+  }, [messages.length]);
 
   return (
     <ul className="px-2">

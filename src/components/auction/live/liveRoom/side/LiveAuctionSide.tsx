@@ -8,41 +8,43 @@ import LiveProductList from "./LiveProductList";
 import { LiveChatItemProps } from "./LiveChatItem";
 import Button from "@/components/common/Button";
 
-export default function LiveAuctionSide() {
+interface LiveAuctionSideProps {
+  products: LiveAuctionState["products"];
+  chat: LiveChatMessage[];
+}
+
+export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
 
-  const messages: LiveChatItemProps[] = [
-    { type: "SYSTEM", text: "경매가 시작되었습니다" },
-    {
-      type: "BID",
-      user: "경매왕경매왕경매왕",
-      amount: 120000000,
-      text: "",
-    },
-    {
-      type: "USER",
-      user: "버저",
-      text: "와 이거 탐난다",
-      avatarUrl: "/avatar/buzzer.png",
-    },
-    {
-      type: "USER",
-      user: "나",
-      text: "이거 내가 가져간다",
-      isMine: true,
-    },
-    { type: "SYSTEM", text: "종료 1분전!!" },
-    {
-      type: "USER",
-      user: "버저비더",
-      text: "잠시만요",
-      avatarUrl: "/avatar/buzzer.png",
-    },
-  ];
+  const chatItems: LiveChatItemProps[] = chat.map(msg => {
+    switch (msg.type) {
+      case "SYSTEM":
+        return {
+          type: "SYSTEM",
+          text: msg.message,
+        };
+
+      case "BID":
+        return {
+          type: "BID",
+          user: msg.nickname,
+          amount: Number(msg.message.replace(/[^0-9]/g, "")), // 임시
+          text: "",
+        };
+
+      case "USER":
+        return {
+          type: "USER",
+          user: msg.nickname,
+          text: msg.message,
+          avatarUrl: msg.profileImageUrl,
+          isMine: false, // me
+        };
+    }
+  });
 
   return (
     <div className="border-border-main flex w-[28%] min-w-[280px] flex-col border">
-      {/* 상단 탭 */}
       <div className="border-border-main flex h-14 shrink-0 items-center border-b">
         <LiveSideTabButton active={tab === "CHAT"} onClick={() => setTab("CHAT")}>
           <MessageCircle size={18} className="mr-2" /> 채팅
@@ -52,18 +54,16 @@ export default function LiveAuctionSide() {
         </LiveSideTabButton>
       </div>
 
-      {/* 스크롤 영역 (여기만) */}
-      <div className="min-h-0 flex-1">
-        <div hidden={tab !== "CHAT"} className="h-full overflow-y-auto">
-          <LiveChatList messages={messages} />
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className={tab === "CHAT" ? "h-full" : "hidden"}>
+          <LiveChatList messages={chatItems} />
         </div>
 
-        <div hidden={tab !== "PRODUCT"} className="h-full overflow-y-auto">
-          <LiveProductList />
+        <div className={tab === "PRODUCT" ? "h-full" : "hidden"}>
+          <LiveProductList products={products} />
         </div>
       </div>
 
-      {/* 하단 입력창 */}
       <div className="border-border-sub shrink-0 border-t px-3 py-3">
         <div className="flex items-end gap-2">
           <textarea
