@@ -1,21 +1,23 @@
+// LiveChatList.tsx
 import { useEffect, useRef } from "react";
-import LiveChatItem, { LiveChatItemProps } from "./LiveChatItem";
+import LiveChatItem from "./LiveChatItem";
 
-export default function LiveChatList({ messages }: { messages: LiveChatItemProps[] }) {
+interface LiveChatListProps {
+  messages: LiveChatMessage[];
+  userId: number;
+}
+
+export default function LiveChatList({ messages, userId }: LiveChatListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const prevLengthRef = useRef(messages.length);
 
   useEffect(() => {
-    if (messages.length > prevLengthRef.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-    prevLengthRef.current = messages.length;
-  }, [messages.length]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <ul className="px-2">
-      {messages.map((msg, idx) => (
-        <LiveChatItem key={idx} {...msg} />
+    <ul className="space-y-2 px-2">
+      {messages.map(message => (
+        <LiveChatItem key={message.id} message={message} isMine={message.userId === userId} />
       ))}
       <div ref={bottomRef} />
     </ul>

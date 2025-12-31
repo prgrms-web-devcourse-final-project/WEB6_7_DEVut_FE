@@ -8,8 +8,8 @@ import MobileSideDrawer from "@/components/common/MobileSideDrawer";
 import {
   useAudience,
   useLiveAuction,
-  useLiveChat,
 } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
+import { useLiveChat } from "@/features/auction/hooks/liveAuctionRoom/useLiveChat";
 import { useState } from "react";
 
 export default function LiveAuctionRoomPage() {
@@ -33,9 +33,7 @@ export default function LiveAuctionRoomPage() {
   return (
     <div className="w-full">
       <div className="flex w-full items-stretch">
-        {/* 좌측: Stage 영역 */}
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* Stage 전용 탭 바 */}
           <StageBarBackground className="sticky top-0 z-30 h-14 gap-2 px-4">
             {roomTabs.map(tab => (
               <TabButton
@@ -47,17 +45,14 @@ export default function LiveAuctionRoomPage() {
             ))}
           </StageBarBackground>
 
-          {/* Stage */}
           <LiveAuctionStage auction={auction} audience={audience} />
         </div>
 
-        {/* 우측: Side (데스크탑만) */}
         <div className="hidden lg:flex lg:w-[28%] lg:items-stretch">
           <LiveAuctionSide products={auction.products} chat={chat} />
         </div>
       </div>
 
-      {/* 모바일 Drawer */}
       <div className="lg:hidden">
         <MobileSideDrawer
           trigger={

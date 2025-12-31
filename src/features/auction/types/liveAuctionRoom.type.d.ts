@@ -45,3 +45,8 @@ interface LiveAuctionState {
   stage: AuctionStageState;
   products: LiveAuctionProduct[];
 }
+
+// 경매방 입장 시 구독 id 반환 DTO
+interface EnterChatRoomResponse {
+  chatRoomId: number;
+}

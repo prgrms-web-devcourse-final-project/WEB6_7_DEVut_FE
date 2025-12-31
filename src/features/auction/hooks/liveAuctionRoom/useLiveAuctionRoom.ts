@@ -6,9 +6,9 @@ export const useAudience = (roomId: number) => {
   return audienceMockByRoomId[roomId] ?? { users: [] };
 };
 
-export const useLiveChat = (roomId: number) => {
-  return chatMockByRoomId[roomId] ?? [];
-};
+// export const useLiveChat = (roomId: number) => {
+//   return chatMockByRoomId[roomId] ?? [];
+// };
 
 export const useLiveAuction = (roomId: number) => {
   return productMockByRoomId[roomId];
