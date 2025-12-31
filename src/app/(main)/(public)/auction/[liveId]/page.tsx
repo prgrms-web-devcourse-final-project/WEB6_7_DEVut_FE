@@ -4,6 +4,7 @@ import LiveAuctionSide from "@/components/auction/live/liveRoom/side/LiveAuction
 import LiveAuctionStage from "@/components/auction/live/liveRoom/stage/LiveAuctionStage";
 import StageBarBackground from "@/components/auction/live/liveRoom/stage/StageBarBackground";
 import TabButton from "@/components/auction/live/liveRoom/stage/TabButton";
+import MobileSideDrawer from "@/components/common/MobileSideDrawer";
 import {
   useAudience,
   useLiveAuction,
@@ -30,20 +31,43 @@ export default function LiveAuctionRoomPage() {
   };
 
   return (
-    <div>
-      <StageBarBackground className="sticky top-0 h-14 gap-2 px-4">
-        {roomTabs.map(tab => (
-          <TabButton
-            key={tab.roomId}
-            label={tab.label}
-            active={tab.roomId === activeRoomId}
-            onClick={() => selectRoom(tab.roomId)}
-          />
-        ))}
-      </StageBarBackground>
-      <div className="flex min-h-screen w-full flex-col md:flex-row">
-        <LiveAuctionStage auction={auction} audience={audience} />
-        <LiveAuctionSide products={auction.products} chat={chat} />
+    <div className="w-full">
+      <div className="flex w-full items-stretch">
+        {/* 좌측: Stage 영역 */}
+        <div className="flex min-w-0 flex-1 flex-col">
+          {/* Stage 전용 탭 바 */}
+          <StageBarBackground className="sticky top-0 z-30 h-14 gap-2 px-4">
+            {roomTabs.map(tab => (
+              <TabButton
+                key={tab.roomId}
+                label={tab.label}
+                active={tab.roomId === activeRoomId}
+                onClick={() => selectRoom(tab.roomId)}
+              />
+            ))}
+          </StageBarBackground>
+
+          {/* Stage */}
+          <LiveAuctionStage auction={auction} audience={audience} />
+        </div>
+
+        {/* 우측: Side (데스크탑만) */}
+        <div className="hidden lg:flex lg:w-[28%] lg:items-stretch">
+          <LiveAuctionSide products={auction.products} chat={chat} />
+        </div>
+      </div>
+
+      {/* 모바일 Drawer */}
+      <div className="lg:hidden">
+        <MobileSideDrawer
+          trigger={
+            <button className="border-border-sub bg-custom-brown text-title-main-dark fixed right-0 bottom-0 left-0 z-40 flex h-14 w-full items-center justify-center gap-2 rounded-t-md border-t-2 text-sm font-semibold">
+              채팅 · 상품 목록
+            </button>
+          }
+        >
+          <LiveAuctionSide products={auction.products} chat={chat} />
+        </MobileSideDrawer>
       </div>
     </div>
   );

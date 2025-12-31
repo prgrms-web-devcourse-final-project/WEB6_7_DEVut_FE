@@ -28,7 +28,7 @@ export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps
         return {
           type: "BID",
           user: msg.nickname,
-          amount: Number(msg.message.replace(/[^0-9]/g, "")), // 임시
+          amount: Number(msg.message.replace(/[^0-9]/g, "")),
           text: "",
         };
 
@@ -44,7 +44,7 @@ export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps
   });
 
   return (
-    <div className="border-border-main flex w-[28%] min-w-[280px] flex-col border">
+    <div className="border-border-main flex min-h-[420px] w-full min-w-[280px] flex-col border lg:min-h-0">
       <div className="border-border-main flex h-14 shrink-0 items-center border-b">
         <LiveSideTabButton active={tab === "CHAT"} onClick={() => setTab("CHAT")}>
           <MessageCircle size={18} className="mr-2" /> 채팅

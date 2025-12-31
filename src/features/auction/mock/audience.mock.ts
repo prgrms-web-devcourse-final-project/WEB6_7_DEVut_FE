@@ -1,6 +1,6 @@
 export const audienceMockByRoomId: Record<number, AudienceState> = {
   1: {
-    users: Array.from({ length: 10 }).map((_, i) => ({
+    users: Array.from({ length: 30 }).map((_, i) => ({
       userId: i,
       name: `ROOM1_USER_${i}`,
     })),
