@@ -4,6 +4,7 @@ import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
 import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import { useEffect, useState } from "react";
 
@@ -11,11 +12,14 @@ export default function BidList() {
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
 
+  const { data: puarchaseData } = useMyPurchase();
+  console.log("puarchaseData:", puarchaseData);
+
   useEffect(() => {
     const updateCount = () => {
       const width = window.innerWidth;
 
-      if (width >= 1024) setVisibleCount(4);
+      if (width >= 1024) setVisibleCount(5);
       else if (width >= 640) setVisibleCount(3);
       else setVisibleCount(2);
     };

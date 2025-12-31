@@ -6,11 +6,13 @@ import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
 import { productCardMock_MY_BUYING } from "@/features/product/mock/productCard.myBuying.mock";
 import { useState } from "react";
 
 export default function PurchaseDetail() {
   const [status, setStatus] = useState("전체");
+  const { data: puarchaseData } = useMyPurchase();
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>

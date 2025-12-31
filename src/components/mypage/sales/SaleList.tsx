@@ -20,7 +20,7 @@ export default function SaleList() {
     const updateCount = () => {
       const width = window.innerWidth;
 
-      if (width >= 1024) setVisibleCount(4);
+      if (width >= 1024) setVisibleCount(5);
       else if (width >= 640) setVisibleCount(3);
       else setVisibleCount(2);
     };

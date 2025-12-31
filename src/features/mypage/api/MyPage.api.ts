@@ -23,3 +23,15 @@ export const mySell = async (): Promise<MySellResponse> => {
 
   return res.data;
 };
+
+export const myPurchase = async (): Promise<MyPurchasesResponse> => {
+  const res = await ClientApi<MyPurchasesResponse>("/users/me/items", {
+    method: "GET",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};
