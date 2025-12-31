@@ -7,7 +7,8 @@ export function useSignIn() {
   return useMutation({
     mutationFn: login,
     onSuccess: async () => {
-      qc.invalidateQueries({ queryKey: ["me"] });
+      await qc.invalidateQueries({ queryKey: ["me"] });
+      await qc.refetchQueries({ queryKey: ["me"] });
     },
   });
 }

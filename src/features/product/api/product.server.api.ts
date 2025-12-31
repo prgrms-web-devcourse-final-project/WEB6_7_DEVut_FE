@@ -41,3 +41,11 @@ export const getDelayHotProducts = async () => {
 
   return res.data.delayedItems.map(mapDelayedProductToCard);
 };
+
+export const getProductBidsLog = async (productId: number) => {
+  const res = await ServerApi<ProductBidsLogResponse>(`/auction/delayed/${productId}/bids`, {
+    method: "GET",
+  });
+
+  return res.data.bids;
+};

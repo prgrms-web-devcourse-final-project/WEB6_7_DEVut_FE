@@ -43,7 +43,7 @@ export default function MobileHeader() {
         }`}
       >
         <div className="flex h-full flex-col justify-between p-4">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <button onClick={() => setOpen(false)} className="self-end text-xl">
               <X />
             </button>
@@ -53,17 +53,17 @@ export default function MobileHeader() {
                 key={item.path}
                 href={item.path}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
+                className="flex items-center gap-3 rounded-md px-2 py-2 hover:scale-102 active:scale-98"
               >
                 <Image src={item.icon} alt={item.label} width={24} height={24} />
-                <span className="ml-2 text-base font-medium">{item.label}</span>
+                <span className="ml-2">{item.label}</span>
               </Link>
             ))}
 
             <Link
               href={me ? "/mypage" : "/login"}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
+              className="flex items-center gap-3 rounded-md px-2 py-2 hover:scale-102 active:scale-98"
             >
               <Image
                 src={me ? mypage : login}
@@ -71,7 +71,7 @@ export default function MobileHeader() {
                 width={24}
                 height={24}
               />
-              <span className="ml-2 text-base font-medium">{me ? "내정보" : "로그인"}</span>
+              <span className="ml-2">{me ? "내정보" : "로그인"}</span>
             </Link>
           </div>
 
@@ -79,10 +79,10 @@ export default function MobileHeader() {
             onClick={() => {
               setOpen(false);
             }}
-            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
+            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 hover:scale-102 active:scale-98"
           >
             <Image src={sound} alt="소리" width={24} height={24} />
-            <span className="ml-2 text-base font-medium">사운드</span>
+            <span className="ml-2">사운드</span>
           </button>
         </div>
       </div>

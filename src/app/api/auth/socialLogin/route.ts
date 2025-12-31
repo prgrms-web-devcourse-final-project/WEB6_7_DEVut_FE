@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 10,
-    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.shop" : undefined,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 
   response.cookies.set("refreshToken", refreshToken, {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
-    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.shop" : undefined,
+    domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
   return response;
 }

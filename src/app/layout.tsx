@@ -4,6 +4,7 @@ import "@/css/globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import Script from "next/script";
+import RootProvider from "@/providers/RootProvider";
 
 const font = localFont({
   src: [
@@ -44,8 +45,7 @@ export default function RootLayout({
       </head>
       <body className={`${font.className} min-h-screen`}>
         <div className="bg-bg-main mx-auto min-h-screen w-full">
-          <QueryProvider>{children}</QueryProvider>
-          <ToastProvider />
+          <RootProvider>{children}</RootProvider>
         </div>
       </body>
     </html>
