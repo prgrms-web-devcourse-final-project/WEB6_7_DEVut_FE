@@ -60,7 +60,7 @@ export default function MessageRight({ roomId, isOpen, onBack }: MessageRightPro
 
   if (!roomId) {
     return (
-      <div className="bg-bg-main hidden items-center justify-center md:flex md:flex-1">
+      <div className="bg-bg-main hidden items-center justify-center lg:flex lg:flex-1">
         <p className="text-lg text-[#A1887F]">채팅방을 선택해 주세요</p>
       </div>
     );
@@ -68,7 +68,7 @@ export default function MessageRight({ roomId, isOpen, onBack }: MessageRightPro
 
   return (
     <div
-      className={`bg-bg-main fixed inset-0 z-50 flex flex-col transition-all duration-250 ease-in-out md:static md:z-auto md:flex-1 ${
+      className={`bg-bg-main fixed inset-0 z-50 flex flex-col transition-all duration-250 ease-in-out lg:static lg:z-auto lg:flex-1 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
