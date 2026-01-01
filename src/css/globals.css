@@ -66,4 +66,16 @@ body {
   --color-custom-violet: #8a6aa9;
   --color-btn-default: #fff8e1;
   --color-btn-active: #ff8a65;
+
+  --animate-ringPulse: ringPulse 1.6s ease-in-out infinite;
+
+  @keyframes ringPulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.55);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.15);
+    }
+  }
 }
