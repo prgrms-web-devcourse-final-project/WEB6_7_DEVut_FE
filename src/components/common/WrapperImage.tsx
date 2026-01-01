@@ -11,7 +11,7 @@ interface WrapperImageProps {
 }
 
 function isValidExternalUrl(src: string) {
-  return src.startsWith("http://") || src.startsWith("https://");
+  return src.startsWith("http://") || src.startsWith("https://") || src.startsWith("blob:"); // blob은 로컬이미지. 브라우저메모리에 있는 임시파일. 프리뷰용
 }
 
 export default function WrapperImage({
