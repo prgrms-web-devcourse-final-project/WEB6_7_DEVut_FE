@@ -25,7 +25,7 @@ export const mySell = async (): Promise<MySellResponse> => {
 };
 
 export const myPurchase = async (): Promise<MyPurchasesResponse> => {
-  const res = await ClientApi<MyPurchasesResponse>("/users/me/items", {
+  const res = await ClientApi<MyPurchasesResponse>("/users/me/deals", {
     method: "GET",
   });
 

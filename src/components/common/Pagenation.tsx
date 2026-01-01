@@ -1,6 +1,8 @@
-export default function Pagenation() {
+import { twMerge } from "tailwind-merge";
+
+export default function Pagenation({ className }: { className?: string }) {
   return (
-    <div className="w-full">
+    <div className={twMerge("w-full", className)}>
       <div className="mx-auto flex w-[50%] items-center justify-center gap-2">
         <button>Prev</button>
 
