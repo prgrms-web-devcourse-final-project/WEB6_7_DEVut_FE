@@ -28,12 +28,14 @@ export default function MyIntro() {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const inputFields = [
     { label: "닉네임", value: nickname, setValue: setNickname },
     { label: "이메일", value: email, setValue: setEmail },
     { label: "배송지", value: address, setValue: setAddress },
+    { label: "상세 주소", value: detailAddress, setValue: setDetailAddress },
   ];
 
   useEffect(() => {
@@ -172,7 +174,15 @@ export default function MyIntro() {
         </div>
       </div>
 
-      <div className="mx-auto mb-5 flex w-[95%] justify-end">
+      <div className="mx-auto mb-5 flex w-[95%] justify-end gap-3">
+        {onEdit && (
+          <Button
+            className="bg-custom-red h-10 w-full text-white md:w-auto"
+            onClick={() => setOnEdit(false)}
+          >
+            취소
+          </Button>
+        )}
         <Button
           className="h-10 w-full md:w-auto"
           onClick={handleEditClick}

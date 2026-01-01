@@ -7,9 +7,7 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { productCardMock_MY_SELLING } from "@/features/product/mock/productCard.mySelling.mock";
 import { myPageCardMapping } from "@/utils/myPageCardMapping";
-import { se } from "date-fns/locale";
 import { useState } from "react";
 
 export default function SaleDetail() {
@@ -18,6 +16,28 @@ export default function SaleDetail() {
 
   const newMySells = myPageCardMapping({ card: mySells });
   const sellItems = newMySells ?? [];
+
+  const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
+    전체: "ALL",
+    잔금대기: "PAYMENT_PENDING",
+    "거래 중": "IN_DEAL",
+    "판매 확정": "PURCHASE_CONFIRMED",
+    유찰: "FAILED",
+  };
+
+  const filteredItems = sellItems.filter(product => {
+    if (product.status.kind !== "status") return false;
+
+    if (product.status.status === "IN_PROGRESS") return false;
+    if (product.status.status === "BEFORE_BIDDING") return false;
+
+    if (status === "전체") return true;
+
+    return product.status.status === STATUS_MAP[status];
+  });
+
+  const isEmpty = filteredItems.length === 0;
+
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -28,25 +48,29 @@ export default function SaleDetail() {
           <OrderSwitch />
         </div>
 
-        <OptionDropdown label={status}>
+        <OptionDropdown label={status} className="mb-5">
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("잔금대기")}>잔금대기</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("거래 중")}>거래 중</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("거래 완료")}>
-            거래 완료
-          </OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("판매 확정")}>
             판매 확정
           </OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("유찰")}>유찰</OptionDropdown.Item>
         </OptionDropdown>
       </div>
 
       <ProductsGrid>
-        {sellItems.map((product, index) => (
-          <ProductCard context="MY_SELLING" key={index} product={product} />
-        ))}
+        {isEmpty ? (
+          <div className="border-border-sub col-span-full flex min-h-[220px] flex-col items-center justify-center rounded-md border-2 border-dashed bg-[#FDF6E9] text-center">
+            <p className="text-title-main text-lg font-bold">판매 이력이 없습니다</p>
+          </div>
+        ) : (
+          filteredItems.map((product, index) => (
+            <ProductCard key={index} context="MY_SELLING" product={product} />
+          ))
+        )}
       </ProductsGrid>
-      <Pagenation />
+      <Pagenation className="mt-5" />
     </div>
   );
 }

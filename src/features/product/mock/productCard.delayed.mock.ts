@@ -87,4 +87,17 @@ export const productCardMock_DELAYED: ProductCardType[] = [
     },
     type: "DELAYED",
   },
+  {
+    id: 406,
+    title: "오프화이트 프레스토",
+    amount: 1500000,
+    image: productImg,
+    href: "/product/405",
+    badge: { image: delayBadge, alt: "일반 경매" },
+    status: {
+      kind: "time",
+      time: generateEndTimeISO(),
+    },
+    type: "DELAYED",
+  },
 ];
