@@ -1,11 +1,13 @@
 interface Sell {
+  auctionStatus: AuctionStatus;
+  endTime: string;
   id: number;
   type: "DELAYED" | "LIVE";
   name: string;
   category: string;
   initPrice: number;
   instantBuyPrice: null;
-  likes: number;
+  wish: boolean;
   image: string;
   createdAt: string;
 }

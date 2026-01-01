@@ -30,9 +30,9 @@ export default function SideBarItem({ src, path, badgeCount, label, onClose }: S
           data-tooltip-id={tooltipId}
           data-tooltip-content={label}
           className={twMerge(
-            `border-border-sub2 relative flex h-[50px] items-center justify-center border-[3px] p-3 shadow-[2px_2px_0_rgba(0,0,0,0.25)] transition-all active:translate-y-0.5 active:shadow-none`,
+            `border-border-sub2 relative flex h-[50px] items-center justify-center border-[3px] p-3 shadow-[2px_2px_0_rgba(0,0,0,0.25)] transition-all hover:scale-101 active:translate-y-0.5 active:shadow-none`,
             isActive(path) &&
-              `bg-content-area translate-y-0 shadow-[inset_2px_2px_0_rgba(0,0,0,0.25)]`
+              `bg-content-area translate-y-0 shadow-[inset_3px_3px_0_rgba(0,0,0,0.25)]`
           )}
         >
           <Image src={src} alt={path} width={22} height={22} />

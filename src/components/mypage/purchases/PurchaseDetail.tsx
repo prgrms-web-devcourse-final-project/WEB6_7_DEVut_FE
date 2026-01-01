@@ -6,11 +6,15 @@ import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
 import { productCardMock_MY_BUYING } from "@/features/product/mock/productCard.myBuying.mock";
 import { useState } from "react";
 
 export default function PurchaseDetail() {
   const [status, setStatus] = useState("전체");
+  const { data: purchaseData } = useMyPurchase();
+  console.log(purchaseData);
+  const isEmpty = !purchaseData || purchaseData.items.length === 0;
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -21,7 +25,7 @@ export default function PurchaseDetail() {
           <OrderSwitch />
         </div>
 
-        <OptionDropdown label={status}>
+        <OptionDropdown label={status} className="mb-5">
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("잔금대기")}>잔금대기</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("거래 중")}>거래 중</OptionDropdown.Item>
@@ -35,11 +39,17 @@ export default function PurchaseDetail() {
       </div>
 
       <ProductsGrid>
-        {productCardMock_MY_BUYING.map(product => (
-          <ProductCard context="MY_BUYING" key={product.id} product={product} />
-        ))}
+        {isEmpty ? (
+          <div className="border-border-sub col-span-full flex min-h-[220px] flex-col items-center justify-center rounded-md border-2 border-dashed bg-[#FDF6E9] text-center">
+            <p className="text-title-main text-lg font-bold">구매 이력이 없습니다</p>
+          </div>
+        ) : (
+          productCardMock_MY_BUYING.map(product => (
+            <ProductCard context="MY_BUYING" key={product.id} product={product} />
+          ))
+        )}
       </ProductsGrid>
-      <Pagenation />
+      <Pagenation className="mt-5" />
     </div>
   );
 }
