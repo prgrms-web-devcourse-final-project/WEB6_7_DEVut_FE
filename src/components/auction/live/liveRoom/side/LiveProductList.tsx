@@ -1,12 +1,11 @@
 import LiveProductItem from "./LiveProductItem";
 
-export default function LiveProductList() {
+export default function LiveProductList({ products }: { products: LiveAuctionProduct[] }) {
   return (
     <ul className="px-0.5 pt-1">
-      <LiveProductItem status="WAITING" />
-      <LiveProductItem status="ONGOING" />
-      <LiveProductItem status="WAITING" />
-      <LiveProductItem status="DONE" />
+      {products.map(product => (
+        <LiveProductItem key={product.id} product={product} />
+      ))}
     </ul>
   );
 }

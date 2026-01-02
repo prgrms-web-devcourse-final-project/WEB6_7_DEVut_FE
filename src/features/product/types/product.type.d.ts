@@ -58,6 +58,8 @@ interface ProductDetailBase {
 interface LiveProductDetail extends ProductDetailBase {
   type: "LIVE";
   liveTime: string;
+  initPrice: number;
+  roomIndex: number;
   sellerId: number; // 통합 필요
 }
 

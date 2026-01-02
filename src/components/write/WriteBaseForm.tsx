@@ -39,7 +39,7 @@ export default function WriteBaseForm({
         <p className="text-title-sub text-2xl">상품 정보</p>
       </div>
       <div className="space-y-2">
-        <p className="text-title-sub2 text-lg">상품명</p>
+        <p className="text-title-sub2 text-lg">상품명 *</p>
         <Input
           placeholder="상품명을 입력해주세요"
           maxLength={40}
@@ -48,7 +48,7 @@ export default function WriteBaseForm({
         />
       </div>
       <div className="space-y-2">
-        <p className="text-title-sub2 text-lg">카테고리</p>
+        <p className="text-title-sub2 text-lg">카테고리 *</p>
         <Category
           name="categoryRadio"
           value={category}
@@ -57,7 +57,7 @@ export default function WriteBaseForm({
         />
       </div>
       <div className="space-y-2">
-        <p className="text-title-sub2 text-lg">상품상태</p>
+        <p className="text-title-sub2 text-lg">상품상태 *</p>
         <ItemStatusRadio condition={condition} setCondition={onChangeCondition} />
       </div>
       <div className="space-y-2">
@@ -72,7 +72,7 @@ export default function WriteBaseForm({
         <div className="w-full space-y-2">
           <p className="text-title-sub2 text-lg">지역</p>
           <Input
-            placeholder="지역을 적어주세요."
+            placeholder="예) 서울"
             maxLength={40}
             onChange={e => onChangeRegion(e.target.value)}
             value={region}
@@ -82,7 +82,7 @@ export default function WriteBaseForm({
         <div className="w-full space-y-2">
           <p className="text-title-sub2 text-lg">선호 장소</p>
           <Input
-            placeholder="선호하는 장소를 입력해주세요. ( 직거래 )"
+            placeholder="예) 강남역"
             maxLength={40}
             onChange={e => onChangePreferredPlace(e.target.value)}
             value={preferredPlace}

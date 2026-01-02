@@ -13,6 +13,8 @@ import ProductStatus from "./ProductStatus";
 
 import test from "@/assets/images/auction/auctioneer.svg";
 import WrapperImage from "./WrapperImage";
+import Button from "./Button";
+import { useRouter } from "next/navigation";
 
 export default function ProductCard({
   product,
@@ -24,6 +26,7 @@ export default function ProductCard({
   className?: string;
 }) {
   const [star, setStar] = useState<boolean>(!!product.isWish);
+  const router = useRouter();
 
   return (
     <Link href={product.href} className={twMerge("relative cursor-pointer", className)}>
@@ -52,6 +55,23 @@ export default function ProductCard({
               <Image src={product.badge.image} alt={product.badge.alt} />
             </div>
           )}
+          <div className="absolute right-3 bottom-3">
+            {((context === "MY_BUYING" && product.status?.kind === "status") ||
+              (context === "MY_SELLING" && product.status?.kind === "status")) &&
+            product.status?.kind === "status" &&
+            product.status?.status !== "BEFORE_BIDDING" ? (
+              <Button
+                className="h-full px-3 py-1 text-[12px]"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.replace(`/trade/${product.id}`);
+                }}
+              >
+                거래 상세
+              </Button>
+            ) : null}
+          </div>
         </div>
 
         <div className="flex flex-1 flex-col px-2">

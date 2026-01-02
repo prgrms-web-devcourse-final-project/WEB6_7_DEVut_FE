@@ -8,7 +8,7 @@ import PriceInput from "@/components/common/PriceInput";
 import ImageUploader from "@/components/write/ImageUploader";
 import calendar from "@/assets/images/sidebar/calendar.png";
 import Image from "next/image";
-import { formatIsoDateTime, formatYmd, getMinEndDate } from "@/utils/date";
+import { formatIsoDateTime, formatYmd, getAuctionTimeKey, getMinEndDate } from "@/utils/date";
 import { useCreateAuctionProduct } from "@/features/auction/hooks/useCreateAuctionProduct";
 import Toast, { ToastType } from "../common/Toast";
 import { useUploadImages } from "@/features/image/hooks/useUploadImages";
@@ -18,6 +18,9 @@ import EndDatePicker from "./EndDatePicker";
 import WriteBaseForm from "./WriteBaseForm";
 import Modal from "@/components/common/Modal";
 import WeeklySchedule from "@/components/schedule/WeeklySchedule";
+import useNow from "../schedule/UpdateNow";
+import { twMerge } from "tailwind-merge";
+import DashDivider from "../common/DashDivider";
 
 export default function WriteForm() {
   const [title, setTitle] = useState("");
@@ -28,11 +31,20 @@ export default function WriteForm() {
   const [preferredPlace, setPreferredPlace] = useState("");
   const [images, setImages] = useState<(string | File)[]>([]);
   const [startPrice, setStartPrice] = useState(0);
+  const [buyNowPrice, setBuyNowPrice] = useState<number>(0);
   const [deliveryInclude, setDeliveryInclude] = useState(true);
   const [auctionKind, setAuctionKind] = useState<AuctionType>("LIVE");
   const [calendarOpen, setCalendarOpen] = useState(false);
+  // const [liveDate, setLiveDate] = useState<Date | null>(null);
+  // const [liveTime, setLiveTime] = useState<Date | null>(null);
+  const [roomIndex, setRoomIndex] = useState<number>(1);
+
+  const now = useNow();
+  const [startDate, setStartDate] = useState<string | null>(null); // yyyy-MM-dd
+  const [startTime, setStartTime] = useState<string | null>(null); // 09:30:00
   const [endDate, setEndDate] = useState<Date>(getMinEndDate);
   const [endTime, setEndTime] = useState("12:00");
+
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   const notify = (message: string, type: ToastType) => Toast({ message, type });
@@ -60,6 +72,14 @@ export default function WriteForm() {
       notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
       return;
     }
+    if (auctionKind === "LIVE" && !startDate) {
+      notify("경매 시작일시를 선택해주세요.", "ERROR");
+      return;
+    }
+    if (auctionKind === "DELAYED" && !endDate) {
+      notify("경매 마감일시를 선택해주세요.", "ERROR");
+      return;
+    }
 
     const newFiles = images.filter(i => i instanceof File) as File[];
     const imageUrls = await uploadImages(newFiles, "auctions");
@@ -81,20 +101,29 @@ export default function WriteForm() {
         ? {
             ...formBase,
             type: "LIVE",
-            liveTime: "2025-12-30T15:30:00",
+            startAt: startDate + "T" + startTime,
             initPrice: startPrice,
+            roomIndex,
           }
         : {
             ...formBase,
             type: "DELAYED",
             endTime: formatIsoDateTime(endDate, endTime),
             startPrice,
+            buyNowPrice,
           };
 
     mutate(form, {
       onSuccess: data => {
         notify("상품이 성공적으로 등록되었습니다.", "SUCCESS");
-        router.replace(form.type === "LIVE" ? `/product/live/${data.id}` : `/product/${data.id}`);
+        const productId =
+          form.type === "LIVE"
+            ? (data as CreateLiveProductData).item.id
+            : (data as CreateDelayProductData).id;
+
+        router.replace(
+          form.type === "LIVE" ? `/product/live/${productId}` : `/product/${productId}`
+        );
       },
       onError: error => {
         notify("상품 등록에 실패했습니다.", "ERROR");
@@ -122,7 +151,7 @@ export default function WriteForm() {
 
       <ContentContainer className="flex flex-col gap-5 p-8">
         <div>
-          <p className="text-title-sub text-2xl">상품 이미지</p>
+          <p className="text-title-sub text-2xl">상품 이미지 *</p>
         </div>
         <ImageUploader files={images} onChange={setImages} />
       </ContentContainer>
@@ -131,16 +160,51 @@ export default function WriteForm() {
         <div>
           <p className="text-title-sub text-2xl">기타</p>
         </div>
+        <p className="text-title-sub2 text-lg">경매방식 *</p>
+        <div className="flex gap-4 sm:gap-8 lg:gap-20">
+          <div className="grid w-full grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
+            <Button
+              fullWidth={true}
+              variant={auctionKind === "LIVE" ? "selected" : "primary"}
+              onClick={() => setAuctionKind("LIVE")}
+            >
+              <span className="text-title-main text-xl whitespace-nowrap">라이브 경매</span>
+            </Button>
+
+            <Button
+              fullWidth={true}
+              variant={auctionKind === "DELAYED" ? "selected" : "primary"}
+              onClick={() => setAuctionKind("DELAYED")}
+            >
+              <span className="text-title-main text-xl whitespace-nowrap">일반 경매</span>
+            </Button>
+          </div>
+        </div>
+        <DashDivider />
         <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">가격</p>
+          <p className="text-title-sub2 text-lg">가격 *</p>
           <PriceInput
             placeholder="경매 시작가를 입력해주세요 (수정 불가)"
             onChange={setStartPrice}
             value={startPrice}
           />
         </div>
+        {auctionKind === "DELAYED" && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-title-sub2 text-lg">즉시구매가</span>
+              <span className="text-title-sub2 text-sm">(미입력시 즉시구매 불가로 설정됩니다)</span>
+            </div>
+            <PriceInput
+              placeholder="즉시구매가를 입력해주세요 (수정 불가)"
+              onChange={setBuyNowPrice}
+              value={buyNowPrice}
+            />
+          </div>
+        )}
         <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">택배거래</p>
+          <p className="text-title-sub2 text-lg">택배거래 *</p>
+
           <div className="flex items-center gap-4">
             <label htmlFor="delivery-include" className="flex cursor-pointer items-center gap-1">
               <input
@@ -166,34 +230,22 @@ export default function WriteForm() {
               <span className="text-title-main text-xl">배송비 별도</span>
             </label>
           </div>
-          <hr className="my-4 h-0.5 border-0 bg-[repeating-linear-gradient(to_right,var(--color-border-sub)_0,var(--color-border-sub)_6px,transparent_6px,transparent_12px)]" />
-          <p className="text-title-sub2 text-lg">경매방식</p>
-          <div className="flex gap-4 sm:gap-8 lg:gap-20">
-            <div className="grid w-full grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
-              <Button
-                fullWidth={true}
-                variant={auctionKind === "LIVE" ? "selected" : "primary"}
-                onClick={() => setAuctionKind("LIVE")}
-              >
-                <span className="text-title-main text-xl whitespace-nowrap">라이브 경매</span>
-              </Button>
+          <DashDivider />
 
-              <Button
-                fullWidth={true}
-                variant={auctionKind === "DELAYED" ? "selected" : "primary"}
-                onClick={() => setAuctionKind("DELAYED")}
-              >
-                <span className="text-title-main text-xl whitespace-nowrap">일반 경매</span>
-              </Button>
-            </div>
-          </div>
           {auctionKind === "LIVE" && (
             <>
-              <p className="text-title-sub2 text-lg">시작 일시 선택</p>
+              <p className="text-title-sub2 text-lg">시작 일시 선택 *</p>
               <div>
                 <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
-                  <div className="bg-content-gray text-title-sub border-border-sub2/20 inline-flex w-full cursor-not-allowed items-center justify-center rounded-lg border-3">
-                    2025-12-20 15:30
+                  <div
+                    className={twMerge(
+                      "bg-content-gray border-border-sub2/20 inline-flex w-full cursor-not-allowed items-center justify-center rounded-lg border-3",
+                      startDate && startTime ? "text-title-sub" : "text-title-sub/50"
+                    )}
+                  >
+                    {startDate && startTime
+                      ? startDate + " " + startTime + " (" + roomIndex + "번 방)"
+                      : "시간표에서 원하는 시간을 선택해주세요"}
                   </div>
                   <Button
                     fullWidth={true}
@@ -209,7 +261,7 @@ export default function WriteForm() {
           )}
           {auctionKind === "DELAYED" && (
             <div className="relative">
-              <p className="text-title-sub2 text-lg">마감 일시 선택</p>
+              <p className="text-title-sub2 mb-2 text-lg">마감 일시 선택 *</p>
               <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-20">
                 <Button onClick={() => setCalendarOpen(prev => !prev)}>
                   {endDate ? formatYmd(endDate) : "날짜"}{" "}
@@ -225,7 +277,7 @@ export default function WriteForm() {
                   />
                 )}
                 <Input
-                  className="text-center"
+                  className="text-border-sub2 flex justify-center"
                   type="time"
                   step={1800}
                   value={endTime}
@@ -255,7 +307,18 @@ export default function WriteForm() {
         onClose={() => setIsScheduleModalOpen(false)}
         className="max-w-[1200px]"
       >
-        <WeeklySchedule />
+        <WeeklySchedule
+          isWriteMode={true}
+          onRoomSelect={(roomIndex: number, startAt: string) => {
+            setRoomIndex(roomIndex);
+
+            const [date, time] = startAt.split("T");
+            setStartDate(date);
+            setStartTime(time.substring(0, 5)); // HH:mm
+
+            setIsScheduleModalOpen(false);
+          }}
+        />
       </Modal>
     </form>
   );
