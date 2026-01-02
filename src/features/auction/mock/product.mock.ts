@@ -31,4 +31,20 @@ export const productMockByRoomId: Record<number, LiveAuctionState> = {
       },
     ],
   },
+  3: {
+    stage: {
+      currentProductId: 2,
+      elapsedTimeSec: 45,
+    },
+    products: [
+      {
+        id: 2,
+        name: "빈티지 시계",
+        imageUrl: "/mock/2.jpg",
+        startPrice: 200000,
+        currentPrice: 240000,
+        status: "ONGOING",
+      },
+    ],
+  },
 };

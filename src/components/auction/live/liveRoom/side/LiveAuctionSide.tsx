@@ -6,56 +6,30 @@ import LiveSideTabButton from "./LiveSideTabButton";
 import LiveChatList from "./LiveChatList";
 import LiveProductList from "./LiveProductList";
 import Button from "@/components/common/Button";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 interface LiveAuctionSideProps {
   products: LiveAuctionState["products"];
   chat: {
     messages: LiveChatMessage[];
-    sendMessage: (payload: unknown) => void;
+    sendMessage: (payload: { content: string }) => void;
   };
 }
 
 export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
   const [input, setInput] = useState("");
+  const { data: me } = useMe();
 
   const handleSend = () => {
     if (!input.trim()) return;
 
     chat.sendMessage({
-      type: "USER",
-      text: input,
+      content: input,
     });
 
     setInput("");
   };
-
-  // const chatItems: LiveChatItemProps[] = chat.map(msg => {
-  //   switch (msg.type) {
-  //     case "SYSTEM":
-  //       return {
-  //         type: "SYSTEM",
-  //         text: msg.message,
-  //       };
-
-  //     case "BID":
-  //       return {
-  //         type: "BID",
-  //         user: msg.nickname,
-  //         amount: Number(msg.message.replace(/[^0-9]/g, "")),
-  //         text: "",
-  //       };
-
-  //     case "USER":
-  //       return {
-  //         type: "USER",
-  //         user: msg.nickname,
-  //         text: msg.message,
-  //         avatarUrl: msg.profileImageUrl,
-  //         isMine: false, // me
-  //       };
-  //   }
-  // });
 
   return (
     <div className="border-border-main flex min-h-[420px] w-full min-w-[280px] flex-col border lg:min-h-0">
@@ -70,7 +44,7 @@ export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className={tab === "CHAT" ? "h-full" : "hidden"}>
-          <LiveChatList messages={chat.messages} userId={1} />
+          <LiveChatList messages={chat.messages} userId={me?.id} />
         </div>
 
         <div className={tab === "PRODUCT" ? "h-full" : "hidden"}>

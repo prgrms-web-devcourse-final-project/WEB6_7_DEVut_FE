@@ -1,4 +1,5 @@
 // LiveChatItem.tsx
+import BaseImage from "@/components/common/BaseImage";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
 
@@ -26,9 +27,9 @@ interface LiveChatItemProps {
 }
 
 export default function LiveChatItem({ message, isMine }: LiveChatItemProps) {
-  const { type, nickname, profileImageUrl, message: text, createdAt } = message;
+  const { type, nickname, profileImageUrl, message: text, sendTime } = message;
 
-  const time = new Date(createdAt).toLocaleTimeString("ko-KR", {
+  const time = new Date(sendTime).toLocaleTimeString("ko-KR", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -57,13 +58,7 @@ export default function LiveChatItem({ message, isMine }: LiveChatItemProps) {
     <li className={liveChatItemVariants({ type, mine: isMine })}>
       {!isMine && (
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gray-300">
-          {profileImageUrl && (
-            <Image
-              src={profileImageUrl}
-              alt={nickname || ""}
-              className="h-full w-full object-cover"
-            />
-          )}
+          {profileImageUrl && <BaseImage src={profileImageUrl} alt={nickname || ""} />}
         </div>
       )}
 

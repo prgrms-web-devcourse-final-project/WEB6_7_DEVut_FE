@@ -13,13 +13,13 @@ interface AudienceState {
 type LiveChatType = "SYSTEM" | "BID" | "USER";
 
 interface LiveChatMessage {
-  id: string;
+  tempId: string;
   type: LiveChatType;
   userId?: number;
   nickname?: string;
   profileImageUrl?: string;
   message: string;
-  createdAt: number;
+  sendTime: number;
 }
 
 // 상품 목록
