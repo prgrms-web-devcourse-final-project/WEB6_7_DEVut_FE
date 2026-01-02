@@ -3,6 +3,7 @@
 import QueryProvider from "./QueryProvider";
 import { ProgressProvider } from "@bprogress/next/app";
 import ToastProvider from "./ToastProvider";
+import SocketProvider from "./SocketProvider";
 
 export default function RootProvider({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export default function RootProvider({ children }: { children: React.ReactNode }
         options={{ showSpinner: false }}
         shallowRouting
       >
-        {children}
+        <SocketProvider>{children}</SocketProvider>
         <ToastProvider />
       </ProgressProvider>
     </QueryProvider>

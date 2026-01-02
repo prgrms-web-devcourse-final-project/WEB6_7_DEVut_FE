@@ -1,5 +1,4 @@
 import ClientApi from "@/lib/clientApi";
-import { ApiError } from "next/dist/server/api-utils";
 
 // 상품 등록
 export const createLiveProduct = async (body: CreateLiveProductRequest) => {
