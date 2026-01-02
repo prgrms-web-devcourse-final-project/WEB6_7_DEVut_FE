@@ -70,14 +70,16 @@ export default function ProductModifyForm({ product }: ProductModifyFormProps) {
         ? {
             ...formBase,
             type: "LIVE",
-            liveTime: product.liveTime,
-            initPrice: 100000, // 아직 추가 안됨
+            startAt: product.liveTime,
+            initPrice: product.initPrice,
+            roomIndex: product.roomIndex,
           }
         : {
             ...formBase,
             type: "DELAYED",
             endTime: product.endTime,
             startPrice: product.startPrice,
+            buyNowPrice: product.buyNowPrice,
           };
 
     mutate(form, {
@@ -124,7 +126,9 @@ export default function ProductModifyForm({ product }: ProductModifyFormProps) {
         >
           수정하기
         </Button>
-        <Button className="bg-content-gray">수정취소</Button>
+        <Button className="bg-content-gray" onClick={() => router.back()}>
+          수정취소
+        </Button>
       </div>
     </form>
   );

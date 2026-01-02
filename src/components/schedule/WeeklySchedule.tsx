@@ -1,18 +1,97 @@
 "use client";
+import AuctionPage from "@/app/(main)/(public)/auction/page";
 import ContentContainer from "../common/ContentContainer";
+import Modal from "../common/Modal";
 import useNow from "./UpdateNow";
 import { twMerge } from "tailwind-merge";
+import { useState } from "react";
+import { getSchedule } from "@/features/schedule/api/schedule.api";
+import { getAuctionTimeKey, getScheduleByWeek, getWeekDates, isNowCell } from "@/utils/date";
+import { useEffect } from "react";
 
-export default function WeeklySchedule() {
-  const DAYS = [
-    { key: "mon", label: "월", date: "12.08" },
-    { key: "tue", label: "화", date: "12.09" },
-    { key: "wed", label: "수", date: "12.10" },
-    { key: "thu", label: "목", date: "12.11" },
-    { key: "fri", label: "금", date: "12.12" },
-    { key: "sat", label: "토", date: "12.13" },
-    { key: "sun", label: "일", date: "12.14" },
-  ] as const;
+interface WeeklyScheduleProps {
+  isWriteMode?: boolean;
+  onRoomSelect?: (roomIndex: number, startAt: string) => void;
+}
+
+export default function WeeklySchedule({ isWriteMode = false, onRoomSelect }: WeeklyScheduleProps) {
+  const [isLiveRoomListModalOpen, setIsLiveRoomListModalOpen] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const [scheduleData, setScheduleData] = useState<ScheduleData | null>(null);
+
+  useEffect(() => {
+    const { fromDate, toDate } = getScheduleByWeek(currentDate);
+    getSchedule(fromDate, toDate).then(setScheduleData).catch(console.error);
+  }, [currentDate]);
+
+  const handlePrevWeek = () => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setDate(prev.getDate() - 7);
+      return newDate;
+    });
+  };
+
+  const handleNextWeek = () => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setDate(prev.getDate() + 7);
+      return newDate;
+    });
+  };
+
+  const map = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+  const parsedDays = scheduleData?.days.map(day => {
+    const d = new Date(day.date);
+    const key = map[d.getDay()]; // 0=sun, 1=mon...
+
+    // Format date MM.DD
+    const dateStr = `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; // MM.DD
+
+    const labels: Record<string, string> = {
+      mon: "월",
+      tue: "화",
+      wed: "수",
+      thu: "목",
+      fri: "금",
+      sat: "토",
+      sun: "일",
+    };
+
+    return {
+      key,
+      label: labels[key],
+      date: dateStr,
+      fullDate: day.date,
+      slots: day.slots,
+    };
+  });
+
+  const weekDates = getWeekDates(currentDate);
+  const DISPLAY_DAYS = weekDates.map(d => {
+    const map = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    const key = map[d.getDay()]; // 0=sun...
+    const labels: Record<string, string> = {
+      mon: "월",
+      tue: "화",
+      wed: "수",
+      thu: "목",
+      fri: "금",
+      sat: "토",
+      sun: "일",
+    };
+
+    return {
+      key,
+      label: labels[key],
+      dateObj: d,
+      dateStr: `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`,
+      fullDateStr: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`,
+    };
+  });
 
   type Slot = "x" | "r" | "o" | "g" | "selected";
 
@@ -33,60 +112,55 @@ export default function WeeklySchedule() {
     return <span className={`${base} bg-amber-400`} />;
   };
 
-  // Demo data (퍼블리싱용
-  const SLOTS: Record<string, Slot[]> = {
-    "09:00": ["x", "x", "o", "r", "r", "g", "r"],
-    "09:30": ["g", "x", "g", "g", "x", "o", "x"],
-    "10:00": ["o", "r", "x", "x", "g", "x", "x"],
-    "10:30": ["o", "o", "o", "x", "o", "o", "x"],
-    "11:00": ["x", "o", "x", "x", "x", "x", "x"],
-    "11:30": ["r", "r", "x", "x", "x", "o", "g"],
-    "12:00": ["x", "g", "o", "x", "x", "g", "x"],
-    "12:30": ["r", "x", "o", "x", "x", "o", "r"],
-    "13:00": ["x", "r", "x", "o", "o", "o", "g"],
-    "13:30": ["o", "x", "o", "x", "o", "g", "o"],
-    "14:00": ["x", "r", "o", "r", "x", "r", "x"],
-    "14:30": ["x", "g", "g", "x", "r", "r", "g"],
-    "15:00": ["g", "x", "x", "x", "o", "o", "x"],
-    "15:30": ["r", "r", "r", "g", "g", "r", "x"],
-    "16:00": ["o", "x", "r", "x", "o", "r", "r"],
-    "16:30": ["x", "x", "x", "o", "g", "x", "o"],
-    "17:00": ["x", "g", "g", "x", "x", "x", "x"],
-    "17:30": ["x", "o", "x", "x", "x", "o", "r"],
-    "18:00": ["x", "g", "g", "x", "x", "o", "r"],
-    "18:30": ["x", "r", "x", "x", "o", "o", "o"],
-    "19:00": ["x", "o", "x", "g", "x", "o", "x"],
-    "19:30": ["r", "x", "x", "x", "x", "o", "x"],
-    "20:00": ["r", "x", "o", "x", "o", "x", "g"],
-    "20:30": ["r", "x", "x", "x", "r", "g", "o"],
-    "21:00": ["x", "r", "o", "r", "x", "o", "x"],
+  const getSlotKind = (fullDateStr: string, time: string): Slot => {
+    if (!scheduleData || !parsedDays) return "x";
+
+    const day = parsedDays.find(d => d.fullDate === fullDateStr);
+    if (!day) return "x";
+
+    const slot = day.slots.find(s => s.startAt.includes(time));
+    if (!slot) return "x";
+
+    const count = slot.roomCount;
+    if (count === 1) return "g";
+    if (count >= 2 && count <= 3) return "o";
+    if (count >= 4) return "r";
+    return "x";
+  };
+
+  const clickSlot = (startAt: string) => {
+    setSelectedSlot(startAt);
+    setIsLiveRoomListModalOpen(true);
   };
 
   const dayKeyFromDate = (d: Date) => {
     const map = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     return map[d.getDay()];
   };
-  const timeKeyFromDate = (d: Date) => {
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mm = d.getMinutes() < 30 ? "00" : "30";
-    return `${hh}:${mm}`;
-  };
   const now = useNow();
   const nowDayKey = dayKeyFromDate(now);
-  const nowTimeKey = timeKeyFromDate(now);
+  const nowTimeKey = getAuctionTimeKey(now);
 
   return (
     <>
       <ContentContainer bordered={false} className="p-12">
         <div className="border-border-sub2 shadow-flat-heavy flex items-center justify-center gap-6 rounded-2xl border-3 p-6">
-          <div className="border-border-sub2 shadow-flat-dark flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[3.5px] bg-black/5 text-lg">
+          <div
+            onClick={handlePrevWeek}
+            className="border-border-sub2 shadow-flat-dark flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[3.5px] bg-black/5 text-lg transition-all hover:bg-black/10 active:scale-95"
+          >
             <span className="-translate-x-[0.7px]">{"<"}</span>
           </div>
           <div className="grid gap-2">
             <p className="text-title-main text-5xl">주간 경매 시간표</p>
-            <p className="text-title-sub2 flex justify-center text-lg">2025.12.08 ~ 2025.12.14</p>
+            <p className="text-title-sub2 flex justify-center text-lg">
+              {scheduleData ? `${scheduleData.fromDate} ~ ${scheduleData.toDate}` : "Loading..."}
+            </p>
           </div>
-          <div className="border-border-sub2 shadow-flat-dark flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[3.5px] bg-black/5 text-lg">
+          <div
+            onClick={handleNextWeek}
+            className="border-border-sub2 shadow-flat-dark flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[3.5px] bg-black/5 text-lg transition-all hover:bg-black/10 active:scale-95"
+          >
             <span className="translate-x-[0.7px]">{">"}</span>
           </div>
         </div>
@@ -94,7 +168,8 @@ export default function WeeklySchedule() {
           {/* 요일 헤더 */}
           <div className="grid grid-cols-[88px_repeat(7,1fr)]">
             <div className="border-title-sub/40 border-b" />
-            {DAYS.map(d => {
+
+            {DISPLAY_DAYS.map(d => {
               const isSat = d.key === "sat";
               const isSun = d.key === "sun";
               return (
@@ -117,7 +192,7 @@ export default function WeeklySchedule() {
                       {d.label}
                     </p>
                     <p className={isSun ? "text-custom-red text-sm" : "text-title-sub2 text-sm"}>
-                      {d.date}
+                      {d.dateStr}
                     </p>
                   </div>
                 </div>
@@ -132,32 +207,40 @@ export default function WeeklySchedule() {
                 <div className="text-title-sub2 border-title-sub/40 border-t p-3 text-sm">
                   <span className="flex justify-center">{time}</span>
                 </div>
-                {DAYS.map((d, idx) => {
-                  const isNowCell =
-                    nowDayKey === d.key && nowTimeKey === time && TIMES.includes(nowTimeKey);
-                  const slot = (SLOTS[time] ?? Array(7).fill("x"))[idx] as Slot;
+                {DISPLAY_DAYS.map((d, idx) => {
+                  const slot = getSlotKind(d.fullDateStr, time);
+
+                  // Construct slot start Date
+                  const [h, m] = time.split(":").map(Number);
+                  const slotStart = new Date(d.dateObj);
+                  slotStart.setHours(h, m, 0, 0);
+
+                  const slotEnd = new Date(slotStart);
+                  slotEnd.setMinutes(slotEnd.getMinutes() + 30);
+
+                  const isCurrent = now >= slotStart && now < slotEnd;
+                  const isPast = now >= slotEnd;
+
                   return (
                     <div
                       key={`${time}-${d.key}`}
+                      onClick={() => {
+                        if (isWriteMode && isPast) return;
+                        const dateTime = `${d.fullDateStr}T${time}:00`;
+                        clickSlot(dateTime);
+                      }}
                       className={twMerge(
-                        "border-title-sub/40 flex h-12 items-center justify-center border-t border-l p-3",
-                        isNowCell && "ring-custom-orange animate-ringPulse bg-white/70 ring-5"
+                        "border-title-sub/40 hover:bg-border-sub/80 flex h-12 items-center justify-center border-t border-l p-3 hover:cursor-pointer",
+                        isCurrent && "animate-ringPulse bg-white/70",
+                        isPast && "bg-black/20 opacity-30",
+                        isWriteMode && isPast && "hover:cursor-not-allowed hover:bg-black/20"
                       )}
                     >
-                      {
-                        slot === "x" ? (
-                          <span className="text-title-sub/15">×</span>
-                        ) : (
-                          <Dot kind={slot as Exclude<Slot, "x">} />
-                        )
-
-                        // isSelected ? (
-                        //   <div className="border-title-sub/60 flex h-full w-full items-center justify-center rounded-md border bg-white/50">
-                        //     <Dot kind="selected" />
-                        //   </div>
-                        // ) : (
-                        // )
-                      }
+                      {slot === "x" ? (
+                        <span className="text-title-sub/15">x</span>
+                      ) : (
+                        <Dot kind={slot as Exclude<Slot, "x">} />
+                      )}
                     </div>
                   );
                 })}
@@ -165,6 +248,21 @@ export default function WeeklySchedule() {
             ))}
           </div>
         </div>
+        <Modal
+          isOpen={isLiveRoomListModalOpen}
+          onClose={() => setIsLiveRoomListModalOpen(false)}
+          className="max-w-[1200px]"
+        >
+          <AuctionPage
+            startAt={selectedSlot || ""}
+            writeMode={isWriteMode}
+            onRoomSelect={roomIndex => {
+              if (onRoomSelect && selectedSlot) {
+                onRoomSelect(roomIndex, selectedSlot);
+              }
+            }}
+          />
+        </Modal>
       </ContentContainer>
     </>
   );

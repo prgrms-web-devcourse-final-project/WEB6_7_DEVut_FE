@@ -1,16 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import {
-  mapToCreateDelayProductRequest,
-  mapToCreateLiveProductRequest,
-} from "../mapper/createAuctionProduct";
 import { modifyDelayProduct, modifyLiveProduct } from "../api/auctionProduct.api";
 
 export const useModifyAuctionProduct = (productId: number) =>
-  useMutation({
+  useMutation<CreateLiveProductResponse | CreateDelayProductResponse, unknown, CreateProductForm>({
     mutationFn: (form: CreateProductForm) => {
-      if (form.type === "LIVE") {
-        return modifyLiveProduct(mapToCreateLiveProductRequest(form), productId);
+      const { type, ...body } = form;
+
+      if (type === "LIVE") {
+        return modifyLiveProduct(body as CreateLiveProductRequest, productId);
       }
-      return modifyDelayProduct(mapToCreateDelayProductRequest(form), productId);
+
+      return modifyDelayProduct(body as CreateDelayProductRequest, productId);
     },
   });
