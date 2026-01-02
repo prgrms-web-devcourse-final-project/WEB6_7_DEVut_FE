@@ -72,11 +72,11 @@ export default function WriteForm() {
       notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
       return;
     }
-    if ((auctionKind === "LIVE" && !startDate) || !startTime) {
+    if (auctionKind === "LIVE" && !startDate) {
       notify("경매 시작일시를 선택해주세요.", "ERROR");
       return;
     }
-    if ((auctionKind === "DELAYED" && !endDate) || !endTime) {
+    if (auctionKind === "DELAYED" && !endDate) {
       notify("경매 마감일시를 선택해주세요.", "ERROR");
       return;
     }
