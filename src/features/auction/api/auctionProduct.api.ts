@@ -2,7 +2,7 @@ import ClientApi from "@/lib/clientApi";
 
 // 상품 등록
 export const createLiveProduct = async (body: CreateLiveProductRequest) => {
-  const res = await ClientApi<CreateAuctionProductResponse>("/auction/live", {
+  const res = await ClientApi<CreateLiveProductData>("/auction/live", {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -11,7 +11,7 @@ export const createLiveProduct = async (body: CreateLiveProductRequest) => {
 };
 
 export const createDelayProduct = async (body: CreateDelayProductRequest) => {
-  const res = await ClientApi<CreateAuctionProductResponse>("/auction/delayed", {
+  const res = await ClientApi<CreateDelayProductData>("/auction/delayed", {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -21,7 +21,7 @@ export const createDelayProduct = async (body: CreateDelayProductRequest) => {
 
 // 상품 수정
 export const modifyLiveProduct = async (body: CreateLiveProductRequest, productId: number) => {
-  const res = await ClientApi<CreateAuctionProductResponse>(`/auction/live/${productId}`, {
+  const res = await ClientApi<CreateLiveProductResponse>(`/auction/live/${productId}`, {
     method: "PUT",
     body: JSON.stringify(body),
   });
@@ -30,7 +30,7 @@ export const modifyLiveProduct = async (body: CreateLiveProductRequest, productI
 };
 
 export const modifyDelayProduct = async (body: CreateDelayProductRequest, productId: number) => {
-  const res = await ClientApi<CreateAuctionProductResponse>(`/auction/delayed/${productId}`, {
+  const res = await ClientApi<CreateDelayProductResponse>(`/auction/delayed/${productId}`, {
     method: "PUT",
     body: JSON.stringify(body),
   });

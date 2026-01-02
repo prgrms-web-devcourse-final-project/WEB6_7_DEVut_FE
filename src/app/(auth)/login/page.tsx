@@ -96,9 +96,6 @@ function LoginForm() {
   const kakaoLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/kakao`;
   };
-  const naverLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/naver`;
-  };
   const googleLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/google`;
   };
@@ -149,10 +146,6 @@ function LoginForm() {
         <Button onClick={kakaoLogin} type="button" className="shadow-flat bg-yellow-300">
           <Image src={kakao} alt="kakao" className="mr-2" />
           <span>카카오 로그인</span>
-        </Button>
-
-        <Button onClick={naverLogin} type="button" className="shadow-flat bg-green-500">
-          <span>N 네이버 로그인</span>
         </Button>
 
         <Button onClick={googleLogin} type="button" className="shadow-flat">
