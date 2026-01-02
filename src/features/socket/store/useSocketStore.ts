@@ -15,20 +15,14 @@ interface SocketStore {
   setConnected: () => void;
   setDisconnected: () => void;
   setError: () => void;
-
   addMessage: (chatRoomId: string, msg: LiveChatMessage) => void;
-
-  // 🔴 SEND (auctionId)
   sendAuctionMessage: (auctionId: number, payload: { content: string }) => void;
-
-  // 🔵 RECEIVE (chatRoomId)
   subscribeChatRoom: (chatRoomId: string) => void;
   unsubscribeChatRoom: (chatRoomId: string) => void;
 }
 
 export const useSocketStore = create<SocketStore>((set, get) => ({
   status: "idle",
-
   messagesByRoom: {},
   subscriptions: {},
   pendingSubscribe: [],
@@ -36,7 +30,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
   setConnected: () => {
     set({ status: "connected" });
 
-    // 연결 후 대기 중이던 구독 처리
     get().pendingSubscribe.forEach(chatRoomId => {
       get().subscribeChatRoom(chatRoomId);
     });
@@ -55,9 +48,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       },
     })),
 
-  // =========================
-  // SEND (auctionId)
-  // =========================
   sendAuctionMessage: (auctionId, payload) => {
     console.log("[STOMP SEND]", auctionId, payload);
 
@@ -67,11 +57,8 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     });
   },
 
-  // =========================
-  // SUBSCRIBE (chatRoomId)
-  // =========================
   subscribeChatRoom: chatRoomId => {
-    const { status, subscriptions, pendingSubscribe } = get();
+    const { status, subscriptions, pendingSubscribe, messagesByRoom } = get();
 
     if (subscriptions[chatRoomId]) return;
 
@@ -83,6 +70,22 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     }
 
     console.log("[STOMP SUBSCRIBE]", chatRoomId);
+
+    if (!messagesByRoom[chatRoomId]) {
+      set(state => ({
+        messagesByRoom: {
+          ...state.messagesByRoom,
+          [chatRoomId]: [
+            {
+              tempId: `system-${chatRoomId}`,
+              type: "SYSTEM",
+              message: "경매가 시작되었습니다.",
+              sendTime: Date.now(),
+            },
+          ],
+        },
+      }));
+    }
 
     const sub = stompClient.subscribe(`/receive/chat/auction/${chatRoomId}`, frame => {
       console.log("[STOMP RECEIVE]", frame.body);

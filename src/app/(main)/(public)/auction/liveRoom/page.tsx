@@ -74,10 +74,10 @@ export default function LiveAuctionRoomPage() {
       <div className="flex w-full items-stretch">
         <div className="flex min-w-0 flex-1 flex-col">
           <StageBarBackground className="sticky top-0 z-30 h-14 gap-2 px-4">
-            {subscribedAuctionIds.map(auctionId => (
+            {subscribedAuctionIds.map((auctionId, index) => (
               <TabButton
                 key={auctionId}
-                label={`${auctionId} 번방`}
+                label={`${index + 1} 번방`}
                 active={auctionId === currentAuctionId}
                 onClick={() => enterRoom(auctionId)}
               />

@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface LiveRoomState {
   activeAuctionId: number | null;
   subscribedAuctionIds: number[];
-  chatRoomIds: Record<number, string>; // auctionId → chatRoomId
+  chatRoomIds: Record<number, string>;
 
   setActiveAuctionId: (id: number) => void;
   addSubscribedAuctionId: (id: number) => void;

@@ -18,7 +18,7 @@ export const stompClient = new Client({
           Authorization: `Bearer ${accessToken}`,
         };
       } else {
-        // 게스트 연결
+        // 비로그인
         stompClient.connectHeaders = {};
       }
     } catch (err) {
@@ -32,7 +32,7 @@ export const stompClient = new Client({
     const { subscriptions } = useSocketStore.getState();
 
     Object.keys(subscriptions).forEach(roomId => {
-      useSocketStore.getState().subscribeRoom(roomId);
+      useSocketStore.getState().subscribeChatRoom(roomId);
     });
 
     useSocketStore.getState().setConnected();
@@ -43,8 +43,8 @@ export const stompClient = new Client({
     useSocketStore.getState().setDisconnected();
   },
 
-  onStompError: frame => {
-    console.error("[STOMP] ❌ stomp error", frame.headers, frame.body);
+  onStompError: () => {
+    console.error("[STOMP] ❌ stomp error");
     useSocketStore.getState().setError();
   },
 
