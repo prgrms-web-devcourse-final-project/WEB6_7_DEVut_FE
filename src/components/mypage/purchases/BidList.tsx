@@ -4,6 +4,7 @@ import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
+import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
 import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import { useEffect, useState } from "react";
 
@@ -11,11 +12,15 @@ export default function BidList() {
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
 
+  const { data: purchaseData } = useMyPurchase();
+  console.log("purchaseData:", purchaseData);
+  const isEmpty = !purchaseData || purchaseData.items.length === 0;
+
   useEffect(() => {
     const updateCount = () => {
       const width = window.innerWidth;
 
-      if (width >= 1024) setVisibleCount(4);
+      if (width >= 1024) setVisibleCount(5);
       else if (width >= 640) setVisibleCount(3);
       else setVisibleCount(2);
     };
@@ -34,9 +39,16 @@ export default function BidList() {
       <Title size="lg">입찰중인 목록</Title>
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full border px-3 py-4 md:w-full">
         <ProductsGrid>
-          {shownProducts.map(product => (
-            <ProductCard context="CARD" key={product.id} product={product} />
-          ))}
+          {isEmpty ? (
+            <div className="border-border-sub col-span-full flex min-h-[220px] flex-col items-center justify-center rounded-md border-2 border-dashed bg-[#FDF6E9] text-center">
+              <p className="text-title-main text-lg font-bold">구매중인 상품이 없습니다</p>
+              <p className="mt-2 text-sm opacity-70">입찰을 시도해 보세요!</p>
+            </div>
+          ) : (
+            shownProducts.map(product => (
+              <ProductCard context="CARD" key={product.id} product={product} />
+            ))
+          )}
         </ProductsGrid>
 
         {productCardMock_DELAYED.length > visibleCount && (
