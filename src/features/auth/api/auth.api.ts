@@ -26,9 +26,27 @@ export async function signup(payload: UserSignupRequest): Promise<UserSignupResp
 // 내 정보 조회
 export async function getMe() {
   const res = await fetch("/api/auth/me", { method: "GET", credentials: "include" });
+
   if (res.status === 401) return null;
   if (!res.ok) throw new Error(await res.text());
 
   const json = await res.json();
   return (json?.data ?? null) as User | null;
+}
+
+export async function getCookie() {
+  const res = await fetch("/api/auth/getCookie", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    return { accessToken: null, refreshToken: null };
+  }
+
+  const json = await res.json();
+  return {
+    accessToken: json.accessToken,
+    refreshToken: json.refreshToken,
+  };
 }

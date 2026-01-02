@@ -12,23 +12,26 @@
 
 .audience {
   position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  align-items: end;
+  width: 100%;
+  height: 100%;
 }
 
 .audience-item {
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  justify-self: center;
   animation: float 5s ease-in-out infinite;
 }
 
 .audience-item:nth-child(3n) {
-  left: calc(4% * var(--i));
   --y: -8px;
   --s: 1.05;
   z-index: 3;
 }
 
 .audience-item:nth-child(3n + 1) {
-  left: calc(4% * var(--i));
   --y: -28px;
   --s: 0.95;
   opacity: 0.9;
@@ -36,7 +39,6 @@
 }
 
 .audience-item:nth-child(3n + 2) {
-  left: calc(4% * var(--i));
   --y: -48px;
   --s: 0.85;
   opacity: 0.75;
@@ -54,6 +56,7 @@
 .audience-item:nth-child(4n) {
   animation-duration: 4.5s;
 }
+
 .audience-item:nth-child(5n) {
   animation-duration: 6.5s;
 }

@@ -1,19 +1,16 @@
-import { useEffect, useRef } from "react";
-import LiveChatItem, { LiveChatItemProps } from "./LiveChatItem";
+import LiveChatItem from "./LiveChatItem";
 
-export default function LiveChatList({ messages }: { messages: LiveChatItemProps[] }) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+interface LiveChatListProps {
+  messages: LiveChatMessage[];
+  userId: number | undefined;
+}
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
+export default function LiveChatList({ messages, userId }: LiveChatListProps) {
   return (
-    <ul className="px-2">
-      {messages.map((msg, idx) => (
-        <LiveChatItem key={idx} {...msg} />
+    <ul className="space-y-3 p-3">
+      {messages.map((message, index) => (
+        <LiveChatItem key={index} message={message} isMine={message.userId === userId} />
       ))}
-      <div ref={bottomRef} />
     </ul>
   );
 }
