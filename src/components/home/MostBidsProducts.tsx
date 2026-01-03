@@ -3,14 +3,14 @@
 import Link from "next/link";
 import Title from "../common/Title";
 import PopularProductsCarousel from "../product/PopularProductsCarousel";
-import { Star } from "lucide-react";
+import { Flame } from "lucide-react";
 
-export default function DelayPopularProducts({ products }: { products: ProductCardType[] }) {
+export default function MostBidsProducts({ products }: { products: ProductCardType[] }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <Title size="lg" icon={<Star size={24} className="text-custom-orange" />}>
-          찜 많이 받은 상품
+        <Title size="lg" icon={<Flame size={24} className="text-custom-red" />}>
+          입찰 경쟁 폭주 상품
         </Title>
         <Link
           href="/auction/delay"
@@ -19,7 +19,7 @@ export default function DelayPopularProducts({ products }: { products: ProductCa
           더 보러가기
         </Link>
       </div>
-      <PopularProductsCarousel products={products} autoplayDelay={5000} />
+      <PopularProductsCarousel products={products} autoplayDelay={4000} />
     </div>
   );
 }
