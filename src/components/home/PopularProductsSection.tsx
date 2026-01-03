@@ -30,7 +30,7 @@ export default function PopularProductsSection({
     <div className="flex flex-col gap-7">
       <HomeBannerClient />
       <div className="flex flex-col gap-12">
-        <LivePopularProductsClient products={liveHotProducts} />
+        {/* <LivePopularProductsClient products={liveHotProducts} /> */}
         <DelayPopularProductsClient products={delayHotProducts} />
       </div>
     </div>
