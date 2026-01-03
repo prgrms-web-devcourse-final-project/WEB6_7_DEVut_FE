@@ -8,15 +8,16 @@ import { Suspense } from "react";
 export default async function AuctionDelayPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
-    category?: string;
-  };
+    category?: CategoryKey;
+  }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const params: GetProductsParams = {
-    page: Number(searchParams.page ?? 1),
+    page: Number(resolvedSearchParams.page ?? 1),
     size: 15,
-    category: searchParams.category as CategoryKey,
+    category: resolvedSearchParams.category,
   };
 
   const initialDelayProducts = await getDelayedProducts(params);

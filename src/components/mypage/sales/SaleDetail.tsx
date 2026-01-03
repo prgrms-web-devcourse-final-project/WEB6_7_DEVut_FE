@@ -70,7 +70,7 @@ export default function SaleDetail() {
           ))
         )}
       </ProductsGrid>
-      <Pagenation className="mt-5" />
+      {/* <Pagenation className="mt-5" /> */}
     </div>
   );
 }
