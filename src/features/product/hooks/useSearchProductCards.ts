@@ -28,7 +28,7 @@ export function useSearchProductCards(search: ProductSearchState) {
 
   const liveCards = liveQuery.data ?? [];
 
-  const delayedCards = delayedQuery.data ?? [];
+  const delayedCards = delayedQuery.data?.products ?? [];
 
   return {
     cards: isLive ? liveCards : isDelayed ? delayedCards : [...liveCards, ...delayedCards],
