@@ -42,7 +42,7 @@ export default function MobileHeader() {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-full flex-col justify-between p-4">
+        <div className="text-title-main-dark flex h-full flex-col justify-between p-4">
           <div className="flex flex-col gap-4">
             <button onClick={() => setOpen(false)} className="self-end text-xl">
               <X />

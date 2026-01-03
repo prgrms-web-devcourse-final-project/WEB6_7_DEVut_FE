@@ -3,23 +3,17 @@
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
-import Title from "@/components/common/Title";
 
 interface PopularProductsCarouselProps {
-  title: string;
   products: ProductCardType[];
   autoplayDelay?: number;
-  href: string;
 }
 
 export default function PopularProductsCarousel({
-  title,
   products,
   autoplayDelay = 4000,
-  href,
 }: PopularProductsCarouselProps) {
   const isCarousel = products.length > 3;
 
@@ -54,17 +48,6 @@ export default function PopularProductsCarousel({
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <Title size="lg">{title}</Title>
-
-        <Link
-          href={href}
-          className="text-border-sub2/60 hover:text-title-main translate-y-2 text-[12px] font-medium transition hover:underline"
-        >
-          더 보러가기
-        </Link>
-      </div>
-
       <ContentContainer className="border-border-sub/50 shadow-flat-light w-full min-w-full overflow-hidden border px-3 py-4">
         {isCarousel ? (
           <div ref={emblaRef} className="w-full overflow-hidden py-2">

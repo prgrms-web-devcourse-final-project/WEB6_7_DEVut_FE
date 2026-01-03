@@ -1,13 +1,18 @@
 import ContentContainer from "@/components/common/ContentContainer";
-import { getDelayHotProducts, getLiveHotProducts } from "@/features/product/api/product.server.api";
+import {
+  getDelayHotProducts,
+  getDelayMostBidsProducts,
+  getLiveHotProducts,
+} from "@/features/product/api/product.server.api";
 
 import SocialLoginSuccessHandler from "@/components/auth/SocialLoginSuccessHandler";
 import PopularProductsSection from "@/components/home/PopularProductsSection";
 
 export default async function Home() {
-  const [liveHotProducts, delayHotProducts] = await Promise.all([
+  const [liveHotProducts, delayHotProducts, delayMostBidsProducts] = await Promise.all([
     getLiveHotProducts(),
     getDelayHotProducts(),
+    getDelayMostBidsProducts(),
   ]);
 
   return (
@@ -19,6 +24,7 @@ export default async function Home() {
       <PopularProductsSection
         liveHotProducts={liveHotProducts}
         delayHotProducts={delayHotProducts}
+        delayMostBidsProducts={delayMostBidsProducts}
       />
     </ContentContainer>
   );

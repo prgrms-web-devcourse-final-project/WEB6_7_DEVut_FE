@@ -7,7 +7,10 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
     params: { ...params },
   });
 
-  return res.data.delayedItems.map(mapDelayedProductToCard);
+  return {
+    products: res.data.delayedItems.map(mapDelayedProductToCard),
+    totalCount: res.data.totalCount,
+  };
 };
 
 export const getLiveProducts = async (params: GetProductsParams) => {

@@ -1,7 +1,6 @@
 "use client";
 
 import OrderSwitch from "@/components/common/OrderSwitch";
-import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
@@ -9,9 +8,11 @@ import CategorySection from "./CategorySection";
 import { useDelayedProducts } from "@/features/product/hooks/useDelayedProducts";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getCategoryLabel } from "@/utils/category";
+import Pagination from "@/components/common/Pagenation";
+import EmptyContainer from "@/components/common/EmptyContainer";
 
 interface DelayProductsProps {
-  initialDelayProducts: ProductCardType[];
+  initialDelayProducts: ProductsResponse;
 }
 
 export default function DelayProducts({ initialDelayProducts }: DelayProductsProps) {
@@ -28,19 +29,15 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
     category: category ?? undefined,
   };
 
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useDelayedProducts(params, {
+  const { data, isLoading, error } = useDelayedProducts(params, {
     initialData: page === 1 && !category ? initialDelayProducts : undefined,
   });
 
-  const updateParams = (next: { page?: number; category?: string }) => {
+  const updateParams = (next: { page?: number; category?: CategoryKey | null }) => {
     const sp = new URLSearchParams(searchParams.toString());
 
     Object.entries(next).forEach(([key, value]) => {
-      if (value === undefined || value === null || value === "") {
+      if (value === undefined || value === null) {
         sp.delete(key);
       } else {
         sp.set(key, String(value));
@@ -56,26 +53,36 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
   return (
     <>
       <CategorySection
+        all={true}
         category={category}
         setCategory={category => updateParams({ category, page: 1 })}
       />
       <div className="mt-10">
-        <Title size={"sm"} className="font-normal">
+        <Title size={"sm"} className="mb-2 font-normal">
           <span>
             카테고리
             <span className="mx-3">&gt;</span>
           </span>
-          <span className="underline underline-offset-8">{getCategoryLabel(category)}</span>
+          <span className="underline underline-offset-8">
+            {category ? getCategoryLabel(category) : "전체"}
+          </span>
         </Title>
-        <div className="h-[15px] w-[90%] text-right">
+        {/* <div className="h-[15px] w-[90%] text-right">
           <OrderSwitch />
-        </div>
+        </div> */}
+        {!!!data?.totalCount && (
+          <EmptyContainer
+            className="h-100"
+            title="등록된 상품이 없습니다"
+            description="조금만 기다려 주세요. 곧 새로운 상품이 등록될 예정입니다."
+          />
+        )}
         <ProductsGrid>
-          {products?.map(product => (
+          {data?.products?.map(product => (
             <ProductCard context="CARD" key={product.id} product={product} />
           ))}
         </ProductsGrid>
-        <Pagenation />
+        {data && <Pagination totalPages={Math.ceil(data.totalCount / params.size)} />}
       </div>
     </>
   );

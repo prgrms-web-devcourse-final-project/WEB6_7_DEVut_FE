@@ -3,7 +3,7 @@ import { getDelayedProducts } from "../api/product.client.api";
 
 export function useDelayedProducts(
   params: GetProductsParams,
-  options?: { enabled?: boolean; initialData: ProductCardType[] | undefined }
+  options?: { enabled?: boolean; initialData: ProductsResponse | undefined }
 ) {
   return useQuery({
     queryKey: ["delayedProducts", params],

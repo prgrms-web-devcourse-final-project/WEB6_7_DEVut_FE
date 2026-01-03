@@ -15,7 +15,7 @@ export default function ContentContainer({
   return (
     <div
       className={twMerge(
-        `mx-auto w-[99%] max-w-[1440px] rounded-lg bg-[#FFFBF5] md:w-[95%]`,
+        `mx-auto w-[99%] max-w-[1440px] rounded-sm bg-[#FFFBF5] md:w-[95%] md:rounded-lg`,
         bordered && "border-border-sub shadow-flat border-[3px]",
         className
       )}

@@ -23,13 +23,39 @@ const categoryVariants = cva("shadow-flat-light cursor-pointer rounded-lg border
 interface CategoryProps extends VariantProps<typeof categoryVariants> {
   name: string;
   value?: CategoryKey | null;
-  onChange: (value: CategoryKey) => void;
+  onChange: (value: CategoryKey | null) => void;
   className?: string;
+  all?: boolean;
 }
 
-export default function Category({ name, value, onChange, size, className }: CategoryProps) {
+export default function Category({
+  name,
+  value,
+  onChange,
+  size,
+  className,
+  all = false,
+}: CategoryProps) {
   return (
     <div className={twMerge(className)}>
+      {all && (
+        <label
+          className={categoryVariants({
+            size,
+            active: value == null,
+          })}
+        >
+          <input
+            type="radio"
+            name={name}
+            checked={value == null}
+            onChange={() => onChange(null)}
+            className="hidden"
+          />
+          전체
+        </label>
+      )}
+
       {CATEGORIES.map(cat => {
         const checked = value === cat.key;
 

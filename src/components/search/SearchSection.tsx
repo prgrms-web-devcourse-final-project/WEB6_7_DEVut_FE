@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Input from "../common/Input";
-import { FileSearch, Search } from "lucide-react";
+import { FileSearch, Search, SlidersHorizontal } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import OptionDropdown from "../common/OptionDropdown";
 import Toast, { ToastType } from "../common/Toast";
@@ -32,13 +32,12 @@ export default function SearchSection({
   };
 
   return (
-    <div className="flex w-full flex-wrap items-center gap-4">
+    <div className="flex w-full flex-wrap items-center gap-5 gap-y-3">
       <div className="relative flex min-h-[58px] w-full lg:flex-1">
         <Input
           placeholder="상품명을 입력해주세요"
           className="pr-25"
           value={searchText}
-          maxLength={20}
           onChange={e => setSearchText(e.target.value)}
           onKeyDown={e => {
             if (e.key === "Enter") {
@@ -52,7 +51,7 @@ export default function SearchSection({
             onClick={onOpenDetail}
             className="border-custom-brown mr-3 cursor-pointer border-r px-3"
           >
-            <FileSearch size={30} />
+            <SlidersHorizontal size={30} />
           </button>
           <button
             onClick={handleSearch}
@@ -67,7 +66,7 @@ export default function SearchSection({
         <p className="text-custom-dark-brown text-[18px] whitespace-nowrap">판매중인 상품만 보기</p>
         <div
           className={twMerge(
-            "border-custom-dark-brown relative h-8 w-14 cursor-pointer rounded-full border-4",
+            "border-custom-dark-brown relative h-7 w-14 cursor-pointer rounded-full border-4",
             onSell && "bg-custom-orange-dark"
           )}
           onClick={() => setOnSell(prev => !prev)}
@@ -82,7 +81,7 @@ export default function SearchSection({
         </div>
       </div>
 
-      <div className="min-w-[106px] shrink-0">
+      {/* <div className="min-w-[106px] shrink-0">
         <OptionDropdown label={auctionType}>
           <OptionDropdown.Item onClick={() => onChangeAuctionType("전체")}>
             전체
@@ -94,7 +93,7 @@ export default function SearchSection({
             일반
           </OptionDropdown.Item>
         </OptionDropdown>
-      </div>
+      </div> */}
     </div>
   );
 }

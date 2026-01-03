@@ -49,7 +49,7 @@ export default function PurchaseDetail() {
           ))
         )}
       </ProductsGrid>
-      <Pagenation className="mt-5" />
+      {/* <Pagenation className="mt-5" /> */}
     </div>
   );
 }
