@@ -1,3 +1,4 @@
+import Footer from "@/components/common/Footer";
 import MobileHeader from "@/components/common/MobileHeader";
 import Sidebar from "@/components/common/SideBar";
 import NotificationProvider from "@/providers/NotificationProvider";
@@ -14,6 +15,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="h-fit min-h-screen w-full overflow-x-visible overflow-y-hidden rounded-md px-2 pt-14 md:pt-0">
               {children}
             </div>
+            <Footer />
           </div>
         </div>
       </SocketProvider>

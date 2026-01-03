@@ -28,7 +28,7 @@ export default function Pagination({ className, totalPages }: PaginationProps) {
   return (
     <div
       className={twMerge(
-        "border-border-sub/50 my-7 mt-8 flex w-full justify-center border-t pt-6",
+        "border-border-sub/50 mt-8 flex w-full justify-center border-t pt-6",
         className
       )}
     >
