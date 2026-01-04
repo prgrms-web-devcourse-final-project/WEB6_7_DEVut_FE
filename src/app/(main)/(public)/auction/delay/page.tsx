@@ -18,6 +18,7 @@ export default async function AuctionDelayPage({
     page: Number(resolvedSearchParams.page ?? 1),
     size: 15,
     category: resolvedSearchParams.category,
+    isSelling: true,
   };
 
   const initialDelayProducts = await getDelayedProducts(params);

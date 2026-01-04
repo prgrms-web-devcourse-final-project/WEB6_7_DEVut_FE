@@ -15,6 +15,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
+  const [isSelling, setIsSelling] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +31,7 @@ export default function SearchPageClient() {
     maxBidPrice: searchParams.get("maxBidPrice")
       ? Number(searchParams.get("maxBidPrice"))
       : undefined,
+    isSelling,
   };
 
   const hasSearched =
@@ -76,6 +78,10 @@ export default function SearchPageClient() {
     });
   };
 
+  const handleIsSelling = () => {
+    setIsSelling(prev => !prev);
+  };
+
   // const { cards, isLoading, isFetching, isError, error, totalCount } = useSearchProductCards({
   //   auctionType: auctionTypeMapping(auctionType),
   //   params,
@@ -99,6 +105,8 @@ export default function SearchPageClient() {
         onChangeAuctionType={handleChangeAuctionType}
         onSearch={handleSearch}
         onOpenDetail={() => setOpen(true)}
+        isSelling={isSelling}
+        handleIsSelling={handleIsSelling}
       />
 
       <FilterBar params={params} onRemove={handleRemoveFilter} onReset={handleResetFilters} />
@@ -119,7 +127,13 @@ export default function SearchPageClient() {
         />
       )}
 
-      {open && <DetailSearch onClose={() => setOpen(false)} onSearch={handleDetailSearch} />}
+      {open && (
+        <DetailSearch
+          onClose={() => setOpen(false)}
+          onSearch={handleDetailSearch}
+          isSelling={isSelling}
+        />
+      )}
     </>
   );
 }

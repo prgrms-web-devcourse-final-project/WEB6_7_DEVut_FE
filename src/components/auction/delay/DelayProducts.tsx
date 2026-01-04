@@ -10,6 +10,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getCategoryLabel } from "@/utils/category";
 import Pagination from "@/components/common/Pagenation";
 import EmptyContainer from "@/components/common/EmptyContainer";
+import { useState } from "react";
+import SellingToggle from "@/components/search/SellingToggle";
 
 interface DelayProductsProps {
   initialDelayProducts: ProductsResponse;
@@ -22,15 +24,17 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
 
   const page = Number(searchParams.get("page") ?? 1);
   const category = searchParams.get("category") as CategoryKey;
+  const [isSelling, setIsSelling] = useState(true);
 
   const params: GetProductsParams = {
     page,
     size: 15,
     category: category ?? undefined,
+    isSelling,
   };
 
   const { data, isLoading, error } = useDelayedProducts(params, {
-    initialData: page === 1 && !category ? initialDelayProducts : undefined,
+    initialData: page === 1 && isSelling && !category ? initialDelayProducts : undefined,
   });
 
   const updateParams = (next: { page?: number; category?: CategoryKey | null }) => {
@@ -58,15 +62,22 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
         setCategory={category => updateParams({ category, page: 1 })}
       />
       <div className="mt-10">
-        <Title size={"sm"} className="mb-2 font-normal">
-          <span>
-            카테고리
-            <span className="mx-3">&gt;</span>
-          </span>
-          <span className="underline underline-offset-8">
-            {category ? getCategoryLabel(category) : "전체"}
-          </span>
-        </Title>
+        <div className="flex w-full items-start justify-between">
+          <Title size={"sm"} className="mb-2 font-normal">
+            <span>
+              카테고리
+              <span className="mx-3">&gt;</span>
+            </span>
+            <span className="underline underline-offset-8">
+              {category ? getCategoryLabel(category) : "전체"}
+            </span>
+          </Title>
+          <SellingToggle
+            isSelling={isSelling}
+            handleIsSelling={() => setIsSelling(prev => !prev)}
+          />
+        </div>
+
         {/* <div className="h-[15px] w-[90%] text-right">
           <OrderSwitch />
         </div> */}

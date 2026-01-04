@@ -6,6 +6,7 @@ interface GetProductsParams {
   maxBidPrice?: number;
   page: number;
   size: number;
+  isSelling: boolean;
 }
 
 // 공통 상품 목록 응답 DTO

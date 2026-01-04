@@ -5,12 +5,15 @@ import { FileSearch, Search, SlidersHorizontal } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import OptionDropdown from "../common/OptionDropdown";
 import Toast, { ToastType } from "../common/Toast";
+import SellingToggle from "./SellingToggle";
 
 interface SearchSectionProps {
   onOpenDetail: () => void;
   onSearch: (name: string) => void;
   auctionType: "전체" | "라이브" | "일반";
   onChangeAuctionType: (type: "전체" | "라이브" | "일반") => void;
+  handleIsSelling: () => void;
+  isSelling: boolean;
 }
 
 export default function SearchSection({
@@ -18,9 +21,10 @@ export default function SearchSection({
   onOpenDetail,
   auctionType,
   onChangeAuctionType,
+  handleIsSelling,
+  isSelling,
 }: SearchSectionProps) {
   const [searchText, setSearchText] = useState("");
-  const [onSell, setOnSell] = useState(false);
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleSearch = () => {
@@ -62,24 +66,7 @@ export default function SearchSection({
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-3">
-        <p className="text-custom-dark-brown text-[18px] whitespace-nowrap">판매중인 상품만 보기</p>
-        <div
-          className={twMerge(
-            "border-custom-dark-brown relative h-7 w-14 cursor-pointer rounded-full border-4",
-            onSell && "bg-custom-orange-dark"
-          )}
-          onClick={() => setOnSell(prev => !prev)}
-        >
-          <div
-            className={twMerge(
-              "border-custom-dark-brown bg-custom-orange absolute top-1/2 left-0 h-6 w-6 -translate-y-1/2 rounded-full border-4",
-              "transition-transform duration-300 ease-in-out",
-              onSell && "translate-x-7"
-            )}
-          />
-        </div>
-      </div>
+      <SellingToggle isSelling={isSelling} handleIsSelling={handleIsSelling} />
 
       {/* <div className="min-w-[106px] shrink-0">
         <OptionDropdown label={auctionType}>
