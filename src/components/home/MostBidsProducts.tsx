@@ -4,6 +4,7 @@ import Link from "next/link";
 import Title from "../common/Title";
 import PopularProductsCarousel from "../product/PopularProductsCarousel";
 import { Flame } from "lucide-react";
+import EmptyContainer from "../common/EmptyContainer";
 
 export default function MostBidsProducts({ products }: { products: ProductCardType[] }) {
   return (
@@ -19,7 +20,14 @@ export default function MostBidsProducts({ products }: { products: ProductCardTy
           더 보러가기
         </Link>
       </div>
-      <PopularProductsCarousel products={products} autoplayDelay={4000} />
+      {!!products.length ? (
+        <PopularProductsCarousel products={products} autoplayDelay={4000} />
+      ) : (
+        <EmptyContainer
+          title="현재 치열한 입찰이 진행 중인 상품이 없어요"
+          description="새로운 경매를 기다려보세요"
+        />
+      )}
     </div>
   );
 }
