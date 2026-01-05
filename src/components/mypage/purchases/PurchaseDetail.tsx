@@ -45,7 +45,7 @@ export default function PurchaseDetail() {
           </div>
         ) : (
           productCardMock_MY_BUYING.map(product => (
-            <ProductCard context="MY_BUYING" key={product.id} product={product} />
+            <ProductCard context="MY_BUYING" key={product.uid} product={product} />
           ))
         )}
       </ProductsGrid>

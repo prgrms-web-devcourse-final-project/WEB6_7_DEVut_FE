@@ -26,8 +26,8 @@ export default function MyWish({ initialData }: { initialData?: ProductCardType[
               </p>
             </div>
           ) : (
-            myWish?.map((product, index) => (
-              <ProductCard context="CARD" key={index} product={product} />
+            myWish?.map(product => (
+              <ProductCard context="CARD" key={product.uid} product={product} />
             ))
           )}
         </ProductsGrid>

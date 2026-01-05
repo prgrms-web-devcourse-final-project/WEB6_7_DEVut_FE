@@ -5,6 +5,7 @@ import { getSellProducts } from "@/features/mypage/api/myPage.server.api";
 
 export default async function SalesPage() {
   const data = await getSellProducts();
+  console.log("data", data);
   return (
     <ContentContainer bordered={false} className="pt-5">
       <SaleList initialData={data} />

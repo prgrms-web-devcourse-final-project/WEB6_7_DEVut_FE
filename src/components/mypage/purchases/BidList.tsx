@@ -46,7 +46,7 @@ export default function BidList() {
             </div>
           ) : (
             shownProducts.map(product => (
-              <ProductCard context="CARD" key={product.id} product={product} />
+              <ProductCard context="CARD" key={product.uid} product={product} />
             ))
           )}
         </ProductsGrid>

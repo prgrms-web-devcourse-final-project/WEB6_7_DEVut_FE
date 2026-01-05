@@ -55,7 +55,7 @@ export default function SaleList({ initialData }: { initialData: ProductCardType
             </>
           ) : (
             shownProducts.map(product => (
-              <ProductCard context="MY_SELLING" key={product.id} product={product} />
+              <ProductCard context="MY_SELLING" key={product.uid} product={product} />
             ))
           )}
         </ProductsGrid>

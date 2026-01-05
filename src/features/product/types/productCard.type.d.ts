@@ -5,7 +5,7 @@ interface ProductCardType {
   amount: number;
   image: string | StaticImageData;
   href: string;
-  isWish?: boolean;
+  isWish: boolean;
   badge?: {
     image: StaticImageData;
     alt: string;
