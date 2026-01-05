@@ -10,7 +10,7 @@ import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import { Url } from "next/dist/shared/lib/router/router";
 
-export default function NotifyItem({
+export default function NotificationItem({
   notify,
   className,
 }: {

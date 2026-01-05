@@ -5,7 +5,7 @@ import MileStoneSemiTitle from "../common/MileStoneSemiTitle";
 import { useNotificatoins } from "@/features/notify/hooks/useNotifications";
 import { useNotificationStore } from "@/features/notify/store/useNotification";
 import { useEffect } from "react";
-import NotifyItem from "./NotifyItem";
+import NotificationItem from "./NotificationItem";
 
 interface NotifyListProps {
   notifications: NotificationItem<NotificationType>[];
@@ -30,7 +30,7 @@ export default function Notifications({ notifications }: NotifyListProps) {
               <MileStoneSemiTitle title={dateKey} className="mb-8 ml-2" />
 
               {group[dateKey].map(notify => (
-                <NotifyItem key={notify.id} notify={notify} />
+                <NotificationItem key={notify.id} notify={notify} />
               ))}
 
               {index !== sortedKeys.length - 1 && (
