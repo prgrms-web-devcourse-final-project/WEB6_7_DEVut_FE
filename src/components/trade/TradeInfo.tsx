@@ -5,8 +5,8 @@ import WrapperImage from "../common/WrapperImage";
 import StatusBadge from "../common/StatusBadge";
 import Input from "../common/Input";
 import MileStoneSemiTitle from "@/components/common/MileStoneSemiTitle";
-import NotifyItem from "@/components/notify/NotifyItem";
 import Button from "../common/Button";
+import TradeItem from "./TradeItem";
 
 export default function TradeInfo({ tradeId }: { tradeId: string }) {
   return (
@@ -61,31 +61,31 @@ export default function TradeInfo({ tradeId }: { tradeId: string }) {
 
         <div className="mb-12">
           <MileStoneSemiTitle title="잔금 대기" className="mb-2 ml-2 rotate-2" />
-          <NotifyItem>
+          <TradeItem>
             상품의 결제를 대기 중입니다.
             <Button className="bg-custom-red h-7">결제하기</Button>
-          </NotifyItem>
-          <NotifyItem>상품의 결제를 완료하였습니다.</NotifyItem>
+          </TradeItem>
+          <TradeItem>상품의 결제를 완료하였습니다.</TradeItem>
           <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
         </div>
 
         <div className="mb-12">
           <MileStoneSemiTitle title="거래 중" className="mb-2 ml-2 -rotate-1" />
 
-          <NotifyItem>
+          <TradeItem>
             {" "}
             판매자와 거래 중 입니다.
             <Button className="bg-btn-default h-7">대화하러가기</Button>
-          </NotifyItem>
+          </TradeItem>
           <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
         </div>
 
         <div className="mb-12">
           <MileStoneSemiTitle title="거래 완료" className="mb-2 ml-2 -rotate-1" />
-          <NotifyItem>
+          <TradeItem>
             상품의 거래를 완료했습니다.
             <Button className="bg-btn-default h-7">구매확정</Button>
-          </NotifyItem>
+          </TradeItem>
           <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
         </div>
       </section>

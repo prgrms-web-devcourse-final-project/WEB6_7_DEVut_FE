@@ -2,10 +2,10 @@
 
 import { notifyGroupByDate } from "@/utils/notify";
 import MileStoneSemiTitle from "../common/MileStoneSemiTitle";
-import NotifyItem from "./NotifyItem";
 import { useNotificatoins } from "@/features/notify/hooks/useNotifications";
 import { useNotificationStore } from "@/features/notify/store/useNotification";
 import { useEffect } from "react";
+import NotifyItem from "./NotifyItem";
 
 interface NotifyListProps {
   notifications: NotificationItem<NotificationType>[];
