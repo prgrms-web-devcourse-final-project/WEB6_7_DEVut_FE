@@ -53,6 +53,7 @@ interface EnterChatRoomResponse {
 
 // 경매방 상품 목록 DTO
 interface LiveRoomProduct {
+  id: number;
   name: string;
   imageUrls: string[];
   price: number;

@@ -8,24 +8,43 @@ import sound from "@/assets/images/sidebar/sound.png";
 import mypage from "@/assets/images/sidebar/mypage.png";
 import login from "@/assets/images/sidebar/login.svg";
 import SideBarItems from "./SideBarItems";
+import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
+import { twMerge } from "tailwind-merge";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function Sidebar({ me }: { me: User | null }) {
+  const { subscribedAuctionIds } = useLiveRoomStore(state => state);
+  const path = usePathname();
+  const isRoom = path === "/auction/liveRoom";
+
   return (
     <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 overflow-visible rounded-md pt-2 pb-2 md:flex">
-      <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">
+      <Link
+        href={isRoom ? "/" : "/auction/liveRoom"}
+        className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer active:scale-98"
+      >
         <Image
           src={BBLogoBackground}
           alt="logo background"
           fill
-          className="object-cover drop-shadow-[4px_4px_0_rgba(0,0,0,0.2)] transition-transform duration-300 group-hover:-rotate-45"
+          className={twMerge(
+            "object-cover drop-shadow-[4px_4px_0_rgba(0,0,0,0.2)] transition-opacity duration-500",
+            subscribedAuctionIds.length > 0
+              ? path === "/auction/liveRoom"
+                ? "opacity-100"
+                : "animate-pulse opacity-100"
+              : "opacity-0"
+          )}
         />
+
         <Image
           src={BBLogo}
           alt="logo"
           fill
           className="translate-y-[8%] scale-[1.8] object-contain drop-shadow-[0_2px_0_rgba(0,0,0,0.6)]"
         />
-      </div>
+      </Link>
 
       <SideBarItems />
 

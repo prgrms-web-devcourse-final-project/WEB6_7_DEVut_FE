@@ -5,6 +5,12 @@ export const getBidUnit = (price: number) => {
   return 10_000;
 };
 
+export const getBidSteps = (currentPrice: number) => {
+  const unit = getBidUnit(currentPrice);
+
+  return [unit, unit * 3, unit * 5];
+};
+
 export const getLiveStatus = (status: AuctionStatus) => {
   switch (status) {
     case "BEFORE_BIDDING":
