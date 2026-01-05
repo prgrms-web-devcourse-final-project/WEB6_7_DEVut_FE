@@ -12,9 +12,11 @@ import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { useSocketStore } from "@/features/socket/store/useSocketStore";
 import { getLiveStatus } from "@/utils/auction";
 import { useMe } from "@/features/auth/hooks/useMe";
+import { useRouter } from "next/navigation";
 
 export default function LiveAuctionRoomPage() {
   const { data: me } = useMe();
+  const router = useRouter();
   const {
     activeAuctionId,
     subscribedAuctionIds,
@@ -22,9 +24,11 @@ export default function LiveAuctionRoomPage() {
     setActiveAuctionId,
     addSubscribedAuctionId,
     setChatRoomId,
+    removeSubscribedAuctionId,
   } = useLiveRoomStore();
 
-  const { sendAuctionMessage, subscribeChatRoom, messagesByRoom } = useSocketStore();
+  const { sendAuctionMessage, subscribeChatRoom, messagesByRoom, unsubscribeChatRoom } =
+    useSocketStore();
 
   const currentAuctionId = activeAuctionId;
   const currentChatRoomId = currentAuctionId != null ? chatRoomIds[currentAuctionId] : undefined;
@@ -71,9 +75,24 @@ export default function LiveAuctionRoomPage() {
     ]
   );
 
+  const handleCloseRoom = (auctionId: number) => {
+    const chatRoomId = chatRoomIds[auctionId];
+    if (chatRoomId) {
+      unsubscribeChatRoom(chatRoomId);
+    }
+
+    removeSubscribedAuctionId(auctionId);
+  };
+
   useEffect(() => {
     enterRoom(activeAuctionId || 1);
   }, [activeAuctionId, enterRoom]);
+
+  useEffect(() => {
+    if (activeAuctionId == null) {
+      router.replace("/");
+    }
+  }, [activeAuctionId, router]);
 
   return (
     <div className="w-full">
@@ -86,6 +105,7 @@ export default function LiveAuctionRoomPage() {
                 label={`${index + 1} 번방`}
                 active={auctionId === currentAuctionId}
                 onClick={() => enterRoom(auctionId)}
+                onClose={() => handleCloseRoom(auctionId)}
               />
             ))}
           </StageBarBackground>

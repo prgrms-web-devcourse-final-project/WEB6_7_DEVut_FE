@@ -97,12 +97,19 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     }));
   },
 
-  unsubscribeChatRoom: chatRoomId => {
+  unsubscribeChatRoom: (chatRoomId: string) => {
     const sub = get().subscriptions[chatRoomId];
-    if (sub) sub.unsubscribe();
+    if (sub) {
+      sub.unsubscribe();
+    }
+    set(state => {
+      const { [chatRoomId]: _, ...restSubs } = state.subscriptions;
+      const { [chatRoomId]: __, ...restMessages } = state.messagesByRoom;
 
-    set(state => ({
-      subscriptions: { ...state.subscriptions, [chatRoomId]: null },
-    }));
+      return {
+        subscriptions: restSubs,
+        messagesByRoom: restMessages,
+      };
+    });
   },
 }));
