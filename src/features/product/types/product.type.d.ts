@@ -6,6 +6,7 @@ interface GetProductsParams {
   maxBidPrice?: number;
   page: number;
   size: number;
+  isSelling: boolean;
 }
 
 // 공통 상품 목록 응답 DTO
@@ -53,12 +54,12 @@ interface ProductDetailBase {
   preferredPlace: string;
   images: string[];
   likeCount: number;
+  currentPrice: number;
 }
 
 interface LiveProductDetail extends ProductDetailBase {
   type: "LIVE";
   liveTime: string;
-  initPrice: number;
   roomIndex: number;
   sellerId: number; // 통합 필요
 }
@@ -66,7 +67,6 @@ interface LiveProductDetail extends ProductDetailBase {
 interface DelayProductDetail extends ProductDetailBase {
   type: "DELAYED";
   startPrice: number;
-  currentPrice: number;
   endTime: string;
   sellerUserId: number;
   buyNowPrice: number;
@@ -85,5 +85,11 @@ interface ProductBidsLogItem {
 
 interface ProductBidsLogResponse {
   bids: ProductBidsLogItem[];
+  totalCount: number;
+}
+
+// totalCount 포함 총 response 타입
+interface ProductsResponse {
+  products: ProductCardType[];
   totalCount: number;
 }
