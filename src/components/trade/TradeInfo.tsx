@@ -10,8 +10,8 @@ import Button from "../common/Button";
 
 export default function TradeInfo({ tradeId }: { tradeId: string }) {
   return (
-    <div className="mt-2 flex w-full flex-col px-8">
-      <ContentContainer className="border-border-sub bg-content-area m-0 flex w-full flex-col gap-16 border-3 px-14 py-7 md:flex-row">
+    <div className="mt-2 flex w-screen flex-col px-8">
+      <ContentContainer className="border-border-sub bg-content-area m-0 flex w-full flex-col gap-16 border-3 px-14 py-7 lg:flex-row">
         <div className="flex flex-col md:min-w-[60%]">
           <Title className="text-title-sub ml-3 text-[24px]">상품 정보</Title>
           <ContentContainer className="border-border-main flex h-full flex-col items-center justify-center gap-10 overflow-auto border-3 p-8 md:flex-row">
@@ -35,7 +35,7 @@ export default function TradeInfo({ tradeId }: { tradeId: string }) {
             </div>
           </ContentContainer>
         </div>
-        <div className="flex w-full flex-col md:w-[40%]">
+        <div className="flex w-full flex-col md:min-w-[40%] lg:px-5">
           <Title className="text-title-sub ml-3 text-[24px]">배송</Title>
           <ContentContainer className="border-border-main text-title-main-dark grid gap-1 border-3 p-8 text-[11px] font-bold">
             <div className="grid gap-2">
@@ -55,7 +55,7 @@ export default function TradeInfo({ tradeId }: { tradeId: string }) {
           </ContentContainer>
         </div>
       </ContentContainer>
-      <section className="relative min-h-screen py-5">
+      <section className="relative mb-10 min-h-full max-w-[1440px] py-5">
         {/* 세로 타임라인 */}
         <div className="bg-border-main absolute top-5 left-7 h-full w-[3px]" />
 

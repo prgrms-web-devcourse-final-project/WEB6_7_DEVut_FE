@@ -6,15 +6,12 @@ import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
 import { productCardMock_LIVE } from "@/features/product/mock/productCard.live.mock";
-import { myPageCardMapping } from "@/utils/myPageCardMapping";
 import { useEffect, useState } from "react";
 
-export default function SaleList() {
-  const { data: mySells } = useMySell();
+export default function SaleList({ initialData }: { initialData: ProductCardType[] | undefined }) {
+  const { data: mySells } = useMySell({ initialData });
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
-  console.log(mySells);
-  const newMySells = myPageCardMapping({ card: mySells });
 
   useEffect(() => {
     const updateCount = () => {
@@ -30,8 +27,14 @@ export default function SaleList() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const sellItems = newMySells ?? [];
-  const shownProducts = expanded ? sellItems : sellItems.slice(0, visibleCount);
+  const sellItems = mySells ?? [];
+  const sellingItems = sellItems.filter(
+    product =>
+      product.status?.kind === "time" ||
+      (product.status?.kind === "status" &&
+        (product.status.status === "IN_PROGRESS" || product.status.status === "BEFORE_BIDDING"))
+  );
+  const shownProducts = expanded ? sellingItems : sellingItems.slice(0, visibleCount);
   const isEmpty = shownProducts.length === 0;
 
   return (
@@ -51,14 +54,9 @@ export default function SaleList() {
               </div>
             </>
           ) : (
-            shownProducts.map(product =>
-              product.status.kind === "time" ||
-              (product.status.kind === "status" &&
-                (product.status.status === "IN_PROGRESS" ||
-                  product.status.status === "BEFORE_BIDDING")) ? (
-                <ProductCard context="MY_SELLING" key={product.id} product={product} />
-              ) : null
-            )
+            shownProducts.map(product => (
+              <ProductCard context="MY_SELLING" key={product.id} product={product} />
+            ))
           )}
         </ProductsGrid>
 

@@ -7,15 +7,11 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { myPageCardMapping } from "@/utils/myPageCardMapping";
 import { useState } from "react";
 
-export default function SaleDetail() {
-  const { data: mySells } = useMySell();
+export default function SaleDetail({ initialData }: { initialData: ProductCardType[] }) {
+  const { data: mySells } = useMySell({ initialData });
   const [status, setStatus] = useState("전체");
-
-  const newMySells = myPageCardMapping({ card: mySells });
-  const sellItems = newMySells ?? [];
 
   const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
     전체: "ALL",
@@ -25,16 +21,14 @@ export default function SaleDetail() {
     유찰: "FAILED",
   };
 
-  const filteredItems = sellItems.filter(product => {
-    if (product.status.kind !== "status") return false;
-
-    if (product.status.status === "IN_PROGRESS") return false;
-    if (product.status.status === "BEFORE_BIDDING") return false;
-
-    if (status === "전체") return true;
-
-    return product.status.status === STATUS_MAP[status];
-  });
+  const filteredItems =
+    mySells?.filter(product => {
+      if (product.status?.kind !== "status") return false;
+      if (product.status.status === "IN_PROGRESS") return false;
+      if (product.status.status === "BEFORE_BIDDING") return false;
+      if (status === "전체") return true;
+      return product.status.status === STATUS_MAP[status];
+    }) ?? [];
 
   const isEmpty = filteredItems.length === 0;
 
