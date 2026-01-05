@@ -13,9 +13,14 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
   console.log("walletHistories:", data);
   const isEmpty = !data?.walletHistories || data.walletHistories.length === 0;
   const historyData = data?.walletHistories || [];
-  const logs = historyData.sort(
+  const mylogs = historyData.sort(
     (a, b) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
   );
+  const logs = mylogs.map((log, index) => {
+    const newLog = { ...log, index };
+    return newLog;
+  });
+  console.log("logs:", logs);
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
@@ -39,15 +44,15 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
             <p className="text-title-main text-lg font-bold">기록이 없습니다</p>
           </div>
         ) : status === "전체" ? (
-          logs.map((log, index) => <BizzLogCard key={index} log={log} />)
+          logs.map(log => <BizzLogCard key={log.index} log={log} />)
         ) : status === "충전" ? (
           logs
             .filter(log => log.transactionType === "CHARGE")
-            .map((log, index) => <BizzLogCard key={index} log={log} />)
+            .map(log => <BizzLogCard key={log.index} log={log} />)
         ) : (
           logs
             .filter(log => log.transactionType === "WITHDRAW")
-            .map((log, index) => <BizzLogCard key={index} log={log} />)
+            .map(log => <BizzLogCard key={log.index} log={log} />)
         )}
       </div>
     </div>
