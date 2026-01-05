@@ -13,9 +13,9 @@ const buttonVariants = cva(
           "border-border-sub2 bg-custom-orange text-title-sub shadow-flat-light hover:scale-102 active:scale-99",
       },
       size: {
-        sm: "h-10 px-4 text-sm",
-        md: "h-14 px-6 text-base",
-        lg: "h-16 px-8 text-[20px]",
+        sm: `h-9 px-3 text-xs sm:h-10 sm:px-4 sm:text-sm`,
+        md: `h-12 px-5 text-sm sm:h-14 sm:px-6 sm:text-base`,
+        lg: `h-14 px-6 text-lg sm:h-16 sm:px-8 sm:text-[20px]`,
       },
       fullWidth: {
         true: "w-full",

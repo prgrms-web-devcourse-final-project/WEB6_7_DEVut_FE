@@ -8,3 +8,4 @@ type AuctionStatus =
   | "FAILED";
 type AuctionType = "ALL" | "LIVE" | "DELAYED";
 type AuctionTypeKOR = "전체" | "라이브" | "일반";
+

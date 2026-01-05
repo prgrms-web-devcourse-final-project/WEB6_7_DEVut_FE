@@ -6,8 +6,9 @@ import { twMerge } from "tailwind-merge";
 import tape from "@/assets/notify/tape.svg";
 import { useDeleteNotify } from "@/features/notify/hooks/useDeleteNotify";
 import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
+import Link from "next/link";
+import { Url } from "next/dist/shared/lib/router/router";
 
 export default function NotifyItem({
   notify,
@@ -16,7 +17,6 @@ export default function NotifyItem({
   notify: NotificationItem<NotificationType>;
   className?: string;
 }) {
-  const router = useRouter();
   const notifyRoute = getNotificationRoute(notify);
   const { mutate } = useDeleteNotify(notify.id);
   return (
@@ -28,13 +28,9 @@ export default function NotifyItem({
     >
       {<Image src={tape} alt="`tape" className="absolute -left-5 -rotate-3" />}
       <span className="text-xl">{getNotifyIcon(notify.type)}</span>
-      <span
-        onClick={() => router.push(notifyRoute || "")}
-        className="cursor-pointer group-hover:underline"
-      >
-        {notify.message}
-      </span>
-
+      <Link href={notifyRoute as Url}>
+        <span className="cursor-pointer group-hover:underline">{notify.message}</span>
+      </Link>
       <span className="text-title-sub2 text-xs whitespace-nowrap">
         {format(parseISO(notify.createDate), "HH:mm")}
       </span>
