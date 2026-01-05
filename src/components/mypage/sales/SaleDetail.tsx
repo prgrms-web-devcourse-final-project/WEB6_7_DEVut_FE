@@ -32,6 +32,8 @@ export default function SaleDetail({ initialData }: { initialData: ProductCardTy
 
   const isEmpty = filteredItems.length === 0;
 
+  console.log("filteredItems", filteredItems);
+
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -59,8 +61,8 @@ export default function SaleDetail({ initialData }: { initialData: ProductCardTy
             <p className="text-title-main text-lg font-bold">판매 이력이 없습니다</p>
           </div>
         ) : (
-          filteredItems.map((product, index) => (
-            <ProductCard key={index} context="MY_SELLING" product={product} />
+          filteredItems.map(product => (
+            <ProductCard key={product.uid} context="MY_SELLING" product={product} />
           ))
         )}
       </ProductsGrid>

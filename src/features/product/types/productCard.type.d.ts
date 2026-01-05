@@ -1,4 +1,5 @@
 interface ProductCardType {
+  uid: string;
   id: number;
   title: string;
   amount: number;

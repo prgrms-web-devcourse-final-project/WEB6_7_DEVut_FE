@@ -7,7 +7,10 @@ export const myPageCardMapping = (item: Sell | Wish): ProductCardType => {
       ? { kind: "time", time: item.endTime }
       : { kind: "status", status: item.auctionStatus };
 
+  const uid = `${item.type}-${item.id}`; // 🔥 핵심
+
   return {
+    uid,
     id: item.id,
     title: item.name,
     amount: item.initPrice,

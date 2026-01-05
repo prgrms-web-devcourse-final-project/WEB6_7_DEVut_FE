@@ -15,6 +15,7 @@ interface ProductBase {
   image: string;
   currentPrice: number;
   auctionStatus: AuctionStatus;
+  isLiked: boolean;
 }
 
 // 라이브 상품 목록 응답 DTO

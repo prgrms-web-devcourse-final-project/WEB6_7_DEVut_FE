@@ -33,7 +33,7 @@ export default function ProductCard({
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();
-
+          console.log("product in ProductCard:", product);
           toggleWish({
             id: product.id,
             type: product.type === "LIVE" ? "LIVE" : "DELAYED",

@@ -72,7 +72,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
         </div>
         <ProductsGrid>
           {products?.map(product => (
-            <ProductCard context="CARD" key={product.id} product={product} />
+            <ProductCard context="CARD" key={product.uid} product={product} />
           ))}
         </ProductsGrid>
         <Pagenation />
