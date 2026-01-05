@@ -4,6 +4,8 @@ import { notifyGroupByDate } from "@/utils/notify";
 import MileStoneSemiTitle from "../common/MileStoneSemiTitle";
 import NotifyItem from "./NotifyItem";
 import { useNotificatoins } from "@/features/notify/hooks/useNotifications";
+import { useNotificationStore } from "@/features/notify/store/useNotification";
+import { useEffect } from "react";
 
 interface NotifyListProps {
   notifications: NotificationItem<NotificationType>[];
@@ -11,8 +13,12 @@ interface NotifyListProps {
 
 export default function Notifications({ notifications }: NotifyListProps) {
   const { data } = useNotificatoins(notifications);
-
+  const { resetUnread } = useNotificationStore(state => state);
   const { group, sortedKeys } = notifyGroupByDate(data);
+
+  useEffect(() => {
+    resetUnread();
+  }, [resetUnread]);
 
   return (
     <div className="relative min-h-screen">

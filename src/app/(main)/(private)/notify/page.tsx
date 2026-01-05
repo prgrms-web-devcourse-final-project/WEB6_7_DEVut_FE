@@ -1,9 +1,9 @@
 import ContentContainer from "@/components/common/ContentContainer";
 import Notifications from "@/components/notify/Notifications";
-import { getNotifications } from "@/features/notify/api/notify.server.api";
+import { allReadNotifications, getNotifications } from "@/features/notify/api/notify.server.api";
 
 export default async function NotifyPage() {
-  const notifications = await getNotifications();
+  const [notifications] = await Promise.all([getNotifications(), allReadNotifications()]);
 
   return (
     <ContentContainer bordered={false} className="w-[95%] pt-5">
