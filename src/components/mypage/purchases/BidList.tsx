@@ -13,8 +13,7 @@ export default function BidList() {
   const [visibleCount, setVisibleCount] = useState(2);
 
   const { data: purchaseData } = useMyPurchase();
-  console.log("purchaseData:", purchaseData);
-  const isEmpty = !purchaseData || purchaseData.items.length === 0;
+  const isEmpty = !purchaseData || purchaseData.length === 0;
 
   useEffect(() => {
     const updateCount = () => {

@@ -7,14 +7,12 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
-import { productCardMock_MY_BUYING } from "@/features/product/mock/productCard.myBuying.mock";
 import { useState } from "react";
 
-export default function PurchaseDetail() {
+export default function PurchaseDetail({ initialData }: { initialData?: ProductCardType[] }) {
   const [status, setStatus] = useState("전체");
-  const { data: purchaseData } = useMyPurchase();
-  console.log(purchaseData);
-  const isEmpty = !purchaseData || purchaseData.items.length === 0;
+  const { data: purchaseData } = useMyPurchase({ initialData });
+  const isEmpty = !purchaseData || purchaseData.length === 0;
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
@@ -44,7 +42,7 @@ export default function PurchaseDetail() {
             <p className="text-title-main text-lg font-bold">구매 이력이 없습니다</p>
           </div>
         ) : (
-          productCardMock_MY_BUYING.map(product => (
+          purchaseData.map(product => (
             <ProductCard context="MY_BUYING" key={product.id} product={product} />
           ))
         )}
