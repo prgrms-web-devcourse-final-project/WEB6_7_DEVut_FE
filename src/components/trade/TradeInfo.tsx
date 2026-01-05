@@ -5,7 +5,7 @@ import WrapperImage from "../common/WrapperImage";
 import StatusBadge from "../common/StatusBadge";
 import Input from "../common/Input";
 import MileStoneSemiTitle from "@/components/common/MileStoneSemiTitle";
-import NotifyItem from "@/components/notify/notifyItem";
+import NotifyItem from "@/components/notify/NotifyItem";
 import Button from "../common/Button";
 
 export default function TradeInfo({ tradeId }: { tradeId: string }) {
