@@ -8,10 +8,8 @@ import sound from "@/assets/images/sidebar/sound.png";
 import mypage from "@/assets/images/sidebar/mypage.png";
 import login from "@/assets/images/sidebar/login.svg";
 import SideBarItems from "./SideBarItems";
-import { useMe } from "@/features/auth/hooks/useMe";
 
-export default function Sidebar() {
-  const { data: me } = useMe();
+export default function Sidebar({ me }: { me: User | null }) {
   return (
     <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 overflow-visible rounded-md pt-2 pb-2 md:flex">
       <div className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer">

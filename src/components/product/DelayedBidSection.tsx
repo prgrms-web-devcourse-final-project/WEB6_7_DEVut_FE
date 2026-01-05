@@ -8,7 +8,6 @@ interface DelayedBidSectionProps {
   isOpen: boolean;
   modalToggle: (bool: boolean) => void;
   currentBid: number;
-  auctionStatus: AuctionStatus;
 }
 
 export default function DelayedBidSection({
@@ -16,16 +15,12 @@ export default function DelayedBidSection({
   isOpen,
   modalToggle,
   currentBid,
-  auctionStatus,
 }: DelayedBidSectionProps) {
-  const onSale = auctionStatus === "BEFORE_BIDDING" || auctionStatus === "IN_PROGRESS";
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const { mutate: bid, isPending } = useBidDelayProduct(productId);
 
   const handleConfirmBid = (bidPrice: BidDelayProductRequest) => {
-    if (!onSale) return notify("마감 된 경매 상품 입니다.", "INFO");
-
     bid(bidPrice, {
       onSuccess: () => {
         modalToggle(true);
@@ -54,7 +49,7 @@ export default function DelayedBidSection({
         onClick={() => modalToggle(true)}
         disabled={isPending}
       >
-        {onSale ? "입찰하기" : "마감"}
+        입찰하기
       </Button>
     </>
   );
