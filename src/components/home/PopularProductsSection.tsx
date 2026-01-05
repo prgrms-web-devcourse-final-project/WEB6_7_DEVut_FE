@@ -19,19 +19,27 @@ const DelayPopularProductsClient = dynamic(() => import("./DelayPopularProducts"
   loading: () => <LivePopularProductsSkeleton />,
 });
 
+const DelayMostBidsProductsClient = dynamic(() => import("./MostBidsProducts"), {
+  ssr: false,
+  loading: () => <LivePopularProductsSkeleton />,
+});
+
 export default function PopularProductsSection({
   liveHotProducts,
   delayHotProducts,
+  delayMostBidsProducts,
 }: {
   liveHotProducts: ProductCardType[];
   delayHotProducts: ProductCardType[];
+  delayMostBidsProducts: ProductCardType[];
 }) {
   return (
-    <div className="flex flex-col gap-7">
+    <div className="mt-5 flex flex-col gap-10">
       <HomeBannerClient />
-      <div className="flex flex-col gap-12">
-        <LivePopularProductsClient products={liveHotProducts} />
+      <div className="flex flex-col gap-12 md:gap-20">
+        {/* <LivePopularProductsClient products={liveHotProducts} /> */}
         <DelayPopularProductsClient products={delayHotProducts} />
+        <DelayMostBidsProductsClient products={delayMostBidsProducts} />
       </div>
     </div>
   );

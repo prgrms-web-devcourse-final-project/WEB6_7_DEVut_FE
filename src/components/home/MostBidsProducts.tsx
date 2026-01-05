@@ -3,15 +3,15 @@
 import Link from "next/link";
 import Title from "../common/Title";
 import PopularProductsCarousel from "../product/PopularProductsCarousel";
-import { Star } from "lucide-react";
+import { Flame } from "lucide-react";
 import EmptyContainer from "../common/EmptyContainer";
 
-export default function DelayPopularProducts({ products }: { products: ProductCardType[] }) {
+export default function MostBidsProducts({ products }: { products: ProductCardType[] }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <Title size="lg" icon={<Star size={24} className="text-custom-orange" />}>
-          찜 많이 받은 상품
+        <Title size="lg" icon={<Flame size={24} className="text-custom-red" />}>
+          입찰 경쟁 폭주 상품
         </Title>
         <Link
           href="/auction/delay"
@@ -21,11 +21,11 @@ export default function DelayPopularProducts({ products }: { products: ProductCa
         </Link>
       </div>
       {!!products.length ? (
-        <PopularProductsCarousel products={products} autoplayDelay={5000} />
+        <PopularProductsCarousel products={products} autoplayDelay={4000} />
       ) : (
         <EmptyContainer
-          title="지금은 찜한 사람이 많은 상품이 없어요"
-          description="관심 있는 상품을 먼저 찜해보세요"
+          title="현재 치열한 입찰이 진행 중인 상품이 없어요"
+          description="새로운 경매를 기다려보세요"
         />
       )}
     </div>

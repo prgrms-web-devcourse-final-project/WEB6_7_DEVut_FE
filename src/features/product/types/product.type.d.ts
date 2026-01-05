@@ -6,6 +6,7 @@ interface GetProductsParams {
   maxBidPrice?: number;
   page: number;
   size: number;
+  isSelling: boolean;
 }
 
 // 공통 상품 목록 응답 DTO
@@ -85,5 +86,11 @@ interface ProductBidsLogItem {
 
 interface ProductBidsLogResponse {
   bids: ProductBidsLogItem[];
+  totalCount: number;
+}
+
+// totalCount 포함 총 response 타입
+interface ProductsResponse {
+  products: ProductCardType[];
   totalCount: number;
 }
