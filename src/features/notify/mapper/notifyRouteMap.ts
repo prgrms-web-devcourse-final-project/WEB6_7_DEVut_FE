@@ -12,9 +12,11 @@ export const NOTIFICATION_ROUTE_MAP: Record<NotificationType, NotificationRouteH
   DM_FIRST_MESSAGE: n =>
     n.metadata && "chatRoomId" in n.metadata ? `/message/${n.metadata.chatRoomId}` : null,
 
-  // 라이브 추후 리팩토링
-  LIVE_AUCTION_START: n => `/auction/liveRoom`,
-  LIVE_SUCCESS_SELLER: n => `/mypage/selling/live/${n.resourceId}`,
-  LIVE_SUCCESS_BIDDER: n => `/mypage/buying/live/${n.resourceId}`,
-  LIVE_FAILED_SELLER: n => `/mypage/selling/live/${n.resourceId}`,
+  LIVE_AUCTION_START: n => {
+    // useRoomStore에서 구독, 저장
+    return `/auction/liveRoom`;
+  },
+  LIVE_SUCCESS_SELLER: n => `/product/live/${n.resourceId}`,
+  LIVE_SUCCESS_BIDDER: n => `/product/live/${n.resourceId}`,
+  LIVE_FAILED_SELLER: n => `/product/live/${n.resourceId}`,
 };

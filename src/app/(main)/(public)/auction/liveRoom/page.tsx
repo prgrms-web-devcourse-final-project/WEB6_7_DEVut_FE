@@ -96,7 +96,7 @@ export default function LiveAuctionRoomPage() {
 
   return (
     <div className="w-full">
-      <div className="flex w-full items-stretch">
+      <div className="flex w-full flex-1 items-stretch">
         <div className="flex min-w-0 flex-1 flex-col">
           <StageBarBackground className="sticky top-0 z-20 h-14 gap-2 px-4">
             {subscribedAuctionIds.map((auctionId, index) => (
@@ -109,8 +109,9 @@ export default function LiveAuctionRoomPage() {
               />
             ))}
           </StageBarBackground>
-
-          <LiveAuctionStage currentStageProduct={currentStageProduct} allClosed={allClosed} />
+          <div className="flex-1">
+            <LiveAuctionStage currentStageProduct={currentStageProduct} allClosed={allClosed} />
+          </div>
         </div>
 
         <div className="hidden lg:flex lg:w-[28%]">

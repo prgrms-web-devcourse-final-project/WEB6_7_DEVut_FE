@@ -41,7 +41,7 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
         </LiveSideTabButton>
       </div>
 
-      <div className="max-h-200 min-h-0 flex-1 overflow-y-auto">
+      <div className="max-h-[660px] min-h-0 flex-1 overflow-y-auto">
         <div className={tab === "CHAT" ? "h-full" : "hidden"}>
           <LiveChatList messages={chat.messages} userId={me?.id} />
         </div>
@@ -57,7 +57,7 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="메시지를 입력해주세요."
-            className="bg-content-area border-border-sub w-full resize-none rounded-lg border-2 px-4 py-3 outline-none"
+            className="bg-content-area border-border-sub flex-2 resize-none rounded-lg border-2 px-4 py-3 outline-none"
             onKeyDown={e => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
