@@ -13,8 +13,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const AUTH_REQUIRED_PATHS = ["/message", "/mypage", "/notify", "/trade", "/write"];
 const GUEST_ONLY_PATHS = ["/login", "/signup"];
 
-const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
-
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
@@ -139,7 +137,7 @@ function setAccessCookie(res: NextResponse, token: string) {
     sameSite: "lax",
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS면 켜기
-    maxAge: 60 * 10,
+    maxAge: 60 * 60 * 24 * 7,
     domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 }
@@ -150,7 +148,7 @@ function setRefreshCookie(res: NextResponse, token: string) {
     sameSite: "lax",
     path: "/",
     secure: process.env.NODE_ENV === "production",
-    maxAge: REFRESH_TOKEN_MAX_AGE,
+    maxAge: 60 * 60 * 24 * 15,
     domain: process.env.NODE_ENV === "production" ? ".buzzerbidder.site" : undefined,
   });
 }
