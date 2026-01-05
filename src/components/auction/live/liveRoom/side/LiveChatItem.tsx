@@ -68,7 +68,7 @@ export default function LiveChatItem({ message, isMine }: LiveChatItemProps) {
           </div>
         )}
 
-        <div className="flex max-w-[70%] flex-col gap-0.5 break-words whitespace-pre-wrap">
+        <div className="flex max-w-[70%] flex-col gap-0.5 wrap-break-word whitespace-pre-wrap">
           {!isMine && <span className="text-title-sub2 text-xs">{nickname}</span>}
 
           <div
