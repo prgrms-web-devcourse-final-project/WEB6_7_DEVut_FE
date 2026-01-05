@@ -64,6 +64,10 @@ export default function WriteForm() {
       notify("상품명을 입력해주세요.", "ERROR");
       return;
     }
+    if (!description.trim()) {
+      notify("상품 설명을 입력해주세요.", "ERROR");
+      return;
+    }
     if (images.length === 0) {
       notify("최소 한 장의 이미지를 업로드해주세요.", "ERROR");
       return;
@@ -72,11 +76,11 @@ export default function WriteForm() {
       notify("경매 시작가를 올바르게 입력해주세요.", "ERROR");
       return;
     }
-    if ((auctionKind === "LIVE" && !startDate) || !startTime) {
+    if (auctionKind === "LIVE" && !startDate) {
       notify("경매 시작일시를 선택해주세요.", "ERROR");
       return;
     }
-    if ((auctionKind === "DELAYED" && !endDate) || !endTime) {
+    if (auctionKind === "DELAYED" && !endDate) {
       notify("경매 마감일시를 선택해주세요.", "ERROR");
       return;
     }
@@ -182,7 +186,7 @@ export default function WriteForm() {
         </div>
         <DashDivider />
         <div className="space-y-2">
-          <p className="text-title-sub2 text-lg">가격 *</p>
+          <p className="text-title-sub2 text-lg">경매 시작가격 *</p>
           <PriceInput
             placeholder="경매 시작가를 입력해주세요 (수정 불가)"
             onChange={setStartPrice}
@@ -192,8 +196,8 @@ export default function WriteForm() {
         {auctionKind === "DELAYED" && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-title-sub2 text-lg">즉시구매가</span>
-              <span className="text-title-sub2 text-sm">(미입력시 즉시구매 불가로 설정됩니다)</span>
+              <span className="text-title-sub2 text-lg">즉시구매가 *</span>
+              <span className="text-title-sub2 text-sm">(시작가보다 높아야 합니다)</span>
             </div>
             <PriceInput
               placeholder="즉시구매가를 입력해주세요 (수정 불가)"

@@ -2,7 +2,6 @@ import ContentContainer from "@/components/common/ContentContainer";
 import MileStoneSemiTitle from "@/components/common/MileStoneSemiTitle";
 import NotifyItem from "@/components/notify/notifyItem";
 import { getNotifications } from "@/features/notify/api/notify.server.api";
-import { notificationsMock } from "@/features/notify/mock/notifications.mock";
 import { getNotifyIcon, notifyGroupByDate } from "@/utils/notify";
 
 export default async function NotifyPage() {
@@ -21,7 +20,7 @@ export default async function NotifyPage() {
               <div className="bg-border-main absolute top-0 left-7 h-full w-[3px]" />
               {sortedKeys.map((dateKey, index) => (
                 <div key={dateKey} className="mb-12">
-                  <MileStoneSemiTitle title={dateKey} className="mb-2 ml-2" />
+                  <MileStoneSemiTitle title={dateKey} className="mb-8 ml-2" />
 
                   {group[dateKey].map(notification => (
                     <NotifyItem key={notification.id} icon={getNotifyIcon(notification.type)}>

@@ -5,12 +5,17 @@ import SearchResult from "@/components/search/SearchResult";
 import SearchSection from "./SearchSection";
 import { FilterBar } from "./FilterBar";
 import DetailSearch from "../modal/detailSearch";
-import { useSearchProductCards } from "@/features/product/hooks/useSearchProductCards";
+import {
+  useSearchProductCards,
+  useSearchProductInfinite,
+} from "@/features/product/hooks/useSearchProductCards";
 import { auctionTypeMapping } from "@/utils/product";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function SearchPageClient() {
   const [open, setOpen] = useState(false);
+  const [isSelling, setIsSelling] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,6 +31,7 @@ export default function SearchPageClient() {
     maxBidPrice: searchParams.get("maxBidPrice")
       ? Number(searchParams.get("maxBidPrice"))
       : undefined,
+    isSelling,
   };
 
   const hasSearched =
@@ -35,8 +41,10 @@ export default function SearchPageClient() {
     next: Partial<GetProductsParams & { auctionType: AuctionTypeKOR }>
   ) => {
     const sp = new URLSearchParams(searchParams.toString());
+    sp.delete("page");
 
     Object.entries(next).forEach(([key, value]) => {
+      if (key === "page") return;
       if (value === undefined || value === null || value === "") {
         sp.delete(key);
       } else {
@@ -63,10 +71,6 @@ export default function SearchPageClient() {
     router.push(pathname);
   };
 
-  const handlePageChange = (page: number) => {
-    updateSearchParams({ page });
-  };
-
   const handleDetailSearch = (detailParams: GetProductsParams) => {
     updateSearchParams({
       ...detailParams,
@@ -74,10 +78,25 @@ export default function SearchPageClient() {
     });
   };
 
-  const { cards, isLoading, isFetching, isError, error } = useSearchProductCards({
-    auctionType: auctionTypeMapping(auctionType),
-    params,
-  });
+  const handleIsSelling = () => {
+    setIsSelling(prev => !prev);
+  };
+
+  // const { cards, isLoading, isFetching, isError, error, totalCount } = useSearchProductCards({
+  //   auctionType: auctionTypeMapping(auctionType),
+  //   params,
+  // });
+
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSearchProductInfinite(params);
+
+  const cards = data?.pages.flatMap(page => page.products) ?? [];
+
+  const loadMoreRef = useInfiniteScroll(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, hasNextPage);
 
   return (
     <>
@@ -86,6 +105,8 @@ export default function SearchPageClient() {
         onChangeAuctionType={handleChangeAuctionType}
         onSearch={handleSearch}
         onOpenDetail={() => setOpen(true)}
+        isSelling={isSelling}
+        handleIsSelling={handleIsSelling}
       />
 
       <FilterBar params={params} onRemove={handleRemoveFilter} onReset={handleResetFilters} />
@@ -93,13 +114,26 @@ export default function SearchPageClient() {
       <SearchResult
         cards={cards}
         isLoading={isLoading}
-        isFetching={isFetching}
+        isFetching={isFetchingNextPage}
         hasSearched={hasSearched}
         error={isError ? error?.message : null}
-        onPageChange={handlePageChange}
       />
 
-      {open && <DetailSearch onClose={() => setOpen(false)} onSearch={handleDetailSearch} />}
+      <div ref={loadMoreRef} className="h-1" />
+      {isFetchingNextPage && (
+        <div
+          className="border-custom-orange border-t-content-gray animate-spin rounded-full border-4"
+          style={{ width: 24, height: 24 }}
+        />
+      )}
+
+      {open && (
+        <DetailSearch
+          onClose={() => setOpen(false)}
+          onSearch={handleDetailSearch}
+          isSelling={isSelling}
+        />
+      )}
     </>
   );
 }

@@ -18,11 +18,13 @@ const titleVariants = cva("text-title-main font-bold", {
 interface TitleProps extends VariantProps<typeof titleVariants> {
   children: ReactNode;
   className?: string;
+  icon?: ReactNode;
   wrapperClassName?: string;
 }
-export default function Title({ children, size, className, wrapperClassName }: TitleProps) {
+export default function Title({ children, size, icon, className, wrapperClassName }: TitleProps) {
   return (
     <div className={twMerge("mb-4 flex items-center justify-between", wrapperClassName)}>
+      {icon && <span className="mr-2 flex items-center">{icon}</span>}
       <h2 className={twMerge(titleVariants({ size }), className)}>{children}</h2>
     </div>
   );

@@ -13,9 +13,10 @@ import { useState } from "react";
 interface DetailSearchProps {
   onClose: () => void;
   onSearch: (detailParams: GetProductsParams) => void;
+  isSelling: boolean;
 }
 
-export default function DetailSearch({ onClose, onSearch }: DetailSearchProps) {
+export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSearchProps) {
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryKey | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 300000]);
@@ -29,6 +30,7 @@ export default function DetailSearch({ onClose, onSearch }: DetailSearchProps) {
       maxBidPrice: maxPrice,
       page: 1,
       size: 15,
+      isSelling,
     });
     onClose();
   };

@@ -66,7 +66,7 @@ export default function SaleDetail({ initialData }: { initialData: ProductCardTy
           ))
         )}
       </ProductsGrid>
-      <Pagenation className="mt-5" />
+      {/* <Pagenation className="mt-5" /> */}
     </div>
   );
 }

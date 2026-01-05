@@ -7,7 +7,10 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
     params: { ...params },
   });
 
-  return res.data.delayedItems.map(mapDelayedProductToCard);
+  return {
+    products: res.data.delayedItems.map(mapDelayedProductToCard),
+    totalCount: res.data.totalCount,
+  };
 };
 
 export const getLiveProduct = async (productId: number) => {
@@ -36,6 +39,14 @@ export const getLiveHotProducts = async () => {
 
 export const getDelayHotProducts = async () => {
   const res = await ServerApi<DelayProductResponse>(`/auction/delayed/hot`, {
+    method: "GET",
+  });
+
+  return res.data.delayedItems.map(mapDelayedProductToCard);
+};
+
+export const getDelayMostBidsProducts = async () => {
+  const res = await ServerApi<DelayProductResponse>(`/auction/delayed/most-bidded`, {
     method: "GET",
   });
 
