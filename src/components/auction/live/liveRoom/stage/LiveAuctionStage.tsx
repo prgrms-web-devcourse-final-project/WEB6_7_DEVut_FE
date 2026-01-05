@@ -1,43 +1,61 @@
+"use client";
+
 import Image from "next/image";
 import StageBackground from "./StageBackground";
 import auctioneerImg from "@/assets/images/auction/auctioneer.svg";
 import AuctionProduct from "./AuctionProduct";
-import AuctionAudience from "./AuctionAudience";
 import Input from "@/components/common/Input";
 import BizzAmount from "@/components/common/BizzAmount";
 import BidButton from "./BidButton";
+import { twMerge } from "tailwind-merge";
 
 interface LiveAuctionStageProps {
-  auction: LiveAuctionState;
-  audience: AudienceState;
+  currentStageProduct: LiveRoomProduct | undefined;
+  allClosed: boolean;
 }
 
-export default function LiveAuctionStage({ auction, audience }: LiveAuctionStageProps) {
-  const currentProduct = auction.products.find(p => p.id === auction.stage.currentProductId);
-
+export default function LiveAuctionStage({
+  currentStageProduct,
+  allClosed,
+}: LiveAuctionStageProps) {
   return (
     <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div className="relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black">
+      <div
+        className={twMerge(
+          "relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black transition-opacity duration-300",
+          allClosed && "pointer-events-none opacity-40"
+        )}
+      >
         <StageBackground />
 
-        <div
-          className="absolute z-20"
-          style={{
-            bottom: "10%",
-            left: "clamp(32px, 10vw, 120px)",
-          }}
-        >
-          <Image
-            src={auctioneerImg}
-            alt="auctioneer"
-            className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
-          />
-        </div>
+        {allClosed && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/30 text-3xl text-white">
+            모든 경매가 마감되었습니다
+          </div>
+        )}
 
-        <AuctionProduct product={currentProduct} />
+        {!allClosed && (
+          <>
+            <div
+              className="absolute z-20"
+              style={{
+                bottom: "10%",
+                left: "clamp(32px, 10vw, 120px)",
+              }}
+            >
+              <Image
+                src={auctioneerImg}
+                alt="auctioneer"
+                className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
+              />
+            </div>
+
+            <AuctionProduct currentStageProduct={currentStageProduct} />
+          </>
+        )}
       </div>
 
-      <AuctionAudience users={audience.users} />
+      {/* <AuctionAudience users={audience.users} /> */}
 
       <div className="bg-bg-main border-border-sub2 shrink-0 border-t">
         <div className="border-border-sub2 bg-custom-brown/30 text-title-main-dark flex h-12 items-center justify-between border-[3px] px-6 text-sm">

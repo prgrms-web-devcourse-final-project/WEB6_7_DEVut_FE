@@ -1,21 +1,16 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-
 import LiveAuctionSide from "@/components/auction/live/liveRoom/side/LiveAuctionSide";
 import LiveAuctionStage from "@/components/auction/live/liveRoom/stage/LiveAuctionStage";
 import StageBarBackground from "@/components/auction/live/liveRoom/stage/StageBarBackground";
 import TabButton from "@/components/auction/live/liveRoom/stage/TabButton";
 import MobileSideDrawer from "@/components/common/MobileSideDrawer";
-
 import { enterChatRoom } from "@/features/auction/api/liveAuctionRoom.api";
-import {
-  useAudience,
-  useLiveAuction,
-} from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
-
+import { useRoomProducts } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { useSocketStore } from "@/features/socket/store/useSocketStore";
+import { getLiveStatus } from "@/utils/auction";
 
 export default function LiveAuctionRoomPage() {
   const {
@@ -30,9 +25,18 @@ export default function LiveAuctionRoomPage() {
   const { sendAuctionMessage, subscribeChatRoom, messagesByRoom } = useSocketStore();
 
   const currentAuctionId = activeAuctionId;
-  const audience = useAudience(currentAuctionId ?? 0);
-  const auction = useLiveAuction(currentAuctionId ?? 0);
   const currentChatRoomId = currentAuctionId != null ? chatRoomIds[currentAuctionId] : undefined;
+
+  const { data: products, isLoading } = useRoomProducts(
+    currentAuctionId ? Number(currentAuctionId) : undefined
+  );
+  const currentStageProduct = products?.find(
+    product => getLiveStatus(product.auctionStatus) === "ONGOING"
+  );
+
+  const allClosed =
+    products?.every(product => getLiveStatus(product.auctionStatus) === "CLOSE") || false;
+
   const messages = currentChatRoomId != null ? (messagesByRoom[currentChatRoomId] ?? []) : [];
 
   const enterRoom = useCallback(
@@ -84,12 +88,13 @@ export default function LiveAuctionRoomPage() {
             ))}
           </StageBarBackground>
 
-          <LiveAuctionStage auction={auction} audience={audience} />
+          <LiveAuctionStage currentStageProduct={currentStageProduct} allClosed={allClosed} />
         </div>
 
         <div className="hidden lg:flex lg:w-[28%]">
           <LiveAuctionSide
-            products={auction.products}
+            products={products}
+            isLoading={isLoading}
             chat={{
               messages,
               sendMessage: (payload: { content: string }) =>
@@ -108,7 +113,8 @@ export default function LiveAuctionRoomPage() {
           }
         >
           <LiveAuctionSide
-            products={auction.products}
+            products={products}
+            isLoading={isLoading}
             chat={{
               messages,
               sendMessage: (payload: { content: string }) =>

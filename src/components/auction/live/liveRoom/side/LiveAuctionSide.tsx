@@ -9,14 +9,15 @@ import Button from "@/components/common/Button";
 import { useMe } from "@/features/auth/hooks/useMe";
 
 interface LiveAuctionSideProps {
-  products: LiveAuctionState["products"];
+  products: LiveRoomProduct[] | undefined;
+  isLoading: boolean;
   chat: {
     messages: LiveChatMessage[];
     sendMessage: (payload: { content: string }) => void;
   };
 }
 
-export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps) {
+export default function LiveAuctionSide({ chat, products, isLoading }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
   const [input, setInput] = useState("");
   const { data: me } = useMe();

@@ -50,3 +50,15 @@ interface LiveAuctionState {
 interface EnterChatRoomResponse {
   chatRoomId: number;
 }
+
+// 경매방 상품 목록 DTO
+interface LiveRoomProduct {
+  name: string;
+  imageUrls: string[];
+  price: number;
+  auctionStatus: AuctionStatus;
+}
+
+interface LiveRoomProductsResponse {
+  items: LiveRoomProduct[];
+}
