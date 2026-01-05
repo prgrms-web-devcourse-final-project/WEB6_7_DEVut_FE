@@ -15,7 +15,7 @@ type LiveChatType = "SYSTEM" | "BID" | "USER";
 interface LiveChatMessage {
   tempId: string;
   type: LiveChatType;
-  userId?: number;
+  senderId?: number;
   nickname?: string;
   profileImageUrl?: string;
   message: string;

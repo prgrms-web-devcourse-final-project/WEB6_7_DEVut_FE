@@ -11,8 +11,10 @@ import { useRoomProducts } from "@/features/auction/hooks/liveAuctionRoom/useLiv
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { useSocketStore } from "@/features/socket/store/useSocketStore";
 import { getLiveStatus } from "@/utils/auction";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 export default function LiveAuctionRoomPage() {
+  const { data: me } = useMe();
   const {
     activeAuctionId,
     subscribedAuctionIds,
@@ -27,7 +29,7 @@ export default function LiveAuctionRoomPage() {
   const currentAuctionId = activeAuctionId;
   const currentChatRoomId = currentAuctionId != null ? chatRoomIds[currentAuctionId] : undefined;
 
-  const { data: products, isLoading } = useRoomProducts(
+  const { data: products } = useRoomProducts(
     currentAuctionId ? Number(currentAuctionId) : undefined
   );
   const currentStageProduct = products?.find(
@@ -77,7 +79,7 @@ export default function LiveAuctionRoomPage() {
     <div className="w-full">
       <div className="flex w-full items-stretch">
         <div className="flex min-w-0 flex-1 flex-col">
-          <StageBarBackground className="sticky top-0 z-30 h-14 gap-2 px-4">
+          <StageBarBackground className="sticky top-0 z-20 h-14 gap-2 px-4">
             {subscribedAuctionIds.map((auctionId, index) => (
               <TabButton
                 key={auctionId}
@@ -93,8 +95,8 @@ export default function LiveAuctionRoomPage() {
 
         <div className="hidden lg:flex lg:w-[28%]">
           <LiveAuctionSide
+            me={me}
             products={products}
-            isLoading={isLoading}
             chat={{
               messages,
               sendMessage: (payload: { content: string }) =>
@@ -113,8 +115,8 @@ export default function LiveAuctionRoomPage() {
           }
         >
           <LiveAuctionSide
+            me={me}
             products={products}
-            isLoading={isLoading}
             chat={{
               messages,
               sendMessage: (payload: { content: string }) =>

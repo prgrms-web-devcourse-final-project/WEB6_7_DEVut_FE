@@ -9,7 +9,7 @@ export default function LiveChatList({ messages, userId }: LiveChatListProps) {
   return (
     <ul className="space-y-3 p-3">
       {messages.map((message, index) => (
-        <LiveChatItem key={index} message={message} isMine={message.userId === userId} />
+        <LiveChatItem key={index} message={message} isMine={message.senderId === userId} />
       ))}
     </ul>
   );

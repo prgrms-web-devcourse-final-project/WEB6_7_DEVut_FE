@@ -63,7 +63,7 @@ export default function LiveAuctionStage({
           <span>경과 시간: 47분 13초</span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
+        <div className="grid grid-cols-1 gap-4 px-4 pt-6 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
           <div className="flex justify-center lg:justify-start">
             <div className="border-border-sub2 shadow-flat-light flex w-full items-center rounded-sm border-2 bg-white px-4 py-2 text-sm">
               <span className="text-title-main mr-2">보유 Bizz</span>

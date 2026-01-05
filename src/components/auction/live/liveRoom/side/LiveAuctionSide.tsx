@@ -6,21 +6,19 @@ import LiveSideTabButton from "./LiveSideTabButton";
 import LiveChatList from "./LiveChatList";
 import LiveProductList from "./LiveProductList";
 import Button from "@/components/common/Button";
-import { useMe } from "@/features/auth/hooks/useMe";
 
 interface LiveAuctionSideProps {
+  me: User | null | undefined;
   products: LiveRoomProduct[] | undefined;
-  isLoading: boolean;
   chat: {
     messages: LiveChatMessage[];
     sendMessage: (payload: { content: string }) => void;
   };
 }
 
-export default function LiveAuctionSide({ chat, products, isLoading }: LiveAuctionSideProps) {
+export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
   const [input, setInput] = useState("");
-  const { data: me } = useMe();
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -43,7 +41,7 @@ export default function LiveAuctionSide({ chat, products, isLoading }: LiveAucti
         </LiveSideTabButton>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="max-h-200 min-h-0 flex-1 overflow-y-auto">
         <div className={tab === "CHAT" ? "h-full" : "hidden"}>
           <LiveChatList messages={chat.messages} userId={me?.id} />
         </div>
