@@ -71,7 +71,7 @@ export default function ProductModifyForm({ product }: ProductModifyFormProps) {
             ...formBase,
             type: "LIVE",
             startAt: product.liveTime,
-            initPrice: product.initPrice,
+            initPrice: product.currentPrice,
             roomIndex: product.roomIndex,
           }
         : {

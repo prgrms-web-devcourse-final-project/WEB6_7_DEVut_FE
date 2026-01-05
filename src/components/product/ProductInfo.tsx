@@ -28,19 +28,19 @@ interface ProductInfo {
 }
 
 export default function ProductInfo({ initialProduct, me }: ProductInfo) {
-  const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const route = useRouter();
+  const { data: product, isLoading, isError } = useProductDetail(initialProduct);
   const [isBidOpen, setIsBidOpen] = useState(false);
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
-
-  // 추후 리팩토링 (DTO 통합)
-  const path = product?.type === "LIVE" ? `/product/live/${product.id}` : `/product/${product?.id}`;
-  const sellerId = product?.type === "LIVE" ? product.sellerId : product?.sellerUserId;
-  const currentPrice = product?.type === "LIVE" ? 1000000 : product?.currentPrice;
+  const isLive = product?.type === "LIVE";
+  const path = isLive ? `/product/live/${product?.id}` : `/product/${product?.id}`;
+  const sellerId = isLive ? product?.sellerId : product?.sellerUserId;
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
-
+  if (!product) return <div>상품 정보가 존재하지 않습니다.</div>;
+  console.log("price!!!", product?.currentPrice);
+  console.log("product ******", product);
   return (
     <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
       <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch">
@@ -61,11 +61,10 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             <div className="bg-content-gray border-border-sub2 flex justify-between rounded-xl border p-5">
               <div className="flex h-full items-center gap-8">
                 <div>
-                  <p className="text-title-sub2 text-sm">현재가</p>
-
+                  <p className="text-title-sub2 text-sm">{isLive ? "시작가" : "현재가"}</p>
                   <div className="mt-2 flex items-end justify-between">
                     <BizzAmount
-                      amount={currentPrice || 100000}
+                      amount={product.currentPrice}
                       iconSize="lg"
                       className="text-title-main-dark text-2xl font-bold lg:text-3xl"
                     />

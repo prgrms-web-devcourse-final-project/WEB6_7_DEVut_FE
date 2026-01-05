@@ -54,12 +54,12 @@ interface ProductDetailBase {
   preferredPlace: string;
   images: string[];
   likeCount: number;
+  currentPrice: number;
 }
 
 interface LiveProductDetail extends ProductDetailBase {
   type: "LIVE";
   liveTime: string;
-  initPrice: number;
   roomIndex: number;
   sellerId: number; // 통합 필요
 }
@@ -67,7 +67,6 @@ interface LiveProductDetail extends ProductDetailBase {
 interface DelayProductDetail extends ProductDetailBase {
   type: "DELAYED";
   startPrice: number;
-  currentPrice: number;
   endTime: string;
   sellerUserId: number;
   buyNowPrice: number;

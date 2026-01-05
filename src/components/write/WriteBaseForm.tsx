@@ -61,7 +61,7 @@ export default function WriteBaseForm({
         <ItemStatusRadio condition={condition} setCondition={onChangeCondition} />
       </div>
       <div className="space-y-2">
-        <p className="text-title-sub2 text-lg">설명</p>
+        <p className="text-title-sub2 text-lg">설명 *</p>
         <Textarea
           value={description}
           onChange={e => onChangeDescription(e.target.value)}
