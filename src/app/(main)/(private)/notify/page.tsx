@@ -22,10 +22,8 @@ export default async function NotifyPage() {
                 <div key={dateKey} className="mb-12">
                   <MileStoneSemiTitle title={dateKey} className="mb-8 ml-2" />
 
-                  {group[dateKey].map(notification => (
-                    <NotifyItem key={notification.id} icon={getNotifyIcon(notification.type)}>
-                      {notification.message}
-                    </NotifyItem>
+                  {group[dateKey].map(notify => (
+                    <NotifyItem key={notify.id} notify={notify} />
                   ))}
 
                   {index !== sortedKeys.length - 1 && (
