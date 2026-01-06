@@ -3,9 +3,7 @@
 import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
-import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments";
 import { useHistoryWithdrawals } from "@/features/withdrawal/hooks/useHistoryWithdrawals";
-import { mapPaymentsToBizzLog, mapWithdrawalsToBizzLog } from "@/utils/myBizzLogMapping";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
   const { data } = useHistoryWithdrawals();
