@@ -17,12 +17,17 @@ export default function Sidebar({ me }: { me: User | null }) {
   const { subscribedAuctionIds } = useLiveRoomStore(state => state);
   const path = usePathname();
   const isRoom = path === "/auction/liveRoom";
+  const hasSubscribed = subscribedAuctionIds.length > 0;
 
   return (
     <div className="shadow-flat-light sticky top-0 hidden h-screen w-20 flex-col items-center gap-4 overflow-visible rounded-md pt-2 pb-2 md:flex">
       <Link
-        href={isRoom ? "/" : "/auction/liveRoom"}
-        className="group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px] cursor-pointer active:scale-98"
+        href={hasSubscribed ? (isRoom ? "/" : "/auction/liveRoom") : "#"}
+        aria-disabled={!hasSubscribed}
+        className={twMerge(
+          "group relative h-[65px] min-h-[65px] w-[65px] min-w-[65px]",
+          hasSubscribed ? "cursor-pointer active:scale-98" : "pointer-events-none cursor-default"
+        )}
       >
         <Image
           src={BBLogoBackground}
@@ -30,11 +35,7 @@ export default function Sidebar({ me }: { me: User | null }) {
           fill
           className={twMerge(
             "object-cover drop-shadow-[4px_4px_0_rgba(0,0,0,0.2)] transition-opacity duration-500",
-            subscribedAuctionIds.length > 0
-              ? path === "/auction/liveRoom"
-                ? "opacity-100"
-                : "animate-pulse opacity-100"
-              : "opacity-0"
+            hasSubscribed ? (isRoom ? "opacity-100" : "animate-pulse opacity-100") : "opacity-0"
           )}
         />
 
