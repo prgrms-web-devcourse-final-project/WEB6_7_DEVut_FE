@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import LiveChatItem from "./LiveChatItem";
 
 interface LiveChatListProps {
@@ -6,11 +9,22 @@ interface LiveChatListProps {
 }
 
 export default function LiveChatList({ messages, userId }: LiveChatListProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    el.scrollTop = el.scrollHeight;
+  }, [messages.length]);
+
+  if (!userId) return;
+
   return (
-    <ul className="space-y-3 p-3">
+    <div ref={containerRef} className="h-full space-y-3 overflow-y-auto p-3">
       {messages.map((message, index) => (
-        <LiveChatItem key={index} message={message} isMine={message.userId === userId} />
+        <LiveChatItem key={index} message={message} userId={userId} />
       ))}
-    </ul>
+    </div>
   );
 }

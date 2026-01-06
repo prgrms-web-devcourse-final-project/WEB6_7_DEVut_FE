@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/css/globals.css";
-import ToastProvider from "@/providers/ToastProvider";
-import QueryProvider from "@/providers/QueryProvider";
 import Script from "next/script";
 import RootProvider from "@/providers/RootProvider";
 

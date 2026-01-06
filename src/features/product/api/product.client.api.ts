@@ -1,5 +1,9 @@
 import ClientApi from "@/lib/clientApi";
-import { mapDelayedProductToCard, mapLiveProductToCard } from "../mapper/productCard";
+import {
+  mapAuctionItemToCard,
+  mapDelayedProductToCard,
+  mapLiveProductToCard,
+} from "../mapper/productCard";
 
 export const getDelayedProducts = async (params: GetProductsParams) => {
   const res = await ClientApi<DelayProductResponse>("/auction/delayed", {
@@ -9,6 +13,18 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
 
   return {
     products: res.data.delayedItems.map(mapDelayedProductToCard),
+    totalCount: res.data.totalCount,
+  };
+};
+
+export const getALLProducts = async (params: GetProductsAllParams) => {
+  const res = await ClientApi<ProductAllResponse>("/auction/search", {
+    method: "GET",
+    params: { ...params },
+  });
+
+  return {
+    auctions: res.data.auctions.map(mapAuctionItemToCard),
     totalCount: res.data.totalCount,
   };
 };

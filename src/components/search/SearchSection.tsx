@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import Input from "../common/Input";
-import { FileSearch, Search, SlidersHorizontal } from "lucide-react";
-import { twMerge } from "tailwind-merge";
+import { Search, SlidersHorizontal } from "lucide-react";
 import OptionDropdown from "../common/OptionDropdown";
 import Toast, { ToastType } from "../common/Toast";
 import SellingToggle from "./SellingToggle";
@@ -68,7 +67,7 @@ export default function SearchSection({
 
       <SellingToggle isSelling={isSelling} handleIsSelling={handleIsSelling} />
 
-      {/* <div className="min-w-[106px] shrink-0">
+      <div className="min-w-[106px] shrink-0">
         <OptionDropdown label={auctionType}>
           <OptionDropdown.Item onClick={() => onChangeAuctionType("전체")}>
             전체
@@ -80,7 +79,7 @@ export default function SearchSection({
             일반
           </OptionDropdown.Item>
         </OptionDropdown>
-      </div> */}
+      </div>
     </div>
   );
 }

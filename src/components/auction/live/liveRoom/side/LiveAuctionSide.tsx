@@ -6,23 +6,27 @@ import LiveSideTabButton from "./LiveSideTabButton";
 import LiveChatList from "./LiveChatList";
 import LiveProductList from "./LiveProductList";
 import Button from "@/components/common/Button";
-import { useMe } from "@/features/auth/hooks/useMe";
+import Toast from "@/components/common/Toast";
 
 interface LiveAuctionSideProps {
-  products: LiveAuctionState["products"];
+  me: User | null | undefined;
+  products: LiveRoomProduct[] | undefined;
   chat: {
     messages: LiveChatMessage[];
     sendMessage: (payload: { content: string }) => void;
   };
 }
 
-export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps) {
+export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
   const [input, setInput] = useState("");
-  const { data: me } = useMe();
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleSend = () => {
     if (!input.trim()) return;
+    if (!me) {
+      notify("로그인 후 채팅에 참여해보세요!", "ERROR");
+    }
 
     chat.sendMessage({
       content: input,
@@ -42,7 +46,7 @@ export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps
         </LiveSideTabButton>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="h-full min-h-0 flex-1 overflow-y-auto">
         <div className={tab === "CHAT" ? "h-full" : "hidden"}>
           <LiveChatList messages={chat.messages} userId={me?.id} />
         </div>
@@ -58,7 +62,7 @@ export default function LiveAuctionSide({ chat, products }: LiveAuctionSideProps
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="메시지를 입력해주세요."
-            className="bg-content-area border-border-sub w-full resize-none rounded-lg border-2 px-4 py-3 outline-none"
+            className="bg-content-area border-border-sub flex-2 resize-none rounded-lg border-2 px-4 py-3 outline-none"
             onKeyDown={e => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

@@ -1,31 +1,8 @@
 import { NOTIFICATION_ROUTE_MAP } from "@/features/notify/mapper/notifyRouteMap";
 import { format, parseISO } from "date-fns";
 
-// 라이브 주석
-// export const notifyGroupByDate = (notifications: NotificationItem[]) => {
-//   const group = notifications.reduce(
-//     (acc, cur) => {
-//       const dateKey = format(parseISO(cur.createDate), "yyyy-MM-dd");
-
-//       if (!acc[dateKey]) acc[dateKey] = [];
-//       acc[dateKey].push(cur);
-
-//       return acc;
-//     },
-//     {} as Record<string, NotificationItem[]>
-//   );
-
-//   const sortedKeys = Object.keys(group).sort(
-//     (a, b) => new Date(b).getTime() - new Date(a).getTime()
-//   );
-
-//   return { group, sortedKeys };
-// };
-
 export const notifyGroupByDate = (notifications: NotificationItem[]) => {
-  const filtered = notifications.filter(n => !n.type.startsWith("LIVE_"));
-
-  const group = filtered.reduce(
+  const group = notifications.reduce(
     (acc, cur) => {
       const dateKey = format(parseISO(cur.createDate), "yyyy-MM-dd");
 
@@ -43,6 +20,28 @@ export const notifyGroupByDate = (notifications: NotificationItem[]) => {
 
   return { group, sortedKeys };
 };
+
+// export const notifyGroupByDate = (notifications: NotificationItem[]) => {
+//   const filtered = notifications.filter(n => !n.type.startsWith("LIVE_"));
+
+//   const group = filtered.reduce(
+//     (acc, cur) => {
+//       const dateKey = format(parseISO(cur.createDate), "yyyy-MM-dd");
+
+//       if (!acc[dateKey]) acc[dateKey] = [];
+//       acc[dateKey].push(cur);
+
+//       return acc;
+//     },
+//     {} as Record<string, NotificationItem[]>
+//   );
+
+//   const sortedKeys = Object.keys(group).sort(
+//     (a, b) => new Date(b).getTime() - new Date(a).getTime()
+//   );
+
+//   return { group, sortedKeys };
+// };
 
 const NOTIFY_ICON_MAP: Record<NotificationType, string> = {
   // 지연 경매

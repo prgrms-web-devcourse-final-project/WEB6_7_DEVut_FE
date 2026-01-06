@@ -5,6 +5,12 @@ export const getBidUnit = (price: number) => {
   return 10_000;
 };
 
+export const getBidSteps = (currentPrice: number) => {
+  const unit = getBidUnit(currentPrice);
+
+  return [unit, unit * 3, unit * 5];
+};
+
 export const getLiveStatus = (status: AuctionStatus) => {
   switch (status) {
     case "BEFORE_BIDDING":
@@ -14,6 +20,20 @@ export const getLiveStatus = (status: AuctionStatus) => {
     default:
       return "CLOSE";
   }
+};
+
+export const getLiveRoomStatus = (products?: { auctionStatus: AuctionStatus }[]) => {
+  if (!products || products.length === 0) return "READY";
+
+  const hasReady = products.some(p => getLiveStatus(p.auctionStatus) === "READY");
+  const hasOngoing = products.some(p => getLiveStatus(p.auctionStatus) === "ONGOING");
+  const allClosed = products.every(p => getLiveStatus(p.auctionStatus) === "CLOSE");
+
+  if (allClosed) return "CLOSE";
+  if (hasOngoing) return "ONGOING";
+  if (hasReady) return "INTERMISSION";
+
+  return "READY";
 };
 
 export const getDelayStatus = (status: AuctionStatus) => {

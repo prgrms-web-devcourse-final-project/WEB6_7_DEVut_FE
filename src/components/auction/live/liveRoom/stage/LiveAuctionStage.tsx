@@ -1,19 +1,104 @@
+"use client";
+
 import Image from "next/image";
 import StageBackground from "./StageBackground";
 import auctioneerImg from "@/assets/images/auction/auctioneer.svg";
 import AuctionProduct from "./AuctionProduct";
-import AuctionAudience from "./AuctionAudience";
-import Input from "@/components/common/Input";
 import BizzAmount from "@/components/common/BizzAmount";
 import BidButton from "./BidButton";
+import { twMerge } from "tailwind-merge";
+import { getBidSteps } from "@/utils/auction";
+import { useEffect, useState } from "react";
+import PriceInput from "@/components/common/PriceInput";
+import { ConfirmModal } from "@/components/common/ComfirmModal";
+import { useLiveBid } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
+import Toast, { ToastType } from "@/components/common/Toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatRemainingTime } from "@/utils/getRemainingTime";
+import { useGetMyBizz } from "@/features/mypage/hooks/useMyBizz";
 
 interface LiveAuctionStageProps {
-  auction: LiveAuctionState;
-  audience: AudienceState;
+  me: User | null | undefined;
+  roomId: number | null;
+  currentStageProduct: LiveRoomProduct | undefined;
+  roomStatus: "READY" | "ONGOING" | "INTERMISSION" | "CLOSE";
+  participants: number;
+  remaingMs: number | null | undefined;
 }
 
-export default function LiveAuctionStage({ auction, audience }: LiveAuctionStageProps) {
-  const currentProduct = auction.products.find(p => p.id === auction.stage.currentProductId);
+export default function LiveAuctionStage({
+  me,
+  roomId,
+  currentStageProduct,
+  roomStatus,
+  participants,
+  remaingMs,
+}: LiveAuctionStageProps) {
+  const isIntermission = roomStatus === "INTERMISSION";
+  const isClosed = roomStatus === "CLOSE";
+
+  const [localRemainingMs, setLocalRemainingMs] = useState<number | null>(null);
+
+  const bidSteps = getBidSteps(currentStageProduct?.currentPrice || 10000);
+  const [bidInput, setBidInput] = useState(0);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  const { mutate: bid } = useLiveBid();
+  const { data: myBizz, isLoading } = useGetMyBizz();
+
+  const queryClient = useQueryClient();
+
+  const handleConfirm = () => {
+    if (!roomId || !currentStageProduct) return;
+    if (isIntermission || isClosed) return;
+
+    bid(
+      {
+        bidPrice: bidInput,
+        auctionId: roomId,
+        liveItemId: currentStageProduct.id,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["live-room-products", roomId],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["my-bizz"],
+          });
+          setIsConfirmOpen(false);
+          setBidInput(0);
+          notify("입찰을 성공하였습니다!", "SUCCESS");
+        },
+        onError: (error: unknown) => {
+          setIsConfirmOpen(false);
+          const { msg } = error as ResponseBase;
+          notify(msg, "ERROR");
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (remaingMs == null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalRemainingMs(remaingMs);
+  }, [remaingMs]);
+
+  useEffect(() => {
+    if (localRemainingMs == null) return;
+    if (isIntermission || isClosed) return;
+
+    const interval = setInterval(() => {
+      setLocalRemainingMs(prev => {
+        if (prev == null) return prev;
+        return prev <= 1000 ? 0 : prev - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [localRemainingMs, isIntermission, isClosed]);
 
   return (
     <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
@@ -21,55 +106,129 @@ export default function LiveAuctionStage({ auction, audience }: LiveAuctionStage
         <StageBackground />
 
         <div
-          className="absolute z-20"
-          style={{
-            bottom: "10%",
-            left: "clamp(32px, 10vw, 120px)",
-          }}
+          className={twMerge(
+            "pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/40 text-3xl text-white transition-opacity",
+            isClosed ? "opacity-100" : "opacity-0"
+          )}
         >
-          <Image
-            src={auctioneerImg}
-            alt="auctioneer"
-            className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
-          />
+          모든 경매가 마감되었습니다
         </div>
 
-        <AuctionProduct product={currentProduct} />
-      </div>
+        <div
+          className={twMerge(
+            "pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/40 text-white transition-opacity",
+            isIntermission ? "opacity-100" : "opacity-0"
+          )}
+        >
+          <p className="text-3xl font-bold">다음 상품 준비 중</p>
+          <p className="text-sm opacity-80">잠시만 기다려 주세요</p>
+          {/* <p className="mt-2 text-base font-semibold">
+            남은 시간 {formatRemainingTime(localRemainingMs)}
+          </p> */}
+        </div>
 
-      <AuctionAudience users={audience.users} />
+        <div
+          className={twMerge(
+            "transition-opacity duration-300",
+            (isClosed || isIntermission) && "opacity-40"
+          )}
+        >
+          <div
+            className="absolute z-20"
+            style={{
+              bottom: "10%",
+              left: "clamp(32px, 10vw, 120px)",
+            }}
+          >
+            {!isClosed && (
+              <Image
+                src={auctioneerImg}
+                alt="auctioneer"
+                className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
+              />
+            )}
+          </div>
+
+          {!isClosed && <AuctionProduct currentStageProduct={currentStageProduct} />}
+        </div>
+      </div>
 
       <div className="bg-bg-main border-border-sub2 shrink-0 border-t">
         <div className="border-border-sub2 bg-custom-brown/30 text-title-main-dark flex h-12 items-center justify-between border-[3px] px-6 text-sm">
-          <span>접속자: 284명</span>
-          <span>경과 시간: 47분 13초</span>
+          <span>접속자: {participants}명</span>
+          <p className="text-sm">
+            잔여 시간:{" "}
+            <b>
+              {localRemainingMs != null && !isIntermission
+                ? formatRemainingTime(localRemainingMs)
+                : "--:--"}
+            </b>
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
+        <div className="grid grid-cols-1 gap-4 px-4 pt-4 pb-2 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
           <div className="flex justify-center lg:justify-start">
             <div className="border-border-sub2 shadow-flat-light flex w-full items-center rounded-sm border-2 bg-white px-4 py-2 text-sm">
-              <span className="text-title-main mr-2">보유 Bizz</span>
-              <BizzAmount amount={2300000} />
+              <span className="text-title-main mr-5">보유 Bizz</span>
+              {isLoading ? (
+                <div className="flex items-center">
+                  <span className="border-border-sub h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                </div>
+              ) : (
+                <BizzAmount amount={myBizz || 0} />
+              )}
             </div>
           </div>
 
           <div className="flex justify-center">
-            <BidButton />
+            <BidButton
+              disabled={isIntermission || isClosed}
+              onClick={() => {
+                if (!me) {
+                  notify("로그인 후 입찰에 참여해보세요!", "ERROR");
+                  return;
+                }
+
+                if (isIntermission || isClosed) return;
+                setIsConfirmOpen(true);
+              }}
+            />
           </div>
 
-          <div className="flex flex-col gap-3 lg:items-stretch">
-            <div className="grid w-full grid-cols-3 gap-3 lg:justify-end">
-              {["+ 1만", "+ 3만", "+ 5만"].map(label => (
+          <div className="flex flex-col gap-3">
+            <div className="grid w-full grid-cols-3 gap-3">
+              {bidSteps.map(step => (
                 <button
-                  key={label}
-                  className="border-border-sub2 h-12 w-full cursor-pointer rounded-sm border-[3px] bg-[#8B2500] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] active:translate-y-px"
+                  key={step}
+                  disabled={isIntermission || isClosed}
+                  className={twMerge(
+                    "border-border-sub2 h-12 w-full rounded-sm border-[3px] bg-[#8B2500] text-sm font-semibold text-white",
+                    (isIntermission || isClosed) && "pointer-events-none opacity-40"
+                  )}
+                  onClick={() => setBidInput(prev => prev + step)}
                 >
-                  {label}
+                  + {step.toLocaleString()}원
                 </button>
               ))}
             </div>
 
-            <Input placeholder="입찰 금액" className="w-full rounded-sm" />
+            <PriceInput
+              value={bidInput}
+              onChange={setBidInput}
+              placeholder={
+                isIntermission ? "상품 대기중입니다" : isClosed ? "경매 종료" : "입찰 금액"
+              }
+            />
+
+            <ConfirmModal
+              isOpen={isConfirmOpen}
+              title="입찰 확인"
+              message={`정말 ${bidInput.toLocaleString()} Bizz으로 입찰하시겠습니까?`}
+              confirmText="입찰"
+              cancelText="취소"
+              onConfirm={handleConfirm}
+              onCancel={() => setIsConfirmOpen(false)}
+            />
           </div>
         </div>
       </div>
