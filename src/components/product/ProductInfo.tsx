@@ -210,6 +210,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </Button>
             ) : (
               <Button
+                onClick={() => route.push(`/message/item/${product.id}`)}
                 className="bg-custom-orange-dark flex-1 text-white"
                 leftIcon={<MessageCircle size={18} />}
               >
