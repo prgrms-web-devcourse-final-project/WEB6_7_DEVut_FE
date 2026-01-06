@@ -187,7 +187,7 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
       const messageContent = value;
       const itemId = sendProductId;
 
-      // 재시도 로직... 임시방편. 웹소캣 연결 지연 문제 때문에 채팅방 ID가 바로 안 내려오는 경우가 있음
+      // 재시도 로직... 임시방편. 웹소캣 연결 지연 문제 때문에 채팅방 ID가 바로 안 내려오는 경우가 있음. 사실 재시도가 의미 없긴 함
       const pollForChatRoomId = async (retries = 5) => {
         for (let i = 0; i < retries; i++) {
           console.log(`[MessageRight] Polling attempt ${i + 1}/${retries}, itemId:`, itemId);

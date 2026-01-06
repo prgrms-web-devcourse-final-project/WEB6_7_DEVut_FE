@@ -23,6 +23,7 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     setDMQueryClient(queryClient);
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).queryClient = queryClient;
     }
   }, [queryClient, setDMQueryClient]);
