@@ -17,3 +17,15 @@ export const trade = async (params: {
 
   return res.data;
 };
+
+export const confirmTrade = async (params: { type: "LIVE" | "DELAYED"; dealId: string }) => {
+  const res = await ClientApi(`/users/me/deals/${params.type}/${params.dealId}/confirm`, {
+    method: "PATCH",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};

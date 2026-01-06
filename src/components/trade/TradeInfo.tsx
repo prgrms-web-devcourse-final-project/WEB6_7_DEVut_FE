@@ -18,6 +18,7 @@ import Toast from "../common/Toast";
 import { buildMilestones } from "@/utils/buildMilestones";
 import ConfirmModal from "../modal/ConfirmModal";
 import { usePayBalance } from "@/features/payments/hooks/usePayBalance";
+import { useConfirmTrade } from "@/features/trade/hooks/useConfirmTrade";
 
 type TradeInfoProps = {
   auctionType: "LIVE" | "DELAYED";
@@ -31,10 +32,13 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [carrier, setCarrier] = useState<Carrier | "">("");
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { mutate: payBalanceMutate } = usePayBalance();
   const { mutate: updateAddressMutate } = useUpdateAddress();
   const { mutate: updateDeliveryMutate } = useUpdateDelivery();
+  const { mutate: confirmTradeMutate } = useConfirmTrade();
+
   const { data: tradeData, isLoading, isError } = useTradeDetail({ auctionType, dealId });
 
   const isBuyer = tradeData?.role === "BUYER";
@@ -100,6 +104,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
     status: tradeData.status,
     hasTracking: Boolean(tradeData.trackingNumber),
     onPayClick: () => setIsPayModalOpen(true),
+    onConfirmClick: () => setIsConfirmModalOpen(true),
   });
 
   return (
@@ -232,6 +237,19 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
           onConfirm={() => {
             payBalanceMutate(dealId);
             setIsPayModalOpen(false);
+          }}
+        />
+      )}
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          title="구매를 확정하시겠습니까?"
+          description="구매 확정 후에는 거래가 완료되며 되돌릴 수 없습니다."
+          confirmText="구매 확정"
+          cancelText="취소"
+          onCancel={() => setIsConfirmModalOpen(false)}
+          onConfirm={() => {
+            confirmTradeMutate({ type: auctionType, dealId });
+            setIsConfirmModalOpen(false);
           }}
         />
       )}

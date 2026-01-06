@@ -15,11 +15,13 @@ export function buildMilestones({
   status,
   hasTracking,
   onPayClick,
+  onConfirmClick,
 }: {
   role: "BUYER" | "SELLER";
   status: DealStatus;
   hasTracking: boolean;
   onPayClick: () => void;
+  onConfirmClick: () => void;
 }): MilestoneStep[] {
   const isBuyer = role === "BUYER";
 
@@ -62,23 +64,15 @@ export function buildMilestones({
       title: "거래 완료",
       description: isBuyer ? "구매 확정을 기다리고 있습니다." : "판매가 완료되었습니다.",
       action:
-        isBuyer && status === "COMPLETED" ? { label: "구매 확정", onClick: () => {} } : undefined,
+        isBuyer && status === "COMPLETED"
+          ? { label: "구매 확정", onClick: onConfirmClick }
+          : undefined,
       active: status === "COMPLETED",
       done: false,
     },
   ];
 
-  /** ✅ 여기서 컷 */
-  const ORDER: MilestoneStep["key"][] = ["PENDING", "PAID", "SHIPPING", "COMPLETED"];
-
-  const lastIndex =
-    status === "PENDING"
-      ? 0
-      : status === "PAID"
-        ? 2 // SHIPPING까지 보여줌
-        : status === "SHIPPING"
-          ? 2
-          : 3;
+  const lastIndex = status === "PENDING" ? 0 : status === "PAID" || status === "SHIPPING" ? 2 : 3;
 
   return allSteps.slice(0, lastIndex + 1);
 }
