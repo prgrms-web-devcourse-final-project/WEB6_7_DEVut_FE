@@ -12,26 +12,46 @@ import { useState } from "react";
 export default function PurchaseDetail({ initialData }: { initialData?: ProductCardType[] }) {
   const [status, setStatus] = useState("전체");
   const { data: purchaseData } = useMyPurchase({ initialData });
-  const isEmpty = !purchaseData || purchaseData.length === 0;
+
+  const purchaseItems = purchaseData ?? [];
+
+  const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
+    전체: "ALL",
+    잔금대기: "PAYMENT_PENDING",
+    "거래 중": "IN_DEAL",
+    "구매 확정": "PURCHASE_CONFIRMED",
+    "경매 종료": "FAILED",
+  };
+
+  const filteredItems = purchaseItems.filter(product => {
+    if (product.status?.kind !== "status") return false;
+
+    if (product.status.status === "IN_PROGRESS") return false;
+    if (product.status.status === "BEFORE_BIDDING") return false;
+
+    if (status === "전체") return true;
+
+    return product.status.status === STATUS_MAP[status];
+  });
+
+  const isEmpty = filteredItems.length === 0;
   return (
     <div className="mt-10">
       <Title wrapperClassName="mb-0" size={"lg"}>
         구매 상세
       </Title>
       <div className="flex w-full justify-end gap-5">
-        <div className="relative w-[110px] translate-y-2 scale-120">
-          <OrderSwitch />
-        </div>
+        <div className="relative w-[110px] translate-y-2 scale-120"></div>
 
         <OptionDropdown label={status} className="mb-5">
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("잔금대기")}>잔금대기</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("거래 중")}>거래 중</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("거래 완료")}>
-            거래 완료
-          </OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("구매 확정")}>
             구매 확정
+          </OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("경매 종료")}>
+            경매 종료
           </OptionDropdown.Item>
         </OptionDropdown>
       </div>
@@ -42,7 +62,7 @@ export default function PurchaseDetail({ initialData }: { initialData?: ProductC
             <p className="text-title-main text-lg font-bold">구매 이력이 없습니다</p>
           </div>
         ) : (
-          purchaseData.map(product => (
+          filteredItems.map(product => (
             <ProductCard context="MY_BUYING" key={product.id} product={product} />
           ))
         )}
