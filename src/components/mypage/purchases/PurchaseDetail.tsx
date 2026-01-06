@@ -1,7 +1,6 @@
 "use client";
 
 import OptionDropdown from "@/components/common/OptionDropdown";
-import OrderSwitch from "@/components/common/OrderSwitch";
 import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
