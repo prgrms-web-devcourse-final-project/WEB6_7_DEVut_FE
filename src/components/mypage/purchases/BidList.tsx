@@ -4,15 +4,15 @@ import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
-import { useMyPurchase } from "@/features/mypage/hooks/useMyPurchase";
+import { useMyCurrentPurchase } from "@/features/mypage/hooks/useMyCurrentPurchase";
 import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import { useEffect, useState } from "react";
 
-export default function BidList() {
+export default function BidList({ initialData }: { initialData?: ProductCardType[] }) {
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
 
-  const { data: purchaseData } = useMyPurchase();
+  const { data: purchaseData } = useMyCurrentPurchase({ initialData });
   const isEmpty = !purchaseData || purchaseData.length === 0;
 
   useEffect(() => {
@@ -29,9 +29,7 @@ export default function BidList() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const shownProducts = expanded
-    ? productCardMock_DELAYED
-    : productCardMock_DELAYED.slice(0, visibleCount);
+  const shownProducts = expanded ? purchaseData : purchaseData?.slice(0, visibleCount);
 
   return (
     <>
@@ -44,7 +42,7 @@ export default function BidList() {
               <p className="mt-2 text-sm opacity-70">입찰을 시도해 보세요!</p>
             </div>
           ) : (
-            shownProducts.map(product => (
+            shownProducts?.map(product => (
               <ProductCard context="CARD" key={product.id} product={product} />
             ))
           )}

@@ -18,3 +18,19 @@ interface MyPurchasesResponse {
   items: Purchase[];
   totalCount: number;
 }
+
+interface CurrentPurchase {
+  id: number;
+  name: string;
+  image: string;
+  currentPrice: number;
+  buyNowPrice: number;
+  endTime: string;
+  auctionStatus: AuctionStatus;
+  isLiked: true;
+}
+
+interface MyCurrentPurchasesResponse {
+  delayedItems: CurrentPurchase[];
+  totalCount: number;
+}
