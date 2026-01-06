@@ -5,7 +5,8 @@ export const myPagePurchaseCardMapping = (item: Purchase) => {
   const status: ProductStatusData = { kind: "status", status: item.auctionStatus };
 
   return {
-    id: item.id,
+    dealId: item.id,
+    id: item.itemId,
     title: item.itemName,
     amount: item.winningPrice,
     image: item.image,

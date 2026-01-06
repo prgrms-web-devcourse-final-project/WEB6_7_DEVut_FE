@@ -7,14 +7,14 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { myPageCardMapping } from "@/utils/myPageCardMapping";
+import { myPageSellCardMapping } from "@/utils/myPageCardMapping";
 import { useState } from "react";
 
 export default function SaleDetail() {
   const { data: mySells } = useMySell();
   const [status, setStatus] = useState("전체");
 
-  const newMySells = myPageCardMapping({ card: mySells });
+  const newMySells = myPageSellCardMapping({ card: mySells });
   const sellItems = newMySells ?? [];
 
   const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
