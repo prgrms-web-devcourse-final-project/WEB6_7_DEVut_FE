@@ -15,6 +15,7 @@ import { useLiveBid } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuct
 import Toast, { ToastType } from "@/components/common/Toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatRemainingTime } from "@/utils/getRemainingTime";
+import { useGetMyBizz } from "@/features/mypage/hooks/useMyBizz";
 
 interface LiveAuctionStageProps {
   roomId: number | null;
@@ -40,6 +41,8 @@ export default function LiveAuctionStage({
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const { mutate: bid } = useLiveBid();
+  const { data: myBizz, isLoading } = useGetMyBizz();
+
   const queryClient = useQueryClient();
 
   const handleConfirm = () => {
@@ -56,6 +59,9 @@ export default function LiveAuctionStage({
         onSuccess: () => {
           queryClient.invalidateQueries({
             queryKey: ["live-room-products", roomId],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["my-bizz"],
           });
           setIsConfirmOpen(false);
           notify("입찰을 성공하였습니다!", "SUCCESS");
@@ -130,8 +136,14 @@ export default function LiveAuctionStage({
         <div className="grid grid-cols-1 gap-4 px-4 pt-4 pb-2 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
           <div className="flex justify-center lg:justify-start">
             <div className="border-border-sub2 shadow-flat-light flex w-full items-center rounded-sm border-2 bg-white px-4 py-2 text-sm">
-              <span className="text-title-main mr-2">보유 Bizz</span>
-              <BizzAmount amount={2300000} />
+              <span className="text-title-main mr-5">보유 Bizz</span>
+              {isLoading ? (
+                <div className="flex items-center">
+                  <span className="border-border-sub h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                </div>
+              ) : (
+                <BizzAmount amount={myBizz || 0} />
+              )}
             </div>
           </div>
 
