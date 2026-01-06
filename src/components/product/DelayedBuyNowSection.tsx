@@ -8,7 +8,6 @@ interface DelayedBuyNowSectionProps {
   isOpen: boolean;
   modalToggle: (bool: boolean) => void;
   buyNowPrice: number;
-  auctionStatus: AuctionStatus;
 }
 
 export default function DelayedBuyNowSection({
@@ -16,15 +15,12 @@ export default function DelayedBuyNowSection({
   isOpen,
   modalToggle,
   buyNowPrice,
-  auctionStatus,
 }: DelayedBuyNowSectionProps) {
-  const onSale = auctionStatus === "BEFORE_BIDDING" || auctionStatus === "IN_PROGRESS";
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const { mutate: buyNow, isPending } = useBuyNowDelayProduct(productId);
 
   const handleConfirmBid = () => {
-    if (!onSale) return notify("마감 된 경매 상품 입니다.", "INFO");
     buyNow(undefined, {
       onSuccess: () => {
         modalToggle(false);
@@ -53,7 +49,7 @@ export default function DelayedBuyNowSection({
         onClick={() => modalToggle(true)}
         disabled={isPending}
       >
-        {onSale ? "즉시 구매" : "마감"}
+        즉시 구매
       </Button>
     </>
   );

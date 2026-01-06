@@ -1,17 +1,19 @@
 "use client";
 
-import { useMe } from "@/features/auth/hooks/useMe";
 import { useNotificationStore } from "@/features/notify/store/useNotification";
 import { useEffect } from "react";
 
-export default function NotificationProvider({ children }: { children: React.ReactNode }) {
-  const { data: me, isLoading } = useMe();
-  const isLogin = !!me && !isLoading;
-
+export default function NotificationProvider({
+  children,
+  me,
+}: {
+  children: React.ReactNode;
+  me: User | null;
+}) {
   const { connect, initializeUnread, disconnect } = useNotificationStore(state => state);
 
   useEffect(() => {
-    if (!isLogin) {
+    if (!me) {
       disconnect();
       return;
     }
@@ -22,7 +24,7 @@ export default function NotificationProvider({ children }: { children: React.Rea
     return () => {
       disconnect();
     };
-  }, [connect, initializeUnread, disconnect, isLogin]);
+  }, [connect, initializeUnread, disconnect, me]);
 
   return <>{children}</>;
 }
