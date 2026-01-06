@@ -5,10 +5,7 @@ import SearchResult from "@/components/search/SearchResult";
 import SearchSection from "./SearchSection";
 import { FilterBar } from "./FilterBar";
 import DetailSearch from "../modal/detailSearch";
-import {
-  useSearchProductCards,
-  useSearchProductInfinite,
-} from "@/features/product/hooks/useSearchProductCards";
+import { useSearchProductInfinite } from "@/features/product/hooks/useSearchProductCards";
 import { auctionTypeMapping } from "@/utils/product";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
@@ -19,32 +16,31 @@ export default function SearchPageClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const auctionType = (searchParams.get("auctionType") ?? "전체") as AuctionTypeKOR;
-  const params: GetProductsParams = {
+
+  const auctionTypeKOR = (searchParams.get("auctionType") ?? "전체") as AuctionTypeKOR;
+  const auctionType = auctionTypeMapping(auctionTypeKOR);
+
+  const params: GetProductsAllParams = {
     page: Number(searchParams.get("page") ?? 1),
     size: 15,
-    name: searchParams.get("name") ?? undefined,
+    type: auctionType,
+    keyword: searchParams.get("keyword") ?? undefined,
     category: (searchParams.get("category") as CategoryKey) ?? undefined,
-    minBidPrice: searchParams.get("minBidPrice")
-      ? Number(searchParams.get("minBidPrice"))
-      : undefined,
-    maxBidPrice: searchParams.get("maxBidPrice")
-      ? Number(searchParams.get("maxBidPrice"))
-      : undefined,
+    minPrice: searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined,
+    maxPrice: searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined,
     isSelling,
   };
 
   const hasSearched =
-    !!params.name || !!params.category || !!params.minBidPrice || !!params.maxBidPrice;
+    !!params.keyword || !!params.category || !!params.minPrice || !!params.maxPrice;
 
   const updateSearchParams = (
-    next: Partial<GetProductsParams & { auctionType: AuctionTypeKOR }>
+    next: Partial<GetProductsAllParams & { auctionType: AuctionTypeKOR }>
   ) => {
     const sp = new URLSearchParams(searchParams.toString());
     sp.delete("page");
 
     Object.entries(next).forEach(([key, value]) => {
-      if (key === "page") return;
       if (value === undefined || value === null || value === "") {
         sp.delete(key);
       } else {
@@ -59,11 +55,11 @@ export default function SearchPageClient() {
     updateSearchParams({ auctionType: type, page: 1 });
   };
 
-  const handleSearch = (name: string) => {
-    updateSearchParams({ name, page: 1 });
+  const handleSearch = (keyword: string) => {
+    updateSearchParams({ keyword, page: 1 });
   };
 
-  const handleRemoveFilter = (key: keyof GetProductsParams) => {
+  const handleRemoveFilter = (key: keyof GetProductsAllParams) => {
     updateSearchParams({ [key]: undefined, page: 1 });
   };
 
@@ -71,26 +67,18 @@ export default function SearchPageClient() {
     router.push(pathname);
   };
 
-  const handleDetailSearch = (detailParams: GetProductsParams) => {
-    updateSearchParams({
-      ...detailParams,
-      page: 1,
-    });
+  const handleDetailSearch = (detailParams: GetProductsAllParams) => {
+    updateSearchParams({ ...detailParams, page: 1 });
   };
 
   const handleIsSelling = () => {
     setIsSelling(prev => !prev);
   };
 
-  // const { cards, isLoading, isFetching, isError, error, totalCount } = useSearchProductCards({
-  //   auctionType: auctionTypeMapping(auctionType),
-  //   params,
-  // });
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSearchProductInfinite(params);
 
-  const cards = data?.pages.flatMap(page => page.products) ?? [];
+  const cards = data?.pages.flatMap(page => page.auctions) ?? [];
 
   const loadMoreRef = useInfiniteScroll(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -101,7 +89,7 @@ export default function SearchPageClient() {
   return (
     <>
       <SearchSection
-        auctionType={auctionType}
+        auctionType={auctionTypeKOR}
         onChangeAuctionType={handleChangeAuctionType}
         onSearch={handleSearch}
         onOpenDetail={() => setOpen(true)}
@@ -132,6 +120,7 @@ export default function SearchPageClient() {
           onClose={() => setOpen(false)}
           onSearch={handleDetailSearch}
           isSelling={isSelling}
+          auctionType={auctionType}
         />
       )}
     </>
