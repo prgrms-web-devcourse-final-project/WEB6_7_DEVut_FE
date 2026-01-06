@@ -22,13 +22,12 @@ interface ProductBase {
 interface GetProductsAllParams {
   page: number;
   size: number;
-  type: AuctionType;
-  category: CategoryKey;
-  keyword: string;
-  // status: string;
-  minPrice: number;
-  maxPrice: number;
   isSelling: boolean;
+  type: AuctionType;
+  category?: CategoryKey;
+  keyword?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 // 라이브 상품 목록 응답 DTO
