@@ -15,6 +15,7 @@ import { CARRIER_LABEL_MAP } from "@/utils/carrierCodeMapper";
 import { useUpdateAddress } from "@/features/delivery/hooks/useUpdateAddress";
 import { useUpdateDelivery } from "@/features/delivery/hooks/useUpdateDelivery";
 import Toast from "../common/Toast";
+import { buildMilestones } from "@/utils/buildMilestones";
 
 type TradeInfoProps = {
   auctionType: "LIVE" | "DELAYED";
@@ -89,6 +90,12 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   if (isError || !tradeData) return <div>거래 정보를 불러올 수 없습니다.</div>;
 
   const uiStatus = tradeStatusToUIStatus[tradeData.status];
+
+  const milestones = buildMilestones({
+    role: tradeData.role,
+    status: tradeData.status,
+    hasTracking: Boolean(tradeData.trackingNumber),
+  });
 
   return (
     <div className="mt-2 flex w-full flex-col px-8">
@@ -188,38 +195,28 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
         </div>
       </ContentContainer>
       <section className="relative min-h-screen py-5">
-        {/* 세로 타임라인 */}
         <div className="bg-border-main absolute top-5 left-7 h-full w-[3px]" />
 
-        <div className="mb-12">
-          <MileStoneSemiTitle title="잔금 대기" className="mb-2 ml-2 rotate-2" />
-          <TradeItem>
-            상품의 결제를 대기 중입니다.
-            <Button className="bg-custom-red h-7">결제하기</Button>
-          </TradeItem>
-          <TradeItem>상품의 결제를 완료하였습니다.</TradeItem>
-          <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
-        </div>
+        {milestones.map(step => (
+          <div key={step.key} className="mb-12">
+            <MileStoneSemiTitle title={step.title} className="mb-2 ml-2 rotate-2" />
 
-        <div className="mb-12">
-          <MileStoneSemiTitle title="거래 중" className="mb-2 ml-2 -rotate-1" />
+            <TradeItem>
+              {step.description}
 
-          <TradeItem>
-            {" "}
-            판매자와 거래 중 입니다.
-            <Button className="bg-btn-default h-7">대화하러가기</Button>
-          </TradeItem>
-          <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
-        </div>
+              {step.action && (
+                <Button
+                  className={`bg-btn-default ml-3 max-h-7 ${step.key === "PENDING" ? "bg-custom-red text-white" : ""}`}
+                  onClick={step.action.onClick}
+                >
+                  {step.action.label}
+                </Button>
+              )}
+            </TradeItem>
 
-        <div className="mb-12">
-          <MileStoneSemiTitle title="거래 완료" className="mb-2 ml-2 -rotate-1" />
-          <TradeItem>
-            상품의 거래를 완료했습니다.
-            <Button className="bg-btn-default h-7">구매확정</Button>
-          </TradeItem>
-          <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
-        </div>
+            <div className="mt-12 ml-15 w-[95%] border-t-[3px] border-dashed border-[#A1887F]/30" />
+          </div>
+        ))}
       </section>
     </div>
   );
