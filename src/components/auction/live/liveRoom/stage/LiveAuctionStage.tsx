@@ -8,7 +8,7 @@ import BizzAmount from "@/components/common/BizzAmount";
 import BidButton from "./BidButton";
 import { twMerge } from "tailwind-merge";
 import { getBidSteps } from "@/utils/auction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PriceInput from "@/components/common/PriceInput";
 import { ConfirmModal } from "@/components/common/ComfirmModal";
 import { useLiveBid } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
@@ -36,6 +36,8 @@ export default function LiveAuctionStage({
 }: LiveAuctionStageProps) {
   const isIntermission = roomStatus === "INTERMISSION";
   const isClosed = roomStatus === "CLOSE";
+
+  const [localRemainingMs, setLocalRemainingMs] = useState<number | null>(null);
 
   const bidSteps = getBidSteps(currentStageProduct?.currentPrice || 10000);
   const [bidInput, setBidInput] = useState(0);
@@ -78,6 +80,26 @@ export default function LiveAuctionStage({
     );
   };
 
+  useEffect(() => {
+    if (remaingMs == null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalRemainingMs(remaingMs);
+  }, [remaingMs]);
+
+  useEffect(() => {
+    if (localRemainingMs == null) return;
+    if (isIntermission || isClosed) return;
+
+    const interval = setInterval(() => {
+      setLocalRemainingMs(prev => {
+        if (prev == null) return prev;
+        return prev <= 1000 ? 0 : prev - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [localRemainingMs, isIntermission, isClosed]);
+
   return (
     <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div className="relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black">
@@ -100,7 +122,9 @@ export default function LiveAuctionStage({
         >
           <p className="text-3xl font-bold">다음 상품 준비 중</p>
           <p className="text-sm opacity-80">잠시만 기다려 주세요</p>
-          <p className="mt-2 text-base font-semibold">남은 시간 {formatRemainingTime(remaingMs)}</p>
+          {/* <p className="mt-2 text-base font-semibold">
+            남은 시간 {formatRemainingTime(localRemainingMs)}
+          </p> */}
         </div>
 
         <div
@@ -116,14 +140,16 @@ export default function LiveAuctionStage({
               left: "clamp(32px, 10vw, 120px)",
             }}
           >
-            <Image
-              src={auctioneerImg}
-              alt="auctioneer"
-              className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
-            />
+            {!isClosed && (
+              <Image
+                src={auctioneerImg}
+                alt="auctioneer"
+                className="block h-auto w-[clamp(70px,9vw,120px)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.6)]"
+              />
+            )}
           </div>
 
-          <AuctionProduct currentStageProduct={currentStageProduct} />
+          {!isClosed && <AuctionProduct currentStageProduct={currentStageProduct} />}
         </div>
       </div>
 
@@ -132,7 +158,11 @@ export default function LiveAuctionStage({
           <span>접속자: {participants}명</span>
           <p className="text-sm">
             잔여 시간:{" "}
-            <b>{remaingMs && !isIntermission ? formatRemainingTime(remaingMs) : "--:--"}</b>
+            <b>
+              {localRemainingMs != null && !isIntermission
+                ? formatRemainingTime(localRemainingMs)
+                : "--:--"}
+            </b>
           </p>
         </div>
 

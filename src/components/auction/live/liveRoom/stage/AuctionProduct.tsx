@@ -1,4 +1,5 @@
 import test from "@/assets/vintage.png";
+import BaseImage from "@/components/common/BaseImage";
 import BizzAmount from "@/components/common/BizzAmount";
 import Image from "next/image";
 
@@ -25,7 +26,7 @@ export default function AuctionProduct({
 
           <div className="mb-3 rounded-sm border-[3px] border-[#6B4A38] bg-[#3A2418] p-1">
             <div className="relative aspect-4/3 w-full overflow-hidden rounded-sm">
-              <Image src={test} alt="product" fill className="object-cover" />
+              <BaseImage src={currentStageProduct?.imageUrls[0] || test} alt="product" />
               <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/25 via-transparent to-transparent" />
             </div>
           </div>

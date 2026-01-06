@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import test from "@/assets/images/auction/auctioneer.svg";
 import Image from "next/image";
 import { getLiveStatus } from "@/utils/auction";
+import BaseImage from "@/components/common/BaseImage";
 
 interface ProductItemProps {
   product: LiveRoomProduct;
@@ -31,7 +32,7 @@ export default function LiveProductItem({ product }: ProductItemProps) {
       )}
     >
       <div className="border-border-sub2 h-15 w-15 shrink-0 overflow-hidden rounded border-2 bg-white">
-        <Image src={test} alt={test} />
+        <BaseImage src={product.imageUrls[0] || test} alt={product.name} />
       </div>
 
       <div className="text-title-main-dark flex flex-1 flex-col gap-0.5 text-sm">
