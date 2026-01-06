@@ -12,8 +12,8 @@ interface LiveRoomState {
 }
 
 export const useLiveRoomStore = create<LiveRoomState>(set => ({
-  activeAuctionId: 4,
-  subscribedAuctionIds: [4],
+  activeAuctionId: 6,
+  subscribedAuctionIds: [6],
   chatRoomIds: {},
 
   setActiveAuctionId: id => set({ activeAuctionId: id }),

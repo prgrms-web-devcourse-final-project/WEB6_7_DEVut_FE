@@ -46,7 +46,7 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
         </LiveSideTabButton>
       </div>
 
-      <div className="max-h-[660px] min-h-0 flex-1 overflow-y-auto">
+      <div className="h-full min-h-0 flex-1 overflow-y-auto">
         <div className={tab === "CHAT" ? "h-full" : "hidden"}>
           <LiveChatList messages={chat.messages} userId={me?.id} />
         </div>

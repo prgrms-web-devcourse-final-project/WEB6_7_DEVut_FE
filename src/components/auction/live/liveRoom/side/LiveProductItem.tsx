@@ -9,9 +9,18 @@ interface ProductItemProps {
 }
 
 export default function LiveProductItem({ product }: ProductItemProps) {
-  const isReady = getLiveStatus(product.auctionStatus) === "READY";
-  const isOngoing = getLiveStatus(product.auctionStatus) === "ONGOING";
-  const isClose = getLiveStatus(product.auctionStatus) === "CLOSE";
+  const liveStatus = getLiveStatus(product.auctionStatus);
+
+  const isReady = liveStatus === "READY";
+  const isOngoing = liveStatus === "ONGOING";
+  const isClose = liveStatus === "CLOSE";
+
+  const isSuccess =
+    product.auctionStatus === "PAYMENT_PENDING" ||
+    product.auctionStatus === "IN_DEAL" ||
+    product.auctionStatus === "PURCHASE_CONFIRMED";
+
+  const isFailed = product.auctionStatus === "FAILED";
   return (
     <li
       className={twMerge(
@@ -41,7 +50,8 @@ export default function LiveProductItem({ product }: ProductItemProps) {
 
       {isOngoing && <span className="text-xs font-semibold text-red-500">진행중</span>}
       {isReady && <span className="text-subsub-title text-xs">대기</span>}
-      {isClose && <span className="text-subsub-title text-xs">종료</span>}
+      {isClose && isSuccess && <span className="text-xs font-semibold text-green-600">낙찰</span>}
+      {isClose && isFailed && <span className="text-xs font-semibold text-gray-500">유찰</span>}
     </li>
   );
 }
