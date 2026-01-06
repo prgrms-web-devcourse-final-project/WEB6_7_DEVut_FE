@@ -44,6 +44,8 @@ export default function MyIntro() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setNickname(user.nickname);
     setEmail(user.email);
+    setAddress(user.address ?? "");
+    setDetailAddress(user.addressDetail ?? "");
   }, [user]);
 
   const handleEditClick = async () => {
@@ -71,6 +73,9 @@ export default function MyIntro() {
         email,
         nickname: nickname.trim(),
         image: imageUrl,
+        address,
+        addressDetail: detailAddress,
+        postalCode: user.postalCode,
       },
       {
         onSuccess: () => {

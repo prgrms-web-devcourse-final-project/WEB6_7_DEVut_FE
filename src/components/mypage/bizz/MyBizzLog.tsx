@@ -3,23 +3,22 @@
 import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
-import { useHistoryPayments } from "@/features/payments/hooks/useHistoryPayments";
 import { useHistoryWithdrawals } from "@/features/withdrawal/hooks/useHistoryWithdrawals";
-import { mapPaymentsToBizzLog, mapWithdrawalsToBizzLog } from "@/utils/myBizzLogMapping";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
-  const { data: paymentsHistory } = useHistoryPayments();
-  const { data: withdrawalsHistory } = useHistoryWithdrawals();
+  const { data } = useHistoryWithdrawals();
   const [status, setStatus] = useState("전체");
-
-  const isEmpty =
-    (!paymentsHistory || paymentsHistory.payments.length === 0) &&
-    (!withdrawalsHistory || withdrawalsHistory.withdrawals.length === 0);
-
-  const logs: BizzLogItem[] = [
-    ...mapPaymentsToBizzLog(paymentsHistory?.payments),
-    ...mapWithdrawalsToBizzLog(withdrawalsHistory?.withdrawals),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  console.log("walletHistories:", data);
+  const isEmpty = !data?.walletHistories || data.walletHistories.length === 0;
+  const historyData = data?.walletHistories || [];
+  const mylogs = historyData.sort(
+    (a, b) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
+  );
+  const logs = mylogs.map((log, index) => {
+    const newLog = { ...log, index };
+    return newLog;
+  });
+  console.log("logs:", logs);
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
@@ -43,15 +42,15 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
             <p className="text-title-main text-lg font-bold">기록이 없습니다</p>
           </div>
         ) : status === "전체" ? (
-          logs.map(log => <BizzLogCard key={log.id} log={log} />)
+          logs.map(log => <BizzLogCard key={log.index} log={log} />)
         ) : status === "충전" ? (
           logs
-            .filter(log => log.label === "충전")
-            .map(log => <BizzLogCard key={log.id} log={log} />)
+            .filter(log => log.transactionType === "CHARGE")
+            .map(log => <BizzLogCard key={log.index} log={log} />)
         ) : (
           logs
-            .filter(log => log.label === "출금")
-            .map(log => <BizzLogCard key={log.id} log={log} />)
+            .filter(log => log.transactionType === "WITHDRAW")
+            .map(log => <BizzLogCard key={log.index} log={log} />)
         )}
       </div>
     </div>
