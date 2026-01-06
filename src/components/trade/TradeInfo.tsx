@@ -1,7 +1,6 @@
 "use client";
 import ContentContainer from "../common/ContentContainer";
 import Title from "../common/Title";
-import test from "@/assets/vintage.png";
 import WrapperImage from "../common/WrapperImage";
 import StatusBadge from "../common/StatusBadge";
 import Input from "../common/Input";
@@ -13,7 +12,9 @@ import { useEffect, useState } from "react";
 import { tradeStatusToUIStatus } from "@/utils/tradeStatusMapper";
 import OptionDropdown from "../common/OptionDropdown";
 import { CARRIER_LABEL_MAP } from "@/utils/carrierCodeMapper";
+import { useUpdateAddress } from "@/features/delivery/hooks/useUpdateAddress";
 import { useUpdateDelivery } from "@/features/delivery/hooks/useUpdateDelivery";
+import Toast from "../common/Toast";
 
 type TradeInfoProps = {
   auctionType: "LIVE" | "DELAYED";
@@ -27,7 +28,8 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [carrier, setCarrier] = useState<Carrier | "">("");
 
-  const { mutate: updateDeliveryMutate, isPending } = useUpdateDelivery();
+  const { mutate: updateAddressMutate } = useUpdateAddress();
+  const { mutate: updateDeliveryMutate } = useUpdateDelivery();
   const { data: tradeData, isLoading, isError } = useTradeDetail({ auctionType, dealId });
 
   const isBuyer = tradeData?.role === "BUYER";
@@ -41,13 +43,28 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
 
     // 구매자: 배송지 수정
     if (tradeData.role === "BUYER") {
-      updateDeliveryMutate({
+      updateAddressMutate({
         auctionType,
         dealId,
         payload: {
           address,
           addressDetail,
           postalCode: postal,
+        },
+      });
+    }
+
+    if (tradeData.role === "SELLER") {
+      if (!carrier) {
+        Toast({ message: "택배사를 골라주세요", type: "ERROR" });
+        return;
+      }
+      updateDeliveryMutate({
+        auctionType,
+        dealId,
+        payload: {
+          carrierCode: carrier,
+          trackingNumber: invoiceNumber,
         },
       });
     }
@@ -58,7 +75,15 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
     setAddress(tradeData?.deliveryAddress ?? "");
     setAddressDetail(tradeData?.deliveryAddressDetail ?? "");
     setPostal(tradeData?.deliveryPostalCode ?? "");
-  }, [tradeData?.deliveryAddress, tradeData?.deliveryAddressDetail, tradeData?.deliveryPostalCode]);
+    setInvoiceNumber(tradeData?.trackingNumber ?? "");
+    setCarrier(tradeData?.carrierCode ?? "");
+  }, [
+    tradeData?.deliveryAddress,
+    tradeData?.deliveryAddressDetail,
+    tradeData?.deliveryPostalCode,
+    tradeData?.carrierCode,
+    tradeData?.trackingNumber,
+  ]);
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError || !tradeData) return <div>거래 정보를 불러올 수 없습니다.</div>;
