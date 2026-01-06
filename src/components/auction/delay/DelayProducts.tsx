@@ -11,6 +11,7 @@ import Pagination from "@/components/common/Pagenation";
 import EmptyContainer from "@/components/common/EmptyContainer";
 import { useState } from "react";
 import SellingToggle from "@/components/search/SellingToggle";
+import Link from "next/link";
 
 interface DelayProductsProps {
   initialDelayProducts: ProductsResponse;
@@ -92,6 +93,11 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
             className="h-100"
             title="등록된 상품이 없습니다"
             description="조금만 기다려 주세요. 곧 새로운 상품이 등록될 예정입니다."
+            action={
+              <Link href={"/write"} className="text-title-sub2/80 text-sm hover:underline">
+                상품 등록 하러가기
+              </Link>
+            }
           />
         )}
         <ProductsGrid>

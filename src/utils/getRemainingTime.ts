@@ -11,6 +11,19 @@ export function formatMMSS(totalSeconds: number) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+// 라이브 경매방 전용
+export const formatRemainingTime = (remainingMs: number | null | undefined) => {
+  if (remainingMs == null || remainingMs <= 0) {
+    return "--분 --초";
+  }
+
+  const totalSeconds = Math.floor(remainingMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}분 ${seconds.toString().padStart(2, "0")}초`;
+};
+
 // 일반 경매 마감 시간 전용
 export function delayAuctionformatRemain(ms: number) {
   if (ms <= 0) return "마감";

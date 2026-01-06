@@ -18,8 +18,6 @@ export default function SearchResult({
   error,
   hasSearched,
 }: SearchResultProps) {
-  console.log("searchData:", cards);
-
   if (!hasSearched && !isLoading) {
     return (
       <EmptyContainer

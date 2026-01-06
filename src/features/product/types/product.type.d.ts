@@ -19,6 +19,18 @@ interface ProductBase {
   isLiked: boolean;
 }
 
+// 통합 검색 파람스 타입
+interface GetProductsAllParams {
+  page: number;
+  size: number;
+  isSelling: boolean;
+  type: AuctionType;
+  category?: CategoryKey;
+  keyword?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 // 라이브 상품 목록 응답 DTO
 interface LiveProduct extends ProductBase {
   type: "LIVE";
@@ -92,5 +104,23 @@ interface ProductBidsLogResponse {
 // totalCount 포함 총 response 타입
 interface ProductsResponse {
   products: ProductCardType[];
+  totalCount: number;
+}
+
+// 통합 검색
+interface ProductAll {
+  id: number;
+  auctionType: "LIVE" | "DELAYED";
+  itemName: string;
+  itemImageUrl: string;
+  currentPrice: number;
+  endTime: string;
+  auctionStatus: AuctionStatus;
+  roomId: number;
+  isLiked: boolean;
+}
+
+interface ProductAllResponse {
+  auctions: ProductAll[];
   totalCount: number;
 }

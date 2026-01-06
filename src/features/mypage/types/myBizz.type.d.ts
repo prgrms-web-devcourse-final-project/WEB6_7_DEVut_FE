@@ -1,0 +1,3 @@
+interface MyBizzResponse {
+  bizz: number;
+}
