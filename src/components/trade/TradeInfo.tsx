@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { tradeStatusToUIStatus } from "@/utils/tradeStatusMapper";
 import OptionDropdown from "../common/OptionDropdown";
 import { CARRIER_LABEL_MAP } from "@/utils/carrierCodeMapper";
+import { useUpdateDelivery } from "@/features/delivery/hooks/useUpdateDelivery";
 
 type TradeInfoProps = {
   auctionType: "LIVE" | "DELAYED";
@@ -26,6 +27,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [carrier, setCarrier] = useState<Carrier | "">("");
 
+  const { mutate: updateDeliveryMutate, isPending } = useUpdateDelivery();
   const { data: tradeData, isLoading, isError } = useTradeDetail({ auctionType, dealId });
 
   const isBuyer = tradeData?.role === "BUYER";
@@ -36,7 +38,18 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
 
   const handleSubmit = () => {
     if (!tradeData) return;
+
+    // 구매자: 배송지 수정
     if (tradeData.role === "BUYER") {
+      updateDeliveryMutate({
+        auctionType,
+        dealId,
+        payload: {
+          address,
+          addressDetail,
+          postalCode: postal,
+        },
+      });
     }
   };
 
@@ -143,7 +156,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
               </div>
 
               <Button className="max-h-9 border-2" onClick={handleSubmit}>
-                전송
+                수정
               </Button>
             </div>
           </ContentContainer>

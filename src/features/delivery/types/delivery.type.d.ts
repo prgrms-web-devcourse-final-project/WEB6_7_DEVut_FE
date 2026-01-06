@@ -6,8 +6,14 @@ interface MyDeliveryResponse {
   isDefault: boolean;
 }
 
-interface UpdateDelivery {
+interface UpdateDeliveryPayload {
   address: string;
   addressDetail: string;
-  postalCode: number;
+  postalCode: string;
+}
+
+interface UpdateDeliveryParams {
+  auctionType: "LIVE" | "DELAYED";
+  dealId: string;
+  payload: UpdateDeliveryPayload;
 }

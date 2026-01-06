@@ -8,17 +8,8 @@ export const myDelivery = async (): Promise<MyDeliveryResponse> => {
   return res.data;
 };
 
-export const updateDelivery = async (payload: UpdateDelivery) => {
-  const res = await ClientApi<{
-    id: number;
-    email: string;
-    nickname: string;
-    image: string | null;
-    modifyDate: string;
-    address: string | null;
-    addressDetail: string | null;
-    postalCode: string | null;
-  }>("/users/me", {
+export const updateDelivery = async ({ auctionType, dealId, payload }: UpdateDeliveryParams) => {
+  const res = await ClientApi(`/users/me/deals/${auctionType.toLowerCase()}/${dealId}/address`, {
     method: "PATCH",
     body: JSON.stringify(payload),
   });
