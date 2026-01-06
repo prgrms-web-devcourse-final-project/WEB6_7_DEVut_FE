@@ -7,9 +7,9 @@ const liveChatItemVariants = cva("text-title-main-dark w-full text-sm", {
   variants: {
     type: {
       USER: "flex w-full items-start",
-      SYSTEM: "py-4 text-center opacity-90",
-      LIVE_BID: "my-3 flex w-full justify-center",
-      AUCTION_END: "my-3 flex w-full justify-center",
+      SYSTEM: "py-3 text-center opacity-90",
+      LIVE_BID: "my-5 flex w-full justify-center",
+      AUCTION_END: "my-5 flex w-full justify-center",
     },
     mine: {
       true: "justify-end",

@@ -6,6 +6,7 @@ import LiveSideTabButton from "./LiveSideTabButton";
 import LiveChatList from "./LiveChatList";
 import LiveProductList from "./LiveProductList";
 import Button from "@/components/common/Button";
+import Toast from "@/components/common/Toast";
 
 interface LiveAuctionSideProps {
   me: User | null | undefined;
@@ -19,9 +20,13 @@ interface LiveAuctionSideProps {
 export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideProps) {
   const [tab, setTab] = useState("CHAT");
   const [input, setInput] = useState("");
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const handleSend = () => {
     if (!input.trim()) return;
+    if (!me) {
+      notify("로그인 후 채팅에 참여해보세요!", "ERROR");
+    }
 
     chat.sendMessage({
       content: input,

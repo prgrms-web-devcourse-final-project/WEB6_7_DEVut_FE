@@ -131,6 +131,7 @@ export default function LiveAuctionRoomPage() {
 
           <div className="flex-1">
             <LiveAuctionStage
+              me={me}
               roomId={current.auctionId}
               participants={current.participants}
               currentStageProduct={currentStageProduct}

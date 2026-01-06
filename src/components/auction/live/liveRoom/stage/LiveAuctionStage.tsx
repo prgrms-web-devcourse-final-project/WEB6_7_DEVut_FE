@@ -18,6 +18,7 @@ import { formatRemainingTime } from "@/utils/getRemainingTime";
 import { useGetMyBizz } from "@/features/mypage/hooks/useMyBizz";
 
 interface LiveAuctionStageProps {
+  me: User | null | undefined;
   roomId: number | null;
   currentStageProduct: LiveRoomProduct | undefined;
   roomStatus: "READY" | "ONGOING" | "INTERMISSION" | "CLOSE";
@@ -26,6 +27,7 @@ interface LiveAuctionStageProps {
 }
 
 export default function LiveAuctionStage({
+  me,
   roomId,
   currentStageProduct,
   roomStatus,
@@ -64,6 +66,7 @@ export default function LiveAuctionStage({
             queryKey: ["my-bizz"],
           });
           setIsConfirmOpen(false);
+          setBidInput(0);
           notify("입찰을 성공하였습니다!", "SUCCESS");
         },
         onError: (error: unknown) => {
@@ -151,6 +154,11 @@ export default function LiveAuctionStage({
             <BidButton
               disabled={isIntermission || isClosed}
               onClick={() => {
+                if (!me) {
+                  notify("로그인 후 입찰에 참여해보세요!", "ERROR");
+                  return;
+                }
+
                 if (isIntermission || isClosed) return;
                 setIsConfirmOpen(true);
               }}
