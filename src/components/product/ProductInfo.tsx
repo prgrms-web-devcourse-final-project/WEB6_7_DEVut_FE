@@ -8,7 +8,7 @@ import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
 import { MessageCircle, SquarePen, Star } from "lucide-react";
 import { formatDateTime } from "@/utils/date";
-import { useState } from "react";
+import { Activity, useState } from "react";
 import { useProductDetail } from "@/features/product/hooks/useProductDetail";
 
 import dynamic from "next/dynamic";
@@ -16,6 +16,8 @@ import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarous
 import DelayedBidSection from "./DelayedBidSection";
 import DelayedEndTimer from "./DelayedEndTimer";
 import DelayedBuyNowSection from "./DelayedBuyNowSection";
+import Link from "next/link";
+import { getDelayStatus, getLiveStatus } from "@/utils/auction";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -39,12 +41,16 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
   if (!product) return <div>상품 정보가 존재하지 않습니다.</div>;
-  console.log("price!!!", product?.currentPrice);
-  console.log("product ******", product);
+
   return (
     <div className="mx-auto flex h-fit w-[98%] max-w-[1440px] flex-col gap-7 pb-10">
       <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch">
-        <ProductImageCarousel images={product?.images} className="w-full" />
+        <ProductImageCarousel
+          images={product?.images}
+          className="w-full"
+          type={isLive ? "LIVE" : "DELAYED"}
+          auctionStatus={product.auctionStatus}
+        />
 
         <div className="flex flex-col gap-5 lg:h-full">
           <div className="flex flex-col gap-5">
@@ -88,9 +94,9 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                 )}
               </div>
               <div className="flex items-end">
-                <Button size="sm" onClick={() => route.push(`${path}/bidsLog`)}>
-                  경매 기록
-                </Button>
+                <Link href={`${path}/bidsLog`}>
+                  <Button size="sm">경매 기록</Button>
+                </Link>
               </div>
             </div>
 
@@ -127,31 +133,34 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   </>
                 )}
 
-                {product?.type === "DELAYED" && <DelayedEndTimer endTime={product?.endTime} />}
+                {product?.type === "DELAYED" && (
+                  <DelayedEndTimer
+                    endTime={product?.endTime}
+                    auctionStatus={product.auctionStatus}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div className="flex gap-3 pt-3">
-            <Button className="flex-1" leftIcon={<Star />}>
+            <Button className="flex-1" leftIcon={<Star size={18} />}>
               찜 {product?.likeCount}
             </Button>
             {/* 라이브 */}
             {product?.type === "LIVE" && (
               <>
-                {product?.auctionStatus === "BEFORE_BIDDING" && (
+                {getLiveStatus(product?.auctionStatus) === "READY" && (
                   <Button className="flex-1" disabled>
                     라이브 준비중
                   </Button>
                 )}
 
-                {product?.auctionStatus === "IN_PROGRESS" && (
+                {getLiveStatus(product?.auctionStatus) === "ONGOING" && (
                   <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
                 )}
 
-                {["PAYMENT_PENDING", "IN_DEAL", "PURCHASE_CONFIRMED", "FAILED"].includes(
-                  product?.auctionStatus || ""
-                ) && (
+                {getLiveStatus(product?.auctionStatus) === "CLOSE" && (
                   <Button className="flex-1" disabled>
                     라이브 종료
                   </Button>
@@ -159,43 +168,51 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </>
             )}
 
-            {/* 지연(일반), 본인이 등록한 물건일 때 disable */}
-            {product?.type === "DELAYED" && (
-              <>
-                <DelayedBidSection
-                  productId={product.id}
-                  isOpen={isBidOpen}
-                  modalToggle={(bool: boolean) => {
-                    setIsBidOpen(bool);
-                    setIsBuyNowOpen(false);
-                  }}
-                  currentBid={product.currentPrice}
-                  auctionStatus={product.auctionStatus}
-                />
-
-                <DelayedBuyNowSection
-                  productId={product.id}
-                  isOpen={isBuyNowOpen}
-                  modalToggle={(bool: boolean) => {
-                    setIsBuyNowOpen(bool);
-                    setIsBidOpen(false);
-                  }}
-                  buyNowPrice={product.buyNowPrice}
-                  auctionStatus={product.auctionStatus}
-                />
-              </>
-            )}
+            <Activity mode={me?.id === sellerId ? "hidden" : "visible"}>
+              {product?.type === "DELAYED" && (
+                <>
+                  {getDelayStatus(product.auctionStatus) === "ONGOING" ? (
+                    <>
+                      <DelayedBidSection
+                        productId={product.id}
+                        isOpen={isBidOpen}
+                        modalToggle={(bool: boolean) => {
+                          setIsBidOpen(bool);
+                          setIsBuyNowOpen(false);
+                        }}
+                        currentBid={product.currentPrice}
+                      />
+                      <DelayedBuyNowSection
+                        productId={product.id}
+                        isOpen={isBuyNowOpen}
+                        modalToggle={(bool: boolean) => {
+                          setIsBuyNowOpen(bool);
+                          setIsBidOpen(false);
+                        }}
+                        buyNowPrice={product.buyNowPrice}
+                      />
+                    </>
+                  ) : (
+                    <Button className="bg-custom-brown/50 flex-1 text-white">마감</Button>
+                  )}
+                </>
+              )}
+            </Activity>
 
             {me?.id === sellerId ? (
               <Button
-                className="flex-1"
+                className="bg-custom-orange-dark flex-1 text-white"
                 leftIcon={<SquarePen size={18} />}
                 onClick={() => route.push(`${path}/modify`)}
               >
-                수정하기
+                <span className="sm:hidden">수정</span>
+                <span className="hidden sm:inline">수정하기</span>
               </Button>
             ) : (
-              <Button className="flex-1" leftIcon={<MessageCircle size={18} />}>
+              <Button
+                className="bg-custom-orange-dark flex-1 text-white"
+                leftIcon={<MessageCircle size={18} />}
+              >
                 대화하기
               </Button>
             )}
@@ -203,7 +220,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
         </div>
       </div>
 
-      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light w-full p-5 text-xl md:w-full">
+      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light min-h-100 w-full p-5 md:w-full md:text-xl">
         {product?.description}
       </ContentContainer>
     </div>

@@ -1,13 +1,13 @@
-interface NotificationItem {
+interface NotificationItem<T extends NotificationType = NotificationType> {
   id: number;
   userId: number;
-  type: NotificationType;
+  type: T;
   message: string;
   isChecked: boolean;
   createDate: string;
   resourceType: string;
   resourceId: number;
-  metadata: Record<string, unknown> | null;
+  metadata: NotificationMetadata<T> | null;
 }
 
 interface NotificationsResponse {
@@ -15,3 +15,5 @@ interface NotificationsResponse {
   totalCount: number;
   unreadCount: number;
 }
+
+type NotificationRouteHandler = (notification: NotificationItem) => string | null;
