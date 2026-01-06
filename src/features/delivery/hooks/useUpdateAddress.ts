@@ -10,6 +10,10 @@ export const useUpdateAddress = () => {
 
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
+      qc.invalidateQueries({
+        queryKey: ["trade-detail"],
+        refetchType: "active",
+      });
       Toast({ message: "배송지가 수정되었습니다.", type: "SUCCESS" });
     },
     onError: error => {

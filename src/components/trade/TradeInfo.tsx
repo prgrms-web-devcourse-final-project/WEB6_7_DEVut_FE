@@ -16,6 +16,8 @@ import { useUpdateAddress } from "@/features/delivery/hooks/useUpdateAddress";
 import { useUpdateDelivery } from "@/features/delivery/hooks/useUpdateDelivery";
 import Toast from "../common/Toast";
 import { buildMilestones } from "@/utils/buildMilestones";
+import ConfirmModal from "../modal/ConfirmModal";
+import { usePayBalance } from "@/features/payments/hooks/usePayBalance";
 
 type TradeInfoProps = {
   auctionType: "LIVE" | "DELAYED";
@@ -28,7 +30,9 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   const [postal, setPostal] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [carrier, setCarrier] = useState<Carrier | "">("");
+  const [isPayModalOpen, setIsPayModalOpen] = useState(false);
 
+  const { mutate: payBalanceMutate } = usePayBalance();
   const { mutate: updateAddressMutate } = useUpdateAddress();
   const { mutate: updateDeliveryMutate } = useUpdateDelivery();
   const { data: tradeData, isLoading, isError } = useTradeDetail({ auctionType, dealId });
@@ -95,6 +99,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
     role: tradeData.role,
     status: tradeData.status,
     hasTracking: Boolean(tradeData.trackingNumber),
+    onPayClick: () => setIsPayModalOpen(true),
   });
 
   return (
@@ -206,7 +211,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
 
               {step.action && (
                 <Button
-                  className={`bg-btn-default ml-3 max-h-7 ${step.key === "PENDING" ? "bg-custom-red text-white" : ""}`}
+                  className={`bg-btn-default ml-3 max-h-7 transition-all hover:scale-101 active:scale-99 ${step.key === "PENDING" ? "bg-custom-red text-white" : ""}`}
                   onClick={step.action.onClick}
                 >
                   {step.action.label}
@@ -218,6 +223,18 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
           </div>
         ))}
       </section>
+      {isPayModalOpen && (
+        <ConfirmModal
+          title="잔금을 결제하시겠습니까?"
+          description="결제 후에는 거래가 진행 단계로 넘어갑니다."
+          confirmText="결제하기"
+          onCancel={() => setIsPayModalOpen(false)}
+          onConfirm={() => {
+            payBalanceMutate(dealId);
+            setIsPayModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -14,10 +14,12 @@ export function buildMilestones({
   role,
   status,
   hasTracking,
+  onPayClick,
 }: {
   role: "BUYER" | "SELLER";
   status: DealStatus;
   hasTracking: boolean;
+  onPayClick: () => void;
 }): MilestoneStep[] {
   const isBuyer = role === "BUYER";
 
@@ -27,7 +29,7 @@ export function buildMilestones({
       title: "잔금 대기",
       description: isBuyer ? "상품의 결제를 대기 중입니다." : "구매자의 결제를 기다리고 있습니다.",
       action:
-        isBuyer && status === "PENDING" ? { label: "결제하기", onClick: () => {} } : undefined,
+        isBuyer && status === "PENDING" ? { label: "결제하기", onClick: onPayClick } : undefined,
       active: status === "PENDING",
       done: status !== "PENDING",
     },
