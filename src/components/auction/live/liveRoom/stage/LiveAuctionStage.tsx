@@ -11,42 +11,95 @@ import { getBidSteps } from "@/utils/auction";
 import { useState } from "react";
 import PriceInput from "@/components/common/PriceInput";
 import { ConfirmModal } from "@/components/common/ComfirmModal";
+import { useLiveBid } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
+import Toast, { ToastType } from "@/components/common/Toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatRemainingTime } from "@/utils/getRemainingTime";
 
 interface LiveAuctionStageProps {
+  roomId: number | null;
   currentStageProduct: LiveRoomProduct | undefined;
-  allClosed: boolean;
+  roomStatus: "READY" | "ONGOING" | "INTERMISSION" | "CLOSE";
+  participants: number;
+  remaingMs: number | null | undefined;
 }
 
 export default function LiveAuctionStage({
+  roomId,
   currentStageProduct,
-  allClosed,
+  roomStatus,
+  participants,
+  remaingMs,
 }: LiveAuctionStageProps) {
-  const bidSteps = getBidSteps(currentStageProduct?.price || 10000);
+  const isIntermission = roomStatus === "INTERMISSION";
+  const isClosed = roomStatus === "CLOSE";
+
+  const bidSteps = getBidSteps(currentStageProduct?.currentPrice || 10000);
   const [bidInput, setBidInput] = useState(0);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const notify = (message: string, type: ToastType) => Toast({ message, type });
+
+  const { mutate: bid } = useLiveBid();
+  const queryClient = useQueryClient();
 
   const handleConfirm = () => {
-    setIsConfirmOpen(false);
+    if (!roomId || !currentStageProduct) return;
+    if (isIntermission || isClosed) return;
+
+    bid(
+      {
+        bidPrice: bidInput,
+        auctionId: roomId,
+        liveItemId: currentStageProduct.id,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["live-room-products", roomId],
+          });
+          setIsConfirmOpen(false);
+          notify("입찰을 성공하였습니다!", "SUCCESS");
+        },
+        onError: (error: unknown) => {
+          setIsConfirmOpen(false);
+          const { msg } = error as ResponseBase;
+          notify(msg, "ERROR");
+        },
+      }
+    );
   };
+
   return (
     <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div
-        className={twMerge(
-          "relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black"
-        )}
-      >
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black">
         <StageBackground />
 
         <div
           className={twMerge(
-            "pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/30 text-3xl text-white transition-opacity duration-300",
-            allClosed ? "opacity-100" : "opacity-0"
+            "pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/40 text-3xl text-white transition-opacity",
+            isClosed ? "opacity-100" : "opacity-0"
           )}
         >
           모든 경매가 마감되었습니다
         </div>
 
-        <div className={twMerge("transition-opacity duration-300", allClosed && "opacity-40")}>
+        <div
+          className={twMerge(
+            "pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/40 text-white transition-opacity",
+            isIntermission ? "opacity-100" : "opacity-0"
+          )}
+        >
+          <p className="text-3xl font-bold">다음 상품 준비 중</p>
+          <p className="text-sm opacity-80">잠시만 기다려 주세요</p>
+          <p className="mt-2 text-base font-semibold">남은 시간 {formatRemainingTime(remaingMs)}</p>
+        </div>
+
+        <div
+          className={twMerge(
+            "transition-opacity duration-300",
+            (isClosed || isIntermission) && "opacity-40"
+          )}
+        >
           <div
             className="absolute z-20"
             style={{
@@ -65,12 +118,13 @@ export default function LiveAuctionStage({
         </div>
       </div>
 
-      {/* <AuctionAudience users={audience.users} /> */}
-
       <div className="bg-bg-main border-border-sub2 shrink-0 border-t">
         <div className="border-border-sub2 bg-custom-brown/30 text-title-main-dark flex h-12 items-center justify-between border-[3px] px-6 text-sm">
-          <span>접속자: 284명</span>
-          <span>경과 시간: 47분 13초</span>
+          <span>접속자: {participants}명</span>
+          <p className="text-sm">
+            잔여 시간:{" "}
+            <b>{remaingMs && !isIntermission ? formatRemainingTime(remaingMs) : "--:--"}</b>
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 px-4 pt-4 pb-2 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
@@ -82,18 +136,26 @@ export default function LiveAuctionStage({
           </div>
 
           <div className="flex justify-center">
-            <BidButton onClick={() => setIsConfirmOpen(true)} />
+            <BidButton
+              disabled={isIntermission || isClosed}
+              onClick={() => {
+                if (isIntermission || isClosed) return;
+                setIsConfirmOpen(true);
+              }}
+            />
           </div>
 
-          <div className="flex flex-col gap-3 lg:items-stretch">
-            <div className="grid w-full grid-cols-3 gap-3 lg:justify-end">
+          <div className="flex flex-col gap-3">
+            <div className="grid w-full grid-cols-3 gap-3">
               {bidSteps.map(step => (
                 <button
                   key={step}
-                  className="border-border-sub2 h-12 w-full cursor-pointer rounded-sm border-[3px] bg-[#8B2500] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] active:translate-y-px"
-                  onClick={() => {
-                    setBidInput(prev => prev + step);
-                  }}
+                  disabled={isIntermission || isClosed}
+                  className={twMerge(
+                    "border-border-sub2 h-12 w-full rounded-sm border-[3px] bg-[#8B2500] text-sm font-semibold text-white",
+                    (isIntermission || isClosed) && "pointer-events-none opacity-40"
+                  )}
+                  onClick={() => setBidInput(prev => prev + step)}
                 >
                   + {step.toLocaleString()}원
                 </button>
@@ -103,8 +165,9 @@ export default function LiveAuctionStage({
             <PriceInput
               value={bidInput}
               onChange={setBidInput}
-              placeholder="입찰 금액"
-              className="w-full rounded-sm"
+              placeholder={
+                isIntermission ? "상품 대기중입니다" : isClosed ? "경매 종료" : "입찰 금액"
+              }
             />
 
             <ConfirmModal

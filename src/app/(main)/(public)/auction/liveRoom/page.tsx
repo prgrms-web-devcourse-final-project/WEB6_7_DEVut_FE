@@ -1,22 +1,25 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+
 import LiveAuctionSide from "@/components/auction/live/liveRoom/side/LiveAuctionSide";
 import LiveAuctionStage from "@/components/auction/live/liveRoom/stage/LiveAuctionStage";
 import StageBarBackground from "@/components/auction/live/liveRoom/stage/StageBarBackground";
 import TabButton from "@/components/auction/live/liveRoom/stage/TabButton";
 import MobileSideDrawer from "@/components/common/MobileSideDrawer";
+
 import { enterChatRoom } from "@/features/auction/api/liveAuctionRoom.api";
 import { useRoomProducts } from "@/features/auction/hooks/liveAuctionRoom/useLiveAuctionRoom";
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { useSocketStore } from "@/features/socket/store/useSocketStore";
-import { getLiveStatus } from "@/utils/auction";
+import { getLiveRoomStatus, getLiveStatus } from "@/utils/auction";
 import { useMe } from "@/features/auth/hooks/useMe";
-import { useRouter } from "next/navigation";
 
 export default function LiveAuctionRoomPage() {
   const { data: me } = useMe();
   const router = useRouter();
+
   const {
     activeAuctionId,
     subscribedAuctionIds,
@@ -27,23 +30,32 @@ export default function LiveAuctionRoomPage() {
     removeSubscribedAuctionId,
   } = useLiveRoomStore();
 
-  const { sendAuctionMessage, subscribeChatRoom, messagesByRoom, unsubscribeChatRoom } =
-    useSocketStore();
+  const {
+    sendAuctionMessage,
+    subscribeChatRoom,
+    unsubscribeChatRoom,
+    messagesByRoom,
+    participantsByAuction,
+  } = useSocketStore();
 
-  const currentAuctionId = activeAuctionId;
-  const currentChatRoomId = currentAuctionId != null ? chatRoomIds[currentAuctionId] : undefined;
+  const current = useMemo(() => {
+    if (activeAuctionId == null) return null;
 
-  const { data: products } = useRoomProducts(
-    currentAuctionId ? Number(currentAuctionId) : undefined
-  );
-  const currentStageProduct = products?.find(
+    const chatRoomId = chatRoomIds[activeAuctionId];
+
+    return {
+      auctionId: activeAuctionId,
+      chatRoomId,
+      participants: participantsByAuction[activeAuctionId] ?? 0,
+      messages: chatRoomId ? (messagesByRoom[chatRoomId] ?? []) : [],
+    };
+  }, [activeAuctionId, chatRoomIds, participantsByAuction, messagesByRoom]);
+
+  const { data } = useRoomProducts(current?.auctionId);
+  const currentStageProduct = data?.items?.find(
     product => getLiveStatus(product.auctionStatus) === "ONGOING"
   );
-
-  const allClosed =
-    products?.every(product => getLiveStatus(product.auctionStatus) === "CLOSE") || false;
-
-  const messages = currentChatRoomId != null ? (messagesByRoom[currentChatRoomId] ?? []) : [];
+  const roomStatus = getLiveRoomStatus(data?.items);
 
   const enterRoom = useCallback(
     async (auctionId: number) => {
@@ -55,7 +67,7 @@ export default function LiveAuctionRoomPage() {
 
       const existingChatRoomId = chatRoomIds[auctionId];
       if (existingChatRoomId) {
-        subscribeChatRoom(existingChatRoomId);
+        subscribeChatRoom(existingChatRoomId, auctionId);
         return;
       }
 
@@ -63,7 +75,7 @@ export default function LiveAuctionRoomPage() {
       const chatIdStr = chatRoomId.toString();
 
       setChatRoomId(auctionId, chatIdStr);
-      subscribeChatRoom(chatIdStr);
+      subscribeChatRoom(chatIdStr, auctionId);
     },
     [
       addSubscribedAuctionId,
@@ -75,24 +87,31 @@ export default function LiveAuctionRoomPage() {
     ]
   );
 
-  const handleCloseRoom = (auctionId: number) => {
-    const chatRoomId = chatRoomIds[auctionId];
-    if (chatRoomId) {
-      unsubscribeChatRoom(chatRoomId);
-    }
+  const closeRoom = useCallback(
+    (auctionId: number) => {
+      const chatRoomId = chatRoomIds[auctionId];
+      if (chatRoomId) {
+        unsubscribeChatRoom(chatRoomId);
+      }
+      removeSubscribedAuctionId(auctionId);
+    },
+    [chatRoomIds, unsubscribeChatRoom, removeSubscribedAuctionId]
+  );
 
-    removeSubscribedAuctionId(auctionId);
+  const sendMessage = (payload: { content: string }) => {
+    if (!current?.auctionId) return;
+    sendAuctionMessage(current.auctionId, payload);
   };
-
-  useEffect(() => {
-    enterRoom(activeAuctionId || 1);
-  }, [activeAuctionId, enterRoom]);
 
   useEffect(() => {
     if (activeAuctionId == null) {
       router.replace("/");
+      return;
     }
-  }, [activeAuctionId, router]);
+    enterRoom(activeAuctionId);
+  }, [activeAuctionId, enterRoom, router]);
+
+  if (!current) return null;
 
   return (
     <div className="w-full">
@@ -103,25 +122,31 @@ export default function LiveAuctionRoomPage() {
               <TabButton
                 key={auctionId}
                 label={`${index + 1} 번방`}
-                active={auctionId === currentAuctionId}
+                active={auctionId === current.auctionId}
                 onClick={() => enterRoom(auctionId)}
-                onClose={() => handleCloseRoom(auctionId)}
+                onClose={() => closeRoom(auctionId)}
               />
             ))}
           </StageBarBackground>
+
           <div className="flex-1">
-            <LiveAuctionStage currentStageProduct={currentStageProduct} allClosed={allClosed} />
+            <LiveAuctionStage
+              roomId={current.auctionId}
+              participants={current.participants}
+              currentStageProduct={currentStageProduct}
+              roomStatus={roomStatus}
+              remaingMs={data?.remainingMs}
+            />
           </div>
         </div>
 
         <div className="hidden lg:flex lg:w-[28%]">
           <LiveAuctionSide
             me={me}
-            products={products}
+            products={data?.items}
             chat={{
-              messages,
-              sendMessage: (payload: { content: string }) =>
-                currentAuctionId && sendAuctionMessage(currentAuctionId, payload),
+              messages: current.messages,
+              sendMessage,
             }}
           />
         </div>
@@ -137,11 +162,10 @@ export default function LiveAuctionRoomPage() {
         >
           <LiveAuctionSide
             me={me}
-            products={products}
+            products={data?.items}
             chat={{
-              messages,
-              sendMessage: (payload: { content: string }) =>
-                currentAuctionId && sendAuctionMessage(currentAuctionId, payload),
+              messages: current.messages,
+              sendMessage,
             }}
           />
         </MobileSideDrawer>

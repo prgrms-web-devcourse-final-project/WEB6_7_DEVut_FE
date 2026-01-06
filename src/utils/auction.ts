@@ -22,6 +22,20 @@ export const getLiveStatus = (status: AuctionStatus) => {
   }
 };
 
+export const getLiveRoomStatus = (products?: { auctionStatus: AuctionStatus }[]) => {
+  if (!products || products.length === 0) return "READY";
+
+  const hasReady = products.some(p => getLiveStatus(p.auctionStatus) === "READY");
+  const hasOngoing = products.some(p => getLiveStatus(p.auctionStatus) === "ONGOING");
+  const allClosed = products.every(p => getLiveStatus(p.auctionStatus) === "CLOSE");
+
+  if (allClosed) return "CLOSE";
+  if (hasOngoing) return "ONGOING";
+  if (hasReady) return "INTERMISSION";
+
+  return "READY";
+};
+
 export const getDelayStatus = (status: AuctionStatus) => {
   switch (status) {
     case "BEFORE_BIDDING":

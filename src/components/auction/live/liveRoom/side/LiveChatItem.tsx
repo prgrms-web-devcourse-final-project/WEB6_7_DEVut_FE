@@ -8,7 +8,8 @@ const liveChatItemVariants = cva("text-title-main-dark w-full text-sm", {
     type: {
       USER: "flex w-full items-start",
       SYSTEM: "py-4 text-center opacity-90",
-      BID: "my-3 flex w-full justify-center",
+      LIVE_BID: "my-3 flex w-full justify-center",
+      AUCTION_END: "my-3 flex w-full justify-center",
     },
     mine: {
       true: "justify-end",
@@ -23,37 +24,88 @@ const liveChatItemVariants = cva("text-title-main-dark w-full text-sm", {
 
 interface LiveChatItemProps {
   message: LiveChatMessage;
-  isMine: boolean;
+  userId: number;
 }
 
-export default function LiveChatItem({ message, isMine }: LiveChatItemProps) {
-  const { type, nickname, profileImageUrl, message: text, sendTime } = message;
+export default function LiveChatItem({ message, userId }: LiveChatItemProps) {
+  const {
+    type,
+    nickname,
+    profileImageUrl,
+    message: text,
+    sendTime,
+    senderId,
+    bidderId,
+    newPrice,
+    result,
+    finalPrice,
+    winnerId,
+  } = message;
+  const isMine = userId === senderId;
+  const isBidder = userId === bidderId;
+  const isWinner = userId === winnerId;
 
   const time = new Date(sendTime).toLocaleTimeString("ko-KR", {
     hour: "2-digit",
     minute: "2-digit",
   });
 
-  /* SYSTEM */
   if (type === "SYSTEM") {
     return <li className={liveChatItemVariants({ type })}>{text}</li>;
   }
 
-  /* BID */
-  if (type === "BID") {
+  if (type === "LIVE_BID") {
     return (
       <li className={liveChatItemVariants({ type })}>
-        <div className="border-border-sub2 shadow-flat-light bg-content-area flex items-center border-[3px] px-4 py-2 text-sm">
-          <b className="mr-1">{nickname}</b>
-          님이
-          <b className="mx-1">{text}</b>
-          Bizz에 입찰했습니다!
+        <div className="border-border-sub2 shadow-flat-light bg-content-area flex w-full flex-col items-center gap-1 border-[3px] px-4 py-2 text-sm">
+          {isBidder ? (
+            <>
+              <span>🎉 입찰을 축하드립니다! </span>
+              <span>{newPrice?.toLocaleString()} Bizz에 성공적으로 입찰했어요.</span>
+            </>
+          ) : (
+            <>
+              <span>🔔 상위 입찰 </span>
+              <span>{newPrice?.toLocaleString()} Bizz에 입찰이 들어왔습니다.</span>
+            </>
+          )}
         </div>
       </li>
     );
   }
 
-  /* USER */
+  if (type === "AUCTION_END") {
+    return (
+      <li className={liveChatItemVariants({ type })}>
+        <div className="border-border-sub2 shadow-flat-light bg-content-area flex w-full flex-col items-center gap-1 border-[3px] px-4 py-2 text-sm">
+          {result === "FAILED" ? (
+            <>
+              <span>상품이 유찰되었습니다.</span>
+            </>
+          ) : (
+            <>
+              {isWinner ? (
+                <>
+                  <span>🎉 축하드립니다! 상품이 낙찰되었습니다.</span>
+                  <span>
+                    <b>{finalPrice?.toLocaleString()}</b> Bizz에 낙찰되었어요!
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>상품이 낙찰되었습니다.</span>
+                  <span>
+                    <b>{finalPrice?.toLocaleString()}</b> Bizz에 낙찰되었습니다.
+                  </span>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </li>
+    );
+  }
+
   return (
     <li className={liveChatItemVariants({ type, mine: isMine })}>
       <div

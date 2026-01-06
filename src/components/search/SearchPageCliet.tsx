@@ -82,11 +82,6 @@ export default function SearchPageClient() {
     setIsSelling(prev => !prev);
   };
 
-  // const { cards, isLoading, isFetching, isError, error, totalCount } = useSearchProductCards({
-  //   auctionType: auctionTypeMapping(auctionType),
-  //   params,
-  // });
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSearchProductInfinite(params);
 

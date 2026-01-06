@@ -13,5 +13,18 @@ export const getLiveRoomProducts = async (roomId: number) => {
     method: "GET",
   });
 
-  return res.data.items;
+  return { items: res.data.items, remainingMs: res.data.remainingMs };
+};
+
+export const liveBid = async (body: LiveBidRequest) => {
+  const res = await ClientApi<LiveBidResponse>(`/auction/live/${body.liveItemId}/bid`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+  // if (res.resultCode !== "200") {
+  //   throw new Error(res.msg);
+  // }
+
+  return res.data;
 };

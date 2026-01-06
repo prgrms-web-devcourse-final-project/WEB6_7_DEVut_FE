@@ -32,7 +32,7 @@ export default function AuctionProduct({
 
           <div className="rounded-sm border-2 border-[#6B4A38] bg-[#FFF8F0] px-3 py-[0.6em]">
             <p className="text-[0.8em] tracking-wide text-[#7A5A44] uppercase">현재 입찰가</p>
-            <BizzAmount amount={currentStageProduct?.price || ""} />
+            <BizzAmount amount={currentStageProduct?.currentPrice || ""} />
           </div>
         </div>
       </div>

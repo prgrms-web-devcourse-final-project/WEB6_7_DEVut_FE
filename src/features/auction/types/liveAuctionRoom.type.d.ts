@@ -10,7 +10,7 @@ interface AudienceState {
 }
 
 // 채팅
-type LiveChatType = "SYSTEM" | "BID" | "USER";
+type LiveChatType = "SYSTEM" | "LIVE_BID" | "USER" | "AUCTION_END";
 
 interface LiveChatMessage {
   tempId: string;
@@ -20,6 +20,11 @@ interface LiveChatMessage {
   profileImageUrl?: string;
   message: string;
   sendTime: number;
+  newPrice?: number;
+  bidderId?: number;
+  result?: "SUCCESS" | "FAILED";
+  winnerId?: number;
+  finalPrice?: number;
 }
 
 // 상품 목록
@@ -56,10 +61,26 @@ interface LiveRoomProduct {
   id: number;
   name: string;
   imageUrls: string[];
-  price: number;
+  initPrice: number;
+  currentPrice: number;
   auctionStatus: AuctionStatus;
 }
 
 interface LiveRoomProductsResponse {
   items: LiveRoomProduct[];
+  remainingMs: number | null;
+}
+
+// 라이브 상품 입찰 리퀘스트 DTO
+interface LiveBidRequest {
+  liveItemId: number;
+  auctionId: number;
+  bidPrice: number;
+}
+
+// 응답 DTO
+interface LiveBidResponse {
+  isSuccess: boolean;
+  message: string;
+  bidPrice: number;
 }

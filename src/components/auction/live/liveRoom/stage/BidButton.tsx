@@ -1,9 +1,16 @@
 import test from "@/assets/images/sidebar/auction.png";
 import Image from "next/image";
 
-export default function BidButton({ onClick }: { onClick: () => void }) {
+export default function BidButton({
+  onClick,
+  disabled,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+}) {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
       className="group relative z-30 flex h-14 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md shadow-[0_2px_6px_rgba(0,0,0,0.18)] transition-all active:translate-y-px lg:h-[clamp(110px,12vw,140px)] lg:w-[clamp(110px,12vw,140px)] lg:rounded-full lg:shadow-[0_6px_12px_rgba(0,0,0,0.28)] lg:hover:scale-[1.01] lg:active:translate-y-0.5"
     >

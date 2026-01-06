@@ -17,10 +17,13 @@ export default function LiveChatList({ messages, userId }: LiveChatListProps) {
 
     el.scrollTop = el.scrollHeight;
   }, [messages.length]);
+
+  if (!userId) return;
+
   return (
     <div ref={containerRef} className="h-full space-y-3 overflow-y-auto p-3">
       {messages.map((message, index) => (
-        <LiveChatItem key={index} message={message} isMine={message.senderId === userId} />
+        <LiveChatItem key={index} message={message} userId={userId} />
       ))}
     </div>
   );

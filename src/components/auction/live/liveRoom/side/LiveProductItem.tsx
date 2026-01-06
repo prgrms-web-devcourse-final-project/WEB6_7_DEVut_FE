@@ -31,7 +31,7 @@ export default function LiveProductItem({ product }: ProductItemProps) {
         <span className="text-title-main flex gap-1 text-sm">
           현재가{" "}
           <BizzAmount
-            amount={product.price}
+            amount={product.currentPrice}
             fontSize={"sm"}
             iconSize={"sm"}
             className="text-custom-red"
