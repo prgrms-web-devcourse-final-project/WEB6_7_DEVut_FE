@@ -1,8 +1,15 @@
 export const getBidUnit = (price: number) => {
-  if (price < 10_000) return 100;
-  if (price < 100_000) return 1_000;
-  if (price < 1_000_000) return 5_000;
-  return 10_000;
+  if (price < 2_000) return 100;
+
+  const percentUnit = Math.ceil((price * 0.05) / 100) * 100;
+
+  let baseUnit: number;
+  if (price < 10_000) baseUnit = 100;
+  else if (price < 100_000) baseUnit = 1_000;
+  else if (price < 1_000_000) baseUnit = 5_000;
+  else baseUnit = 10_000;
+
+  return Math.max(baseUnit, percentUnit);
 };
 
 export const getBidSteps = (currentPrice: number) => {
@@ -44,4 +51,14 @@ export const getDelayStatus = (status: AuctionStatus) => {
     default:
       return "CLOSE";
   }
+};
+
+export const getLiveEnterStatus = (liveTime?: string) => {
+  if (!liveTime) return "READY";
+
+  const liveAt = new Date(liveTime).getTime();
+  const now = Date.now();
+  const TEN_MINUTES = 10 * 60 * 1000;
+
+  return now >= liveAt - TEN_MINUTES ? "ONGOING" : "READY";
 };

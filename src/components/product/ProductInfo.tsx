@@ -17,7 +17,8 @@ import DelayedBidSection from "./DelayedBidSection";
 import DelayedEndTimer from "./DelayedEndTimer";
 import DelayedBuyNowSection from "./DelayedBuyNowSection";
 import Link from "next/link";
-import { getDelayStatus, getLiveStatus } from "@/utils/auction";
+import { getDelayStatus, getLiveEnterStatus, getLiveStatus } from "@/utils/auction";
+import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -37,6 +38,8 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const isLive = product?.type === "LIVE";
   const path = isLive ? `/product/live/${product?.id}` : `/product/${product?.id}`;
   const sellerId = isLive ? product?.sellerId : product?.sellerUserId;
+
+  const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -67,7 +70,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             <div className="bg-content-gray border-border-sub2 flex justify-between rounded-xl border p-5">
               <div className="flex h-full items-center gap-8">
                 <div>
-                  <p className="text-title-sub2 text-sm">{isLive ? "시작가" : "현재가"}</p>
+                  <p className="text-title-sub2 text-sm">입찰가</p>
                   <div className="mt-2 flex items-end justify-between">
                     <BizzAmount
                       amount={product.currentPrice}
@@ -93,11 +96,13 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   </>
                 )}
               </div>
-              <div className="flex items-end">
-                <Link href={`${path}/bidsLog`}>
-                  <Button size="sm">경매 기록</Button>
-                </Link>
-              </div>
+              {product.type === "DELAYED" && (
+                <div className="flex items-end">
+                  <Link href={`${path}/bidsLog`}>
+                    <Button size="sm">경매 기록</Button>
+                  </Link>
+                </div>
+              )}
             </div>
 
             <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm lg:text-base">
@@ -113,7 +118,10 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                 </div>
 
                 <div className="text-title-sub">장소</div>
-                <div className="text-title-main-dark">{`${product?.region} / ${product?.preferredPlace}`}</div>
+                <div className="text-title-main-dark">
+                  {product?.region}
+                  {product?.preferredPlace && ` / ${product.preferredPlace}`}
+                </div>
 
                 {product?.type === "DELAYED" && product.startPrice && (
                   <>
@@ -147,24 +155,32 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
             <Button className="flex-1" leftIcon={<Star size={18} />}>
               찜 {product?.likeCount}
             </Button>
-            {/* 라이브 */}
             {product?.type === "LIVE" && (
               <>
-                {getLiveStatus(product?.auctionStatus) === "READY" && (
+                {getLiveEnterStatus(product?.liveTime) === "READY" && (
                   <Button className="flex-1" disabled>
                     라이브 준비중
                   </Button>
                 )}
 
-                {getLiveStatus(product?.auctionStatus) === "ONGOING" && (
-                  <Button className="bg-custom-orange flex-1 text-white">라이브 입장하기</Button>
-                )}
-
-                {getLiveStatus(product?.auctionStatus) === "CLOSE" && (
+                {getLiveEnterStatus(product?.liveTime) === "ONGOING" ? (
+                  <Button
+                    onClick={() => {
+                      addSubscribedAuctionId(product.auctionRoomId);
+                      setActiveAuctionId(product.auctionRoomId);
+                      route.push("/auction/liveRoom");
+                    }}
+                    className="bg-custom-orange flex-1 text-white"
+                  >
+                    라이브 입장하기
+                  </Button>
+                ) : (
                   <Button className="flex-1" disabled>
                     라이브 종료
                   </Button>
                 )}
+
+                {/* {getLiveStatus(product?.auctionStatus) === "CLOSE" && } */}
               </>
             )}
 
@@ -174,6 +190,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   {getDelayStatus(product.auctionStatus) === "ONGOING" ? (
                     <>
                       <DelayedBidSection
+                        me={me}
                         productId={product.id}
                         isOpen={isBidOpen}
                         modalToggle={(bool: boolean) => {
@@ -183,6 +200,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                         currentBid={product.currentPrice}
                       />
                       <DelayedBuyNowSection
+                        me={me}
                         productId={product.id}
                         isOpen={isBuyNowOpen}
                         modalToggle={(bool: boolean) => {
@@ -209,13 +227,17 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                 <span className="hidden sm:inline">수정하기</span>
               </Button>
             ) : (
-              <Button
-                onClick={() => route.push(`/message/item/${product.id}`)}
-                className="bg-custom-orange-dark flex-1 text-white"
-                leftIcon={<MessageCircle size={18} />}
-              >
-                대화하기
-              </Button>
+              <>
+                {product.type === "DELAYED" && (
+                  <Button
+                    onClick={() => route.push(`/message/item/${product.id}`)}
+                    className="bg-custom-orange-dark flex-1 text-white"
+                    leftIcon={<MessageCircle size={18} />}
+                  >
+                    대화하기
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>

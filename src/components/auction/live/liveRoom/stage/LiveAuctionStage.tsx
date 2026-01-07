@@ -51,6 +51,10 @@ export default function LiveAuctionStage({
 
   const handleConfirm = () => {
     if (!roomId || !currentStageProduct) return;
+    if (bidInput <= currentStageProduct?.currentPrice) {
+      notify("입찰 금액을 확인해주세요!", "ERROR");
+      return;
+    }
     if (isIntermission || isClosed) return;
 
     bid(
@@ -88,7 +92,7 @@ export default function LiveAuctionStage({
 
   useEffect(() => {
     if (localRemainingMs == null) return;
-    if (isIntermission || isClosed) return;
+    if (isClosed) return;
 
     const interval = setInterval(() => {
       setLocalRemainingMs(prev => {
@@ -98,10 +102,10 @@ export default function LiveAuctionStage({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [localRemainingMs, isIntermission, isClosed]);
+  }, [isClosed, localRemainingMs]);
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+    <div className="flex min-w-0 flex-col">
       <div className="relative aspect-video w-full shrink-0 overflow-hidden border-[3px] bg-black">
         <StageBackground />
 
@@ -122,9 +126,14 @@ export default function LiveAuctionStage({
         >
           <p className="text-3xl font-bold">다음 상품 준비 중</p>
           <p className="text-sm opacity-80">잠시만 기다려 주세요</p>
-          {/* <p className="mt-2 text-base font-semibold">
-            남은 시간 {formatRemainingTime(localRemainingMs)}
-          </p> */}
+          <p className="text-sm">
+            남은 시간:{" "}
+            <b>
+              {localRemainingMs != null && isIntermission
+                ? formatRemainingTime(localRemainingMs)
+                : "--"}
+            </b>
+          </p>
         </div>
 
         <div
@@ -149,7 +158,9 @@ export default function LiveAuctionStage({
             )}
           </div>
 
-          {!isClosed && <AuctionProduct currentStageProduct={currentStageProduct} />}
+          {!isClosed && !isIntermission && (
+            <AuctionProduct currentStageProduct={currentStageProduct} />
+          )}
         </div>
       </div>
 
@@ -161,7 +172,7 @@ export default function LiveAuctionStage({
             <b>
               {localRemainingMs != null && !isIntermission
                 ? formatRemainingTime(localRemainingMs)
-                : "--:--"}
+                : "--"}
             </b>
           </p>
         </div>

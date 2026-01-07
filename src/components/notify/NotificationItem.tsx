@@ -28,7 +28,14 @@ export default function NotificationItem({
     >
       {<Image src={tape} alt="`tape" className="absolute -left-5 -rotate-3" />}
       <span className="text-xl">{getNotifyIcon(notify.type)}</span>
-      <Link href={notifyRoute as Url}>
+      <Link
+        href={notifyRoute as Url}
+        onClick={() => {
+          if (notify.type === "LIVE_AUCTION_START") {
+            
+          }
+        }}
+      >
         <span className="cursor-pointer group-hover:underline">{notify.message}</span>
       </Link>
       <span className="text-title-sub2 text-xs whitespace-nowrap">

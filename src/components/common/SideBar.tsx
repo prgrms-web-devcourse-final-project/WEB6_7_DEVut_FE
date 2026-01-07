@@ -54,11 +54,11 @@ export default function Sidebar({ me }: { me: User | null }) {
         src={me ? mypage : login}
         label={me ? "내정보" : "로그인"}
       />
-      <div
+      {/* <div
         className={`border-border-sub2 shadow-flat mt-auto flex h-[50px] cursor-pointer items-center justify-center border-[3px] p-3 transition-all active:translate-y-0.5 active:shadow-none`}
       >
         <Image src={sound} alt="sound" width={22} height={22} />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -36,7 +36,7 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
   };
 
   return (
-    <div className="border-border-main flex min-h-[420px] w-full min-w-[280px] flex-col border lg:min-h-0">
+    <div className="border-border-main flex h-full min-h-0 w-full min-w-[280px] flex-col border">
       <div className="border-border-main flex h-14 shrink-0 items-center border-b">
         <LiveSideTabButton active={tab === "CHAT"} onClick={() => setTab("CHAT")}>
           <MessageCircle size={18} className="mr-2" /> 채팅
@@ -46,14 +46,9 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
         </LiveSideTabButton>
       </div>
 
-      <div className="h-full min-h-0 flex-1 overflow-y-auto">
-        <div className={tab === "CHAT" ? "h-full" : "hidden"}>
-          <LiveChatList messages={chat.messages} userId={me?.id} />
-        </div>
-
-        <div className={tab === "PRODUCT" ? "h-full" : "hidden"}>
-          <LiveProductList products={products} />
-        </div>
+      <div className="flex min-h-0 flex-1 flex-col">
+        {tab === "CHAT" && <LiveChatList messages={chat.messages} userId={me?.id} />}
+        {tab === "PRODUCT" && <LiveProductList products={products} />}
       </div>
 
       <div className="border-border-sub shrink-0 border-t px-3 py-3">
@@ -62,7 +57,7 @@ export default function LiveAuctionSide({ me, chat, products }: LiveAuctionSideP
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="메시지를 입력해주세요."
-            className="bg-content-area border-border-sub flex-2 resize-none rounded-lg border-2 px-4 py-3 outline-none"
+            className="bg-content-area border-border-sub flex-1 resize-none rounded-lg border-2 px-4 py-3 outline-none"
             onKeyDown={e => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

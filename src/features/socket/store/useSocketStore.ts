@@ -26,6 +26,8 @@ interface SocketStore {
   sendAuctionMessage: (auctionId: number, payload: { content: string }) => void;
   subscribeChatRoom: (chatRoomId: string, auctionId?: number) => void;
   unsubscribeChatRoom: (chatRoomId: string) => void;
+
+  setInitialParticipants: (auctionId: number, count: number) => void;
 }
 
 type RoomSubscriptions = {
@@ -222,8 +224,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     }));
   },
 
-  /* ================= Unsubscribe ================= */
-
   unsubscribeChatRoom: chatRoomId => {
     const roomSubs = get().subscriptions[chatRoomId];
 
@@ -241,4 +241,12 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       };
     });
   },
+
+  setInitialParticipants: (auctionId, count) =>
+    set(state => ({
+      participantsByAuction: {
+        ...state.participantsByAuction,
+        [auctionId]: count,
+      },
+    })),
 }));

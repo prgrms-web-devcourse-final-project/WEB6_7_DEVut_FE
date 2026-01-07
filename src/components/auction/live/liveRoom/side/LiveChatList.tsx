@@ -21,10 +21,14 @@ export default function LiveChatList({ messages, userId }: LiveChatListProps) {
   if (!userId) return;
 
   return (
-    <div ref={containerRef} className="h-full space-y-3 overflow-y-auto p-3">
-      {messages.map((message, index) => (
-        <LiveChatItem key={index} message={message} userId={userId} />
-      ))}
+    <div className="min-h-0 flex-1">
+      <div className="aspect-[3/5] max-h-[1000px] w-full">
+        <div ref={containerRef} className="h-full space-y-3 overflow-y-auto p-3">
+          {messages.map((message, index) => (
+            <LiveChatItem key={index} message={message} userId={userId} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
