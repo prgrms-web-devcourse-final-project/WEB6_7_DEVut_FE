@@ -50,6 +50,8 @@ export default function LiveRoomCarousel({
     visible = [prevIndex, focusedIndex, nextIndex];
   }
 
+  const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
+
   const handleMainButtonClick = () => {
     const currentRoom = rooms[focusedIndex];
     if (onSelect) {
@@ -57,7 +59,6 @@ export default function LiveRoomCarousel({
         onSelect(currentRoom);
       }
     }
-    const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
     addSubscribedAuctionId(currentRoom.roomId);
     setActiveAuctionId(currentRoom.roomId);
     route.push("/auction/liveRoom");
