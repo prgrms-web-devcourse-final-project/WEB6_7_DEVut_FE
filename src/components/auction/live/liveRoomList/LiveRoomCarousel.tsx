@@ -9,8 +9,9 @@ import ticket2 from "@/assets/images/auction/ticket2.svg";
 import ticket3 from "@/assets/images/auction/ticket3.svg";
 import ticket4 from "@/assets/images/auction/ticket4.svg";
 import ticket5 from "@/assets/images/auction/ticket5.svg";
-import useNow from "@/components/schedule/UpdateNow";
 import { useMemo } from "react";
+import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
+import { useRouter } from "next/navigation";
 
 interface LiveRoomCarouselProps {
   rooms: LiveRoom[];
@@ -19,7 +20,7 @@ interface LiveRoomCarouselProps {
   onRoomClick?: (room: LiveRoom) => void;
   onSelect?: (room: LiveRoom) => void;
   isMobile: boolean;
-  startAt?: string;
+  startAt?: string | null;
 }
 
 export default function LiveRoomCarousel({
@@ -31,26 +32,10 @@ export default function LiveRoomCarousel({
   isMobile,
   startAt,
 }: LiveRoomCarouselProps) {
-  const now = useNow();
-
-  const { isPast, isFuture, isCurrent } = useMemo(() => {
-    if (onSelect || !startAt) return { isPast: false, isFuture: false, isCurrent: true };
-
-    const [slotDate, slotTime] = startAt.split("T");
-    const [h, m] = slotTime.split(":").map(Number);
-    const start = new Date(slotDate);
-    start.setHours(h, m, 0, 0);
-
-    const end = new Date(start);
-    end.setMinutes(end.getMinutes() + 30);
-
-    return {
-      isPast: now >= end,
-      isFuture: now < start,
-      isCurrent: now >= start && now < end,
-    };
-  }, [now, startAt, onSelect]);
-
+  const roomStatus = useMemo(() => {
+    return rooms[focusedIndex]?.status;
+  }, [rooms, focusedIndex]);
+  const route = useRouter();
   const tickets = [ticket1, ticket2, ticket3, ticket4, ticket5];
   const total = rooms.length;
   let visible: number[] = [];
@@ -72,6 +57,10 @@ export default function LiveRoomCarousel({
         onSelect(currentRoom);
       }
     }
+    const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
+    addSubscribedAuctionId(currentRoom.roomId);
+    setActiveAuctionId(currentRoom.roomId);
+    route.push("/auction/liveRoom");
   };
 
   return (
@@ -155,22 +144,19 @@ export default function LiveRoomCarousel({
           </button>
         )}
       </div>
-
       <Button
         onClick={handleMainButtonClick}
         className="bg-custom-orange-dark shadow-flat mt-8 px-15 text-white hover:brightness-105 disabled:cursor-not-allowed disabled:bg-gray-400"
         leftIcon={
-          onSelect || (!onSelect && isCurrent) ? (
-            <RadioIcon className="text-custom-red" />
-          ) : undefined
+          onSelect || roomStatus === "LIVE" ? <RadioIcon className="text-custom-red" /> : undefined
         }
-        disabled={!onSelect && !isCurrent}
+        disabled={!onSelect && roomStatus !== "LIVE"}
       >
         {onSelect
           ? "스케줄 선택하기"
-          : isPast
+          : roomStatus == "ENDED"
             ? "이미 종료된 라이브예요"
-            : isFuture
+            : roomStatus == "SCHEDULED"
               ? "아직 입장할 수 없어요"
               : "라이브 입장하기"}
       </Button>

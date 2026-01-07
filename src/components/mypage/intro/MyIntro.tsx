@@ -30,12 +30,14 @@ export default function MyIntro() {
   const [address, setAddress] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [postal, setPostal] = useState("");
 
   const inputFields = [
     { label: "닉네임", value: nickname, setValue: setNickname },
     { label: "이메일", value: email, setValue: setEmail },
     { label: "배송지", value: address, setValue: setAddress },
     { label: "상세 주소", value: detailAddress, setValue: setDetailAddress },
+    { label: "우편 번호", value: postal, setValue: setPostal },
   ];
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function MyIntro() {
     setEmail(user.email);
     setAddress(user.address ?? "");
     setDetailAddress(user.addressDetail ?? "");
+    setPostal(user.postalCode ?? "");
   }, [user]);
 
   const handleEditClick = async () => {
@@ -67,7 +70,6 @@ export default function MyIntro() {
       const urls = await uploadImages([profileImage], "auctions");
       imageUrl = urls[0];
     }
-
     updateMeMutation.mutate(
       {
         email,
@@ -75,7 +77,7 @@ export default function MyIntro() {
         image: imageUrl,
         address,
         addressDetail: detailAddress,
-        postalCode: user.postalCode,
+        postalCode: postal,
       },
       {
         onSuccess: () => {

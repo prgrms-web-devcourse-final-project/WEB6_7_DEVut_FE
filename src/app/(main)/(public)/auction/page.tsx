@@ -14,7 +14,7 @@ import { getLiveRooms } from "@/features/auction/api/liveAuction.api";
 import LiveRoomListWriteMode from "@/components/auction/live/liveRoomList/LiveRoomListWriteMode";
 
 type AuctionPageProps = {
-  startAt: string; // yyyy-MM-ddThh:mm:ss
+  startAt?: string | null; // yyyy-MM-ddThh:mm:ss
   writeMode?: boolean;
   onRoomSelect?: (roomIndex: number) => void;
 };
@@ -25,7 +25,14 @@ export default function AuctionPage({
 }: AuctionPageProps) {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const now = useNow();
-  const [nowDate, setNowDate] = useState(now.toISOString().split("T")[0]);
+  const dateFn = () =>
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
+  const [nowDate, setNowDate] = useState(dateFn());
   const [nowTime, setNowTime] = useState(getAuctionTimeKey(now));
   const [rooms, setRooms] = useState<LiveRoom[]>([]);
   const [focusedRoom, setFocusedRoom] = useState<LiveRoom | null>(null);
@@ -35,13 +42,13 @@ export default function AuctionPage({
 
   const runningTime = (hour: number, minute: number) => {
     // 일단 대충 시간으로... 디테일(하루의 마지막 경매가 끝나는 시간에 종료하도록) 수정 필요
-    if (hour >= 9 && hour <= 21) {
-      setIsRunning(true);
-    } else setIsRunning(false);
+    // if (hour >= 9 && hour <= 21) {
+    setIsRunning(true);
+    // } else setIsRunning(false);
   };
   useEffect(() => {
     const interval = setInterval(() => {
-      setNowDate(now.toISOString().split("T")[0]);
+      setNowDate(dateFn());
       setNowTime(getAuctionTimeKey(now));
     }, 60 * 1000); // 1분
     runningTime(hour, minute);
@@ -50,7 +57,7 @@ export default function AuctionPage({
 
   useEffect(() => {
     const fetchRooms = async () => {
-      const [slotDate, slotTime] = startAt.split("T");
+      const [slotDate, slotTime] = startAt?.split("T") || [];
       const d = startAt ? slotDate : nowDate;
       const t = startAt ? slotTime : nowTime;
 
@@ -58,7 +65,6 @@ export default function AuctionPage({
         const data = await getLiveRooms(d, t);
         if (data && data.rooms) {
           setRooms(data.rooms);
-          console.log("rooms", data.rooms);
         }
       } catch (error) {
         console.error("live rooms fetch 실패:", error);
@@ -66,7 +72,7 @@ export default function AuctionPage({
     };
 
     fetchRooms();
-  }, [startAt, nowDate, nowTime]);
+  }, [startAt, nowDate, now]);
 
   return (
     <>
@@ -122,7 +128,7 @@ export default function AuctionPage({
                   }
                 }}
                 onFocusedRoomChange={setFocusedRoom}
-                startAt={startAt}
+                startAt={startAt || null}
               />
             )}
           </div>
