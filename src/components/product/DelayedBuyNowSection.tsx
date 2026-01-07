@@ -4,6 +4,7 @@ import { BuyNowSectionModal } from "./BuyNowSectionModal";
 import { useBuyNowDelayProduct } from "@/features/auction/hooks/useBuyNowDelayProduct";
 
 interface DelayedBuyNowSectionProps {
+  me: User | null;
   productId: number;
   isOpen: boolean;
   modalToggle: (bool: boolean) => void;
@@ -11,6 +12,7 @@ interface DelayedBuyNowSectionProps {
 }
 
 export default function DelayedBuyNowSection({
+  me,
   productId,
   isOpen,
   modalToggle,
@@ -21,6 +23,12 @@ export default function DelayedBuyNowSection({
   const { mutate: buyNow, isPending } = useBuyNowDelayProduct(productId);
 
   const handleConfirmBid = () => {
+    if (!me) {
+      notify("로그인을 해주세요!", "ERROR");
+      modalToggle(false);
+      return;
+    }
+
     buyNow(undefined, {
       onSuccess: () => {
         modalToggle(false);
