@@ -108,15 +108,9 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   });
 
   return (
-<<<<<<< HEAD
-    <div className="mt-2 flex w-screen flex-col px-8">
-      <ContentContainer className="border-border-sub bg-content-area m-0 flex w-full flex-col gap-16 border-3 px-14 py-7 lg:flex-row">
-        <div className="flex flex-col md:min-w-[60%]">
-=======
     <div className="mt-2 flex w-full flex-col px-8">
       <ContentContainer className="border-border-sub bg-content-area m-0 flex w-full flex-col gap-16 border-3 px-14 py-7 lg:flex-row">
         <div className="flex flex-col lg:min-w-[55%]">
->>>>>>> 8bc8c0987040080705d87ce89e044ff117a7df99
           <Title className="text-title-sub ml-3 text-[24px]">상품 정보</Title>
           <ContentContainer className="border-border-main flex h-full flex-col items-center justify-center gap-10 overflow-auto border-3 p-8 md:flex-row">
             {/* 이미지 */}
@@ -137,11 +131,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
             </div>
           </ContentContainer>
         </div>
-<<<<<<< HEAD
-        <div className="flex w-full flex-col md:min-w-[40%] lg:px-5">
-=======
         <div className="flex min-w-full flex-col lg:min-w-[40%]">
->>>>>>> 8bc8c0987040080705d87ce89e044ff117a7df99
           <Title className="text-title-sub ml-3 text-[24px]">배송</Title>
           <ContentContainer className="border-border-main text-title-main-dark grid gap-1 border-3 p-8 text-[11px] font-bold">
             <div className="grid gap-2">
@@ -214,12 +204,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
           </ContentContainer>
         </div>
       </ContentContainer>
-<<<<<<< HEAD
-      <section className="relative mb-10 min-h-full max-w-[1440px] py-5">
-        {/* 세로 타임라인 */}
-=======
       <section className="relative min-h-screen py-5">
->>>>>>> 8bc8c0987040080705d87ce89e044ff117a7df99
         <div className="bg-border-main absolute top-5 left-7 h-full w-[3px]" />
 
         {milestones.map(step => (

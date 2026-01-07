@@ -7,22 +7,12 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-<<<<<<< HEAD
-=======
-import { myPageSellCardMapping } from "@/utils/myPageCardMapping";
->>>>>>> 8bc8c0987040080705d87ce89e044ff117a7df99
 import { useState } from "react";
 
 export default function SaleDetail({ initialData }: { initialData: ProductCardType[] }) {
   const { data: mySells } = useMySell({ initialData });
   const [status, setStatus] = useState("전체");
 
-<<<<<<< HEAD
-=======
-  const newMySells = myPageSellCardMapping({ card: mySells });
-  const sellItems = newMySells ?? [];
-
->>>>>>> 8bc8c0987040080705d87ce89e044ff117a7df99
   const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
     전체: "ALL",
     잔금대기: "PAYMENT_PENDING",
