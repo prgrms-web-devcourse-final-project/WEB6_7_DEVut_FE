@@ -8,7 +8,7 @@ interface LiveRoomItem {
 interface LiveRoom {
   roomId: number;
   roomIndex: number;
-  status: string;
+  status: "SCHEDULED" | "LIVE" | "ENDED";
   itemCount: number;
   items: LiveRoomItem[];
 }
