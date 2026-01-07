@@ -6,10 +6,9 @@ export function useDelayedProducts(
   options?: { enabled?: boolean; initialData: ProductsResponse | undefined }
 ) {
   return useQuery({
-    queryKey: ["delayedProducts", params],
+    queryKey: ["delayedProducts", JSON.stringify(params)],
     queryFn: () => getDelayedProducts(params),
     enabled: options?.enabled,
     initialData: options?.initialData,
-    placeholderData: prev => prev,
   });
 }

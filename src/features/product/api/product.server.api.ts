@@ -6,7 +6,7 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
     method: "GET",
     params: { ...params },
   });
-
+  console.log("res", res.data);
   return {
     products: res.data.delayedItems.map(mapDelayedProductToCard),
     totalCount: res.data.totalCount,

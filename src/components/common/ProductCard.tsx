@@ -2,19 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-
 import fullStar from "@/assets/common/fullStar.svg";
 import emptyStar from "@/assets/common/emptyStar.svg";
-
 import BizzAmount from "./BizzAmount";
 import ProductStatus from "./ProductStatus";
-
 import test from "@/assets/images/auction/auctioneer.svg";
 import WrapperImage from "./WrapperImage";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
+import { useWishToggle } from "@/features/wish/hooks/useWishToggle";
 
 export default function ProductCard({
   product,
@@ -25,8 +22,9 @@ export default function ProductCard({
   context: ProductContext;
   className?: string;
 }) {
-  const [star, setStar] = useState<boolean>(!!product.isWish);
   const router = useRouter();
+
+  const { mutate: toggleWish } = useWishToggle();
 
   return (
     <Link href={product.href} className={twMerge("relative cursor-pointer", className)}>
@@ -35,12 +33,15 @@ export default function ProductCard({
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();
-          setStar(prev => !prev);
+          toggleWish({
+            id: product.id,
+            type: product.type === "LIVE" ? "LIVE" : "DELAYED",
+          });
         }}
       >
         <Image
-          src={star ? fullStar : emptyStar}
-          alt={star ? "찜됨" : "찜 안됨"}
+          src={product.isWish ? fullStar : emptyStar}
+          alt={product.isWish ? "찜됨" : "찜 안됨"}
           width={20}
           height={20}
         />

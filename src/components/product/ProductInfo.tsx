@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import BizzAmount from "../common/BizzAmount";
 import { getCategoryLabel } from "@/utils/category";
 import { statusMapping } from "@/utils/product";
-import { MessageCircle, SquarePen, Star } from "lucide-react";
+import { MessageCircle, SquarePen } from "lucide-react";
 import { formatDateTime } from "@/utils/date";
 import { Activity, useState } from "react";
 import { useProductDetail } from "@/features/product/hooks/useProductDetail";
+import fullStar from "@/assets/common/fullStar.svg";
+import emptyStar from "@/assets/common/emptyStar.svg";
 
 import dynamic from "next/dynamic";
 import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarouselSkeleton";
@@ -17,8 +19,10 @@ import DelayedBidSection from "./DelayedBidSection";
 import DelayedEndTimer from "./DelayedEndTimer";
 import DelayedBuyNowSection from "./DelayedBuyNowSection";
 import Link from "next/link";
-import { getDelayStatus, getLiveEnterStatus, getLiveStatus } from "@/utils/auction";
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
+import { getDelayStatus, getLiveEnterStatus, getLiveStatus } from "@/utils/auction";
+import { useWishToggle } from "@/features/wish/hooks/useWishToggle";
+import Image from "next/image";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -33,6 +37,7 @@ interface ProductInfo {
 export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const route = useRouter();
   const { data: product, isLoading, isError } = useProductDetail(initialProduct);
+  const [star, setStar] = useState(product?.isLiked);
   const [isBidOpen, setIsBidOpen] = useState(false);
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
   const isLive = product?.type === "LIVE";
@@ -40,6 +45,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
   const sellerId = isLive ? product?.sellerId : product?.sellerUserId;
 
   const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
+  const { mutate: toggleWish } = useWishToggle();
 
   if (isLoading) return <div>상품 정보를 불러오는 중...</div>;
   if (isError) return <div>상품 정보를 불러오는 중 오류가 발생했습니다.</div>;
@@ -152,8 +158,25 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
           </div>
 
           <div className="flex gap-3 pt-3">
-            <Button className="flex-1" leftIcon={<Star size={18} />}>
-              찜 {product?.likeCount}
+            <Button
+              className="flex-1 gap-2"
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setStar(prev => !prev);
+                toggleWish({
+                  id: product.id,
+                  type: product.type === "LIVE" ? "LIVE" : "DELAYED",
+                });
+              }}
+            >
+              <Image
+                src={star ? fullStar : emptyStar}
+                alt={star ? "찜됨" : "찜 안됨"}
+                width={20}
+                height={20}
+              />
+              찜
             </Button>
             {product?.type === "LIVE" && (
               <>
@@ -179,8 +202,6 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                     라이브 종료
                   </Button>
                 )}
-
-                {/* {getLiveStatus(product?.auctionStatus) === "CLOSE" && } */}
               </>
             )}
 

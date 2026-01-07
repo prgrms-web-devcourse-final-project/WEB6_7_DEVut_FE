@@ -16,6 +16,7 @@ interface ProductBase {
   image: string;
   currentPrice: number;
   auctionStatus: AuctionStatus;
+  isLiked: boolean;
 }
 
 // 통합 검색 파람스 타입
@@ -67,6 +68,7 @@ interface ProductDetailBase {
   images: string[];
   likeCount: number;
   currentPrice: number;
+  isLiked: boolean;
 }
 
 interface LiveProductDetail extends ProductDetailBase {

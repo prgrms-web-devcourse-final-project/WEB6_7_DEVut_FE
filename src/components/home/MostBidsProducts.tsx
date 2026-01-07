@@ -21,7 +21,11 @@ export default function MostBidsProducts({ products }: { products: ProductCardTy
         </Link>
       </div>
       {!!products.length ? (
-        <PopularProductsCarousel products={products} autoplayDelay={4000} />
+        <PopularProductsCarousel
+          initialData={products}
+          autoplayDelay={4000}
+          type={"mostBidDelay"}
+        />
       ) : (
         <EmptyContainer
           title="현재 치열한 입찰이 진행 중인 상품이 없어요"

@@ -2,20 +2,15 @@
 
 import OptionDropdown from "@/components/common/OptionDropdown";
 import OrderSwitch from "@/components/common/OrderSwitch";
-import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { myPageSellCardMapping } from "@/utils/myPageCardMapping";
 import { useState } from "react";
 
-export default function SaleDetail() {
-  const { data: mySells } = useMySell();
+export default function SaleDetail({ initialData }: { initialData: ProductCardType[] }) {
+  const { data: mySells } = useMySell({ initialData });
   const [status, setStatus] = useState("전체");
-
-  const newMySells = myPageSellCardMapping({ card: mySells });
-  const sellItems = newMySells ?? [];
 
   const STATUS_MAP: Record<string, AuctionStatus | "ALL"> = {
     전체: "ALL",
@@ -25,18 +20,18 @@ export default function SaleDetail() {
     유찰: "FAILED",
   };
 
-  const filteredItems = sellItems.filter(product => {
-    if (product.status.kind !== "status") return false;
-
-    if (product.status.status === "IN_PROGRESS") return false;
-    if (product.status.status === "BEFORE_BIDDING") return false;
-
-    if (status === "전체") return true;
-
-    return product.status.status === STATUS_MAP[status];
-  });
+  const filteredItems =
+    mySells?.filter(product => {
+      if (product.status?.kind !== "status") return false;
+      if (product.status.status === "IN_PROGRESS") return false;
+      if (product.status.status === "BEFORE_BIDDING") return false;
+      if (status === "전체") return true;
+      return product.status.status === STATUS_MAP[status];
+    }) ?? [];
 
   const isEmpty = filteredItems.length === 0;
+
+  console.log("filteredItems", filteredItems);
 
   return (
     <div className="mt-10">
@@ -65,8 +60,8 @@ export default function SaleDetail() {
             <p className="text-title-main text-lg font-bold">판매 이력이 없습니다</p>
           </div>
         ) : (
-          filteredItems.map((product, index) => (
-            <ProductCard key={index} context="MY_SELLING" product={product} />
+          filteredItems.map(product => (
+            <ProductCard key={product.uid} context="MY_SELLING" product={product} />
           ))
         )}
       </ProductsGrid>
