@@ -11,11 +11,20 @@ interface SideBarItemProps {
   src: StaticImport;
   path: string;
   badgeCount?: number;
+  // 숫자 대신 단순 빨간 점만 표시하고 싶을 때 사용
+  hasDot?: boolean;
   label: string;
   onClose?: () => void;
 }
 
-export default function SideBarItem({ src, path, badgeCount, label, onClose }: SideBarItemProps) {
+export default function SideBarItem({
+  src,
+  path,
+  badgeCount,
+  hasDot,
+  label,
+  onClose,
+}: SideBarItemProps) {
   const pathname = usePathname();
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
@@ -36,11 +45,15 @@ export default function SideBarItem({ src, path, badgeCount, label, onClose }: S
           )}
         >
           <Image src={src} alt={path} width={22} height={22} />
-          {typeof badgeCount === "number" && badgeCount > 0 && (
+          {(typeof badgeCount === "number" && badgeCount > 0) || hasDot ? (
             <span className="bg-custom-red absolute -top-2 -right-2 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-xs leading-none font-bold text-white">
-              {badgeCount > 99 ? "99+" : badgeCount}
+              {typeof badgeCount === "number" && badgeCount > 0
+                ? badgeCount > 99
+                  ? "99+"
+                  : badgeCount
+                : null}
             </span>
-          )}
+          ) : null}
         </div>
       </Link>
 

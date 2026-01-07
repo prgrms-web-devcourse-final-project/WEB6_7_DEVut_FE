@@ -3,7 +3,7 @@ import ClientApi from "@/lib/clientApi";
 export const createWithdrawal = async (
   payload: CreateWithdrawalRequest
 ): Promise<CreateWithdrawalResponse> => {
-  const res = await ClientApi<CreateWithdrawalResponse>("/wallets/withdrawal", {
+  const res = await ClientApi<CreateWithdrawalResponse>("/wallet/withdrawal", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -15,14 +15,10 @@ export const createWithdrawal = async (
   return res.data;
 };
 
-export const historyWithdrawals = async (): Promise<HistoryWithdrawalsResponse> => {
-  const res = await ClientApi<HistoryWithdrawalsResponse>("/admin/withdrawals", {
+export const historyWithdrawals = async (): Promise<HistoryWalletsResponse> => {
+  const res = await ClientApi<HistoryWalletsResponse>("/wallet/histories", {
     method: "GET",
   });
-
-  if (res.resultCode === "W002") {
-    throw new Error(res.msg);
-  }
 
   return res.data;
 };

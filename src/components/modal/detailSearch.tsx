@@ -12,11 +12,17 @@ import { useState } from "react";
 
 interface DetailSearchProps {
   onClose: () => void;
-  onSearch: (detailParams: GetProductsParams) => void;
+  onSearch: (detailParams: GetProductsAllParams) => void;
   isSelling: boolean;
+  auctionType: AuctionType;
 }
 
-export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSearchProps) {
+export default function DetailSearch({
+  onClose,
+  onSearch,
+  isSelling,
+  auctionType,
+}: DetailSearchProps) {
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryKey | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 300000]);
@@ -24,13 +30,14 @@ export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSea
 
   const handleSearch = () => {
     onSearch({
-      name: searchText || "",
+      keyword: searchText || "",
       category: category || undefined,
-      minBidPrice: minPrice,
-      maxBidPrice: maxPrice,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
       page: 1,
       size: 15,
       isSelling,
+      type: auctionType,
     });
     onClose();
   };
@@ -47,7 +54,6 @@ export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSea
               placeholder="상품명을 입력해주세요"
               className="pr-25"
               value={searchText}
-              maxLength={20}
               onChange={e => setSearchText(e.target.value)}
               onKeyDown={e => {
                 if (e.key === "Enter") {
@@ -83,9 +89,9 @@ export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSea
             </ContentContainer>
           </div>
 
-          <div>
+          <div className="mb-10">
             <p className="text-border-main mb-6 text-[20px]">입찰가</p>
-            <div className="flex min-h-[58px] gap-20">
+            <div className="flex min-h-[58px] gap-5 md:gap-20">
               <PriceInput
                 placeholder="최소 금액"
                 value={minPrice}
@@ -101,11 +107,6 @@ export default function DetailSearch({ onClose, onSearch, isSelling }: DetailSea
               />
             </div>
             <PriceSlider value={priceRange} onChange={setPriceRange} />
-          </div>
-
-          <div>
-            <p className="text-border-main mb-6 text-[20px]">옵션</p>
-            <OptionCheckbox />
           </div>
 
           <Button

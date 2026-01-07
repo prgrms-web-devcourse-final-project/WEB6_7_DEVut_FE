@@ -1,9 +1,10 @@
+// "use client";
+
 import MessageClient from "@/components/message/MessageClient";
 
-export default async function MessagePage() {
-  // fetching
+export default function MessagePage() {
   return (
-    <div className="relative mx-auto flex min-h-screen w-full">
+    <div className="relative mx-auto flex h-screen max-h-screen min-h-0 w-full overflow-hidden">
       <MessageClient />
     </div>
   );

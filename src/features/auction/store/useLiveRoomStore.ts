@@ -8,11 +8,12 @@ interface LiveRoomState {
   setActiveAuctionId: (id: number) => void;
   addSubscribedAuctionId: (id: number) => void;
   setChatRoomId: (auctionId: number, chatRoomId: string) => void;
+  removeSubscribedAuctionId: (auctionId: number) => void;
 }
 
 export const useLiveRoomStore = create<LiveRoomState>(set => ({
-  activeAuctionId: 1,
-  subscribedAuctionIds: [1, 3],
+  activeAuctionId: null,
+  subscribedAuctionIds: [],
   chatRoomIds: {},
 
   setActiveAuctionId: id => set({ activeAuctionId: id }),
@@ -28,4 +29,21 @@ export const useLiveRoomStore = create<LiveRoomState>(set => ({
     set(state => ({
       chatRoomIds: { ...state.chatRoomIds, [auctionId]: chatRoomId },
     })),
+
+  removeSubscribedAuctionId: (auctionId: number) =>
+    set(state => {
+      const nextSubscribed = state.subscribedAuctionIds.filter(id => id !== auctionId);
+      const { [auctionId]: _, ...nextChatRoomIds } = state.chatRoomIds;
+      let nextActiveAuctionId = state.activeAuctionId;
+
+      if (state.activeAuctionId === auctionId) {
+        nextActiveAuctionId = nextSubscribed[0] ?? null;
+      }
+
+      return {
+        subscribedAuctionIds: nextSubscribed,
+        chatRoomIds: nextChatRoomIds,
+        activeAuctionId: nextActiveAuctionId,
+      };
+    }),
 }));

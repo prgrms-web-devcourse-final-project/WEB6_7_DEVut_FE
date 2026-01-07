@@ -4,6 +4,9 @@ type UpdateMePayload = {
   email: string;
   nickname: string;
   image: string | null;
+  address: string | null;
+  addressDetail: string | null;
+  postalCode: string | null;
 };
 
 export const updateMe = async (payload: UpdateMePayload) => {
@@ -13,6 +16,9 @@ export const updateMe = async (payload: UpdateMePayload) => {
     nickname: string;
     image: string | null;
     modifyDate: string;
+    address: string | null;
+    addressDetail: string | null;
+    postalCode: string | null;
   }>("/users/me", {
     method: "PATCH",
     body: JSON.stringify(payload),

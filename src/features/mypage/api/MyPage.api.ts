@@ -1,4 +1,8 @@
 import ClientApi from "@/lib/clientApi";
+import {
+  myPageCurrentPurchaseCardMapping,
+  myPagePurchaseCardMapping,
+} from "@/utils/myPagePurchaseCardMapping";
 
 export const myWish = async (): Promise<MyWishResponse> => {
   const res = await ClientApi<MyWishResponse>("/users/me/likes", {
@@ -24,7 +28,7 @@ export const mySell = async (): Promise<MySellResponse> => {
   return res.data;
 };
 
-export const myPurchase = async (): Promise<MyPurchasesResponse> => {
+export const myPurchase = async () => {
   const res = await ClientApi<MyPurchasesResponse>("/users/me/deals", {
     method: "GET",
   });
@@ -33,5 +37,17 @@ export const myPurchase = async (): Promise<MyPurchasesResponse> => {
     throw new Error(res.msg);
   }
 
-  return res.data;
+  return res.data.items.map(myPagePurchaseCardMapping);
+};
+
+export const myCurrentPurchase = async () => {
+  const res = await ClientApi<MyCurrentPurchasesResponse>("/users/me/biditems", {
+    method: "GET",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data.delayedItems.map(myPageCurrentPurchaseCardMapping);
 };
