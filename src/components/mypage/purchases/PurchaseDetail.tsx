@@ -61,7 +61,7 @@ export default function PurchaseDetail({ initialData }: { initialData?: ProductC
           </div>
         ) : (
           filteredItems.map(product => (
-            <ProductCard context="MY_BUYING" key={product.id} product={product} />
+            <ProductCard context="MY_BUYING" key={product.uid} product={product} />
           ))
         )}
       </ProductsGrid>
