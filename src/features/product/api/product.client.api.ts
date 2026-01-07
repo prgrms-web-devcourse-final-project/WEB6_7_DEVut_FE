@@ -53,3 +53,27 @@ export const getDelayProduct = async (productId: number) => {
 
   return { ...res.data, type: "DELAYED" } as DelayProductDetail;
 };
+
+export const LiveHotProducts = async () => {
+  const res = await ClientApi<LiveProductResponse>(`/auction/live/hot`, {
+    method: "GET",
+  });
+
+  return res.data.liveItems.map(mapLiveProductToCard);
+};
+
+export const DelayHotProducts = async () => {
+  const res = await ClientApi<DelayProductResponse>(`/auction/delayed/hot`, {
+    method: "GET",
+  });
+
+  return res.data.delayedItems.map(mapDelayedProductToCard);
+};
+
+export const DelayMostBidsProducts = async () => {
+  const res = await ClientApi<DelayProductResponse>(`/auction/delayed/most-bidded`, {
+    method: "GET",
+  });
+
+  return res.data.delayedItems.map(mapDelayedProductToCard);
+};

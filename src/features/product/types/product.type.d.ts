@@ -68,6 +68,7 @@ interface ProductDetailBase {
   images: string[];
   likeCount: number;
   currentPrice: number;
+  isLiked: boolean;
 }
 
 interface LiveProductDetail extends ProductDetailBase {

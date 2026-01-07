@@ -11,7 +11,15 @@ type ProductCard = WishableItem & {
   uid: string;
 };
 
-const TARGET_KEYS = ["delayedProducts", "liveProducts", "my-sell", "my-purchase"];
+const TARGET_KEYS = [
+  "delayedProducts",
+  "liveProducts",
+  "my-sell",
+  "my-purchase",
+  "hot-liveProducts",
+  "hot-delayedProducts",
+  "mostBid-delayedProducts",
+];
 
 // 🔹 공통 updater
 const toggleWishUpdater = (id: number, type: "LIVE" | "DELAYED") => (old: unknown) => {

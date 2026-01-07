@@ -21,7 +21,7 @@ export default function DelayPopularProducts({ products }: { products: ProductCa
         </Link>
       </div>
       {!!products.length ? (
-        <PopularProductsCarousel products={products} autoplayDelay={5000} />
+        <PopularProductsCarousel initialData={products} autoplayDelay={5000} type={"delayHot"} />
       ) : (
         <EmptyContainer
           title="지금은 찜한 사람이 많은 상품이 없어요"
