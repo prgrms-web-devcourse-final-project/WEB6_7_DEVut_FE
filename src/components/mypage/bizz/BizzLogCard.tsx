@@ -2,15 +2,51 @@ import { formatPaymentDate } from "@/utils/formatDate";
 
 export default function BizzLogCard({ log }: { log: BizzLogItem }) {
   const isWithdraw = log.transactionType === "WITHDRAW";
+  const isCharge = log.transactionType === "CHARGE";
+  const isPayToUser = log.transactionType === "PAY_TO_USER";
+  const isBid = log.transactionType === "BID";
   return (
     <div className="text-border-sub2 shadow-flat-light grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg bg-white px-4 py-2 text-center">
-      <div className={isWithdraw ? "text-red-500" : "text-green-600"}>
-        {log.transactionType === "CHARGE" ? "충전" : "출금"}
+      <div
+        className={
+          isWithdraw
+            ? "text-red-500"
+            : isCharge
+              ? "text-custom-blue"
+              : isPayToUser
+                ? "text-orange-500"
+                : isBid
+                  ? "text-yellow-500"
+                  : "text-green-600"
+        }
+      >
+        {log.transactionType === "CHARGE"
+          ? "충전"
+          : log.transactionType === "BID"
+            ? "입찰"
+            : log.transactionType === "PAY_TO_USER"
+              ? "구매"
+              : log.transactionType === "RECEIVE_FROM_USER" ||
+                  log.transactionType === "DEAL_SETTLEMENT"
+                ? "판매"
+                : "출금"}
       </div>
 
       <div>{formatPaymentDate(log.transactionDate)}</div>
 
-      <div className={isWithdraw ? "text-red-500" : "text-green-600"}>
+      <div
+        className={
+          isWithdraw
+            ? "text-red-500"
+            : isCharge
+              ? "text-custom-blue"
+              : isPayToUser
+                ? "text-orange-500"
+                : isBid
+                  ? "text-yellow-500"
+                  : "text-green-600"
+        }
+      >
         {log.amount.toLocaleString("ko-KR")} Bizz
       </div>
 
