@@ -1,7 +1,6 @@
 "use client";
 
 import OptionDropdown from "@/components/common/OptionDropdown";
-import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
