@@ -10,6 +10,7 @@ interface Sell {
   wish: boolean;
   image: string;
   createdAt: string;
+  dealId: number | null;
 }
 
 interface MySellResponse {

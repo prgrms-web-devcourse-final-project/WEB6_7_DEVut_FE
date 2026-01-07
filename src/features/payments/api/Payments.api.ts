@@ -45,3 +45,15 @@ export const historyPayments = async (): Promise<HistoryPaymentsResponse> => {
 
   return res.data;
 };
+
+export const payBalance = async (dealId: string) => {
+  const res = await ClientApi(`/users/me/deals/live/${dealId}/payment`, {
+    method: "POST",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};
