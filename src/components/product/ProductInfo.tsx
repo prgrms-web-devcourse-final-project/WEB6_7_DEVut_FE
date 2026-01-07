@@ -186,7 +186,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   </Button>
                 )}
 
-                {getLiveEnterStatus(product?.liveTime) === "ONGOING" ? (
+                {getLiveEnterStatus(product?.liveTime) === "ONGOING" && (
                   <Button
                     onClick={() => {
                       addSubscribedAuctionId(product.auctionRoomId);
@@ -197,7 +197,9 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   >
                     라이브 입장하기
                   </Button>
-                ) : (
+                )}
+
+                {getLiveStatus(product?.auctionStatus) === "CLOSE" && (
                   <Button className="flex-1" disabled>
                     라이브 종료
                   </Button>
