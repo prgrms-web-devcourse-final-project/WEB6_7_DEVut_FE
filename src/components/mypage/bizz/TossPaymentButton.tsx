@@ -69,11 +69,14 @@ export default function TossPaymentButton({
   return (
     <>
       <div className="flex flex-row gap-3">
-        <Button className="bg-custom-blue h-9 w-full text-white md:w-22" onClick={requestPayment}>
+        <Button
+          className="bg-custom-blue max-h-9 w-full text-white md:w-22"
+          onClick={requestPayment}
+        >
           충전
         </Button>
 
-        <Button className="bg-custom-red h-9 w-full text-white md:w-22" onClick={onClick}>
+        <Button className="bg-custom-red max-h-9 w-full text-white md:w-22" onClick={onClick}>
           출금
         </Button>
       </div>

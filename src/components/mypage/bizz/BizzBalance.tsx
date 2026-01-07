@@ -7,10 +7,12 @@ import { useState } from "react";
 import TossPaymentButton from "./TossPaymentButton";
 import PriceInput from "@/components/common/PriceInput";
 import CreateWithdrawal from "@/components/modal/CreateWithdrawal";
+import { useMyWallet } from "@/features/payments/hooks/useMyWallet";
 
 export default function BizzBalance() {
   const [open, setOpen] = useState(false);
   const { data: user } = useMe();
+  const { data } = useMyWallet();
 
   const [chargeBizz, setChargeBizz] = useState<number>(0);
 
@@ -23,7 +25,7 @@ export default function BizzBalance() {
         <span className="text-2xl font-bold">잔액</span>
 
         <ContentContainer className="border-border-sub/20 shadow-flat-light flex min-h-[120px] items-center px-4 py-3">
-          <BizzAmount amount={user?.bizz ?? 0} fontSize="xl" iconSize="xl" />
+          <BizzAmount amount={data?.bizz ?? 0} fontSize="xl" iconSize="xl" />
         </ContentContainer>
       </div>
 

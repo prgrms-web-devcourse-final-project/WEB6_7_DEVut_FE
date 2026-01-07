@@ -28,6 +28,7 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
           <OptionDropdown.Item onClick={() => setStatus("출금")}>출금</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("구매")}>구매</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("판매")}>판매</OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("입찰")}>입찰</OptionDropdown.Item>
         </OptionDropdown>
       )}
       <div className="border-border-sub2 text-border-sub2 bg-content-gray mt-3 grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg border-2 px-4 py-2 text-center font-bold">
@@ -47,9 +48,25 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
           logs
             .filter(log => log.transactionType === "CHARGE")
             .map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : (
+        ) : status === "출금" ? (
           logs
             .filter(log => log.transactionType === "WITHDRAW")
+            .map(log => <BizzLogCard key={log.index} log={log} />)
+        ) : status === "판매" ? (
+          logs
+            .filter(
+              log =>
+                log.transactionType === "RECEIVE_FROM_USER" ||
+                log.transactionType === "DEAL_SETTLEMENT"
+            )
+            .map(log => <BizzLogCard key={log.index} log={log} />)
+        ) : status === "입찰" ? (
+          logs
+            .filter(log => log.transactionType === "BID")
+            .map(log => <BizzLogCard key={log.index} log={log} />)
+        ) : (
+          logs
+            .filter(log => log.transactionType === "PAY_TO_USER")
             .map(log => <BizzLogCard key={log.index} log={log} />)
         )}
       </div>
