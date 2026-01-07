@@ -54,6 +54,7 @@ interface LiveAuctionState {
 // 경매방 입장 시 구독 id 반환 DTO
 interface EnterChatRoomResponse {
   chatRoomId: number;
+  participantCount: number;
 }
 
 // 경매방 상품 목록 DTO

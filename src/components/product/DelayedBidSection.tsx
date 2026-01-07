@@ -4,6 +4,7 @@ import Toast from "../common/Toast";
 import { BiddingSectionModal } from "./BiddingSectionModal";
 
 interface DelayedBidSectionProps {
+  me: User | null;
   productId: number;
   isOpen: boolean;
   modalToggle: (bool: boolean) => void;
@@ -11,6 +12,7 @@ interface DelayedBidSectionProps {
 }
 
 export default function DelayedBidSection({
+  me,
   productId,
   isOpen,
   modalToggle,
@@ -21,13 +23,19 @@ export default function DelayedBidSection({
   const { mutate: bid, isPending } = useBidDelayProduct(productId);
 
   const handleConfirmBid = (bidPrice: BidDelayProductRequest) => {
+    if (!me) {
+      notify("로그인을 해주세요!", "ERROR");
+      modalToggle(false);
+      return;
+    }
+
     bid(bidPrice, {
       onSuccess: () => {
-        modalToggle(true);
+        modalToggle(false);
         notify("입찰을 성공하였습니다!", "SUCCESS");
       },
       onError: (error: unknown) => {
-        modalToggle(true);
+        modalToggle(false);
         const { msg } = error as ResponseBase;
         notify(msg, "ERROR");
       },

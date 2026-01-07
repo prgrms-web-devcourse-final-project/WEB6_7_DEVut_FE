@@ -14,10 +14,14 @@ export function formatMMSS(totalSeconds: number) {
 // 라이브 경매방 전용
 export const formatRemainingTime = (remainingMs: number | null | undefined) => {
   if (remainingMs == null || remainingMs <= 0) {
-    return "--분 --초";
+    return "--";
   }
 
   const totalSeconds = Math.floor(remainingMs / 1000);
+  if (totalSeconds < 60) {
+    return `${totalSeconds}초`;
+  }
+
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
 

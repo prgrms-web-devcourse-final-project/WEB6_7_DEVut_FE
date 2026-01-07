@@ -5,7 +5,9 @@ export const enterChatRoom = async (auctionId: number) => {
     method: "PUT",
   });
 
-  return res.data;
+  console.log("첫접속: ", res.data.participantCount);
+
+  return { ...res.data };
 };
 
 export const getLiveRoomProducts = async (roomId: number) => {

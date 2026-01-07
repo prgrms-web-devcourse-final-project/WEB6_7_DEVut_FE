@@ -89,3 +89,4 @@ export function isNowCell(day: Date): boolean {
   const end = getAuctionTimeKey(day);
   return now === end;
 }
+

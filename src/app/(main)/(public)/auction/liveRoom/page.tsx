@@ -36,6 +36,7 @@ export default function LiveAuctionRoomPage() {
     unsubscribeChatRoom,
     messagesByRoom,
     participantsByAuction,
+    setInitialParticipants,
   } = useSocketStore();
 
   const current = useMemo(() => {
@@ -71,8 +72,10 @@ export default function LiveAuctionRoomPage() {
         return;
       }
 
-      const { chatRoomId } = await enterChatRoom(auctionId);
+      const { chatRoomId, participantCount } = await enterChatRoom(auctionId);
       const chatIdStr = chatRoomId.toString();
+
+      setInitialParticipants(auctionId, participantCount);
 
       setChatRoomId(auctionId, chatIdStr);
       subscribeChatRoom(chatIdStr, auctionId);
@@ -82,6 +85,7 @@ export default function LiveAuctionRoomPage() {
       chatRoomIds,
       setActiveAuctionId,
       setChatRoomId,
+      setInitialParticipants,
       subscribeChatRoom,
       subscribedAuctionIds,
     ]
