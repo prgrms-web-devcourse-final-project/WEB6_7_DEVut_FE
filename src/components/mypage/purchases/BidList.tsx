@@ -5,14 +5,13 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMyCurrentPurchase } from "@/features/mypage/hooks/useMyCurrentPurchase";
-import { productCardMock_DELAYED } from "@/features/product/mock/productCard.delayed.mock";
 import { useEffect, useState } from "react";
 
 export default function BidList({ initialData }: { initialData?: ProductCardType[] }) {
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(2);
 
-  const { data: purchaseData } = useMyCurrentPurchase({ initialData });
+  const { data: purchaseData = [] } = useMyCurrentPurchase({ initialData });
   const isEmpty = !purchaseData || purchaseData.length === 0;
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function BidList({ initialData }: { initialData?: ProductCardType
           )}
         </ProductsGrid>
 
-        {productCardMock_DELAYED.length > visibleCount && (
+        {shownProducts?.length > visibleCount && (
           <div className="mt-4 flex justify-end">
             <button
               onClick={() => setExpanded(prev => !prev)}

@@ -5,7 +5,6 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
 import { useMySell } from "@/features/mypage/hooks/useMySell";
-import { productCardMock_LIVE } from "@/features/product/mock/productCard.live.mock";
 import { useEffect, useState } from "react";
 
 export default function SaleList({ initialData }: { initialData: ProductCardType[] | undefined }) {
@@ -60,7 +59,7 @@ export default function SaleList({ initialData }: { initialData: ProductCardType
           )}
         </ProductsGrid>
 
-        {productCardMock_LIVE.length > visibleCount && (
+        {shownProducts.length > visibleCount && (
           <div className="mt-4 flex justify-end">
             <button
               onClick={() => setExpanded(prev => !prev)}
