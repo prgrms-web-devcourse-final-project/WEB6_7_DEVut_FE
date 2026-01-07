@@ -60,13 +60,14 @@ export default function ProductCard({
             {((context === "MY_BUYING" && product.status?.kind === "status") ||
               (context === "MY_SELLING" && product.status?.kind === "status")) &&
             product.status?.kind === "status" &&
-            product.status?.status !== "BEFORE_BIDDING" ? (
+            product.status?.status !== "BEFORE_BIDDING" &&
+            product.status?.status !== "FAILED" ? (
               <Button
                 className="h-full px-3 py-1 text-[12px]"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
-                  router.replace(`/trade/${product.id}`);
+                  router.replace(`/trade/${product.type.toLowerCase()}/${product.dealId}`);
                 }}
               >
                 거래 상세

@@ -254,7 +254,7 @@ export default function WeeklySchedule({ isWriteMode = false, onRoomSelect }: We
           className="max-w-[1200px]"
         >
           <AuctionPage
-            startAt={selectedSlot || ""}
+            startAt={selectedSlot}
             writeMode={isWriteMode}
             onRoomSelect={roomIndex => {
               if (onRoomSelect && selectedSlot) {

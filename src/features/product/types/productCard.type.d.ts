@@ -1,5 +1,6 @@
 interface ProductCardType {
   uid: string;
+  dealId?: number | null;
   id: number;
   title: string;
   amount: number;
