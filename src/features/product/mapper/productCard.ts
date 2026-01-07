@@ -1,13 +1,16 @@
 import delayBadge from "@/assets/common/delayBadge.svg";
 import liveBadge from "@/assets/common/liveBadge.svg";
 export const mapLiveProductToCard = (item: LiveProduct): ProductCardType => {
+  const uid = `${item.type}-${item.id}`;
   const base = {
+    uid,
     id: item.id,
     title: item.name,
     amount: item.currentPrice,
     image: item.image,
     href: `/product/live/${item.id}`,
     type: "LIVE" as AuctionType,
+    isWish: item.isLiked,
   };
 
   if (item.auctionStatus === "BEFORE_BIDDING") {
@@ -43,7 +46,9 @@ export const mapLiveProductToCard = (item: LiveProduct): ProductCardType => {
 };
 
 export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => {
+  const uid = `${item.type}-${item.id}`;
   const base = {
+    uid,
     id: item.id,
     title: item.name,
     amount: item.currentPrice,
@@ -51,6 +56,7 @@ export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => 
     badge: { image: delayBadge, alt: "일반 경매" },
     href: `/product/${item.id}`,
     type: "DELAYED" as AuctionType,
+    isWish: item.isLiked,
   };
 
   switch (item.auctionStatus) {
@@ -77,8 +83,9 @@ export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => 
 
 export const mapAuctionItemToCard = (item: ProductAll): ProductCardType => {
   const isLive = item.auctionType === "LIVE";
-
+  const uid = `${item.auctionType}-${item.id}`;
   const base: ProductCardType = {
+    uid,
     id: item.id,
     title: item.itemName,
     amount: item.currentPrice,
@@ -88,6 +95,7 @@ export const mapAuctionItemToCard = (item: ProductAll): ProductCardType => {
     badge: isLive
       ? { image: liveBadge, alt: "라이브 경매" }
       : { image: delayBadge, alt: "일반 경매" },
+    isWish: item.isLiked,
   };
 
   if (isLive) {

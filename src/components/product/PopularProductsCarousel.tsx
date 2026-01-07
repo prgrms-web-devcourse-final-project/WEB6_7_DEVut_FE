@@ -5,16 +5,38 @@ import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useMemo, useState } from "react";
 import ContentContainer from "@/components/common/ContentContainer";
 import ProductCard from "@/components/common/ProductCard";
+import { useLiveHotProducts } from "@/features/product/hooks/useLiveHotProducts";
+import { useDelayedHotProducts } from "@/features/product/hooks/useDelayedHotProducts";
+import { useDelayedMostBidsProducts } from "@/features/product/hooks/useDelayedMostBidsProducts";
 
 interface PopularProductsCarouselProps {
-  products: ProductCardType[];
+  initialData: ProductCardType[];
   autoplayDelay?: number;
+  type: "liveHot" | "delayHot" | "mostBidDelay";
 }
 
 export default function PopularProductsCarousel({
-  products,
+  initialData,
   autoplayDelay = 4000,
+  type,
 }: PopularProductsCarouselProps) {
+  const liveQuery = useLiveHotProducts({ initialData });
+  const delayHotQuery = useDelayedHotProducts({ initialData });
+  const mostBidQuery = useDelayedMostBidsProducts({ initialData });
+
+  const products = useMemo<ProductCardType[]>(() => {
+    switch (type) {
+      case "liveHot":
+        return liveQuery.data ?? [];
+      case "delayHot":
+        return delayHotQuery.data ?? [];
+      case "mostBidDelay":
+        return mostBidQuery.data ?? [];
+      default:
+        return [];
+    }
+  }, [type, liveQuery.data, delayHotQuery.data, mostBidQuery.data]);
+
   const isCarousel = products.length > 3;
 
   const [emblaRef, emblaApi] = useEmblaCarousel(

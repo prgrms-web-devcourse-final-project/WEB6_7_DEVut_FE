@@ -4,12 +4,10 @@ import ProductsGrid from "@/components/common/ProductsGrid";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
 import { useMyWish } from "@/features/mypage/hooks/useMyWish";
-import { myPageCardMapping } from "@/utils/myPageCardMapping";
 
-export default function MyWish() {
-  const { data: myWish } = useMyWish();
-  const newMyWish = myPageCardMapping({ card: myWish });
-  const isEmpty = !newMyWish || newMyWish.length === 0;
+export default function MyWish({ initialData }: { initialData?: ProductCardType[] }) {
+  const { data: myWish } = useMyWish({ initialData });
+  const isEmpty = !myWish || myWish.length === 0;
 
   return (
     <>
@@ -28,8 +26,8 @@ export default function MyWish() {
               </p>
             </div>
           ) : (
-            newMyWish?.map(product => (
-              <ProductCard context="CARD" key={product.id} product={product} />
+            myWish?.map(product => (
+              <ProductCard context="CARD" key={product.uid} product={product} />
             ))
           )}
         </ProductsGrid>

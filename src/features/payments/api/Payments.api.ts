@@ -32,11 +32,23 @@ export const historyPayments = async (): Promise<HistoryPaymentsResponse> => {
     method: "GET",
     params: {
       startDate: "2025-12-01",
-      endDate: "2026-01-10",
+      endDate: "2026-01-15",
       PaymentStatus: "SUCCESS",
       page: 0,
       size: 20,
     },
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};
+
+export const payBalance = async (dealId: string) => {
+  const res = await ClientApi(`/users/me/deals/live/${dealId}/payment`, {
+    method: "POST",
   });
 
   if (res.resultCode !== "200") {

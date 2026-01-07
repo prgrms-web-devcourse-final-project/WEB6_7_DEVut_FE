@@ -3,12 +3,13 @@ interface LiveRoomItem {
   title: string;
   amount: number;
   image: string;
+  isLiked: boolean;
 }
 
 interface LiveRoom {
   roomId: number;
   roomIndex: number;
-  status: string;
+  status: "SCHEDULED" | "LIVE" | "ENDED";
   itemCount: number;
   items: LiveRoomItem[];
 }

@@ -6,7 +6,7 @@ interface LiveRoomListProps {
   rooms: LiveRoom[];
   onRoomClick?: (room: LiveRoom) => void;
   onFocusedRoomChange?: (room: LiveRoom) => void;
-  startAt?: string;
+  startAt?: string | null;
 }
 
 export default function LiveRoomList({
@@ -48,7 +48,7 @@ export default function LiveRoomList({
       setFocusedIndex={setFocusedIndex}
       onRoomClick={onRoomClick}
       isMobile={isMobile}
-      startAt={startAt}
+      startAt={startAt || null}
     />
   );
 }
