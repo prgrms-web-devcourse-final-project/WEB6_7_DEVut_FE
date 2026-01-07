@@ -59,9 +59,11 @@ export default function LiveRoomCarousel({
         onSelect(currentRoom);
       }
     }
-    addSubscribedAuctionId(currentRoom.roomId);
-    setActiveAuctionId(currentRoom.roomId);
-    route.push("/auction/liveRoom");
+    if (!onSelect) {
+      addSubscribedAuctionId(currentRoom.roomId);
+      setActiveAuctionId(currentRoom.roomId);
+      route.push("/auction/liveRoom");
+    }
   };
 
   return (

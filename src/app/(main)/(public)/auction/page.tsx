@@ -108,9 +108,9 @@ export default function AuctionPage({
                 onSelect={room => {
                   if (onRoomSelect) {
                     onRoomSelect(room.roomIndex);
+                    console.log("Selected room:", room);
+                    alert(`Room ${room.roomIndex} selected!`);
                   }
-                  console.log("Selected room:", room);
-                  alert(`Room ${room.roomIndex} selected!`);
                 }}
                 onRoomClick={room => {
                   if (room && room.roomId >= 0) {
