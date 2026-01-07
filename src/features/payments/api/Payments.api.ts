@@ -57,3 +57,15 @@ export const payBalance = async (dealId: string) => {
 
   return res.data;
 };
+
+export const myWallet = async (): Promise<{ bizz: number }> => {
+  const res = await ClientApi<{ bizz: number }>("/wallet/bizz", {
+    method: "GET",
+  });
+
+  if (res.resultCode !== "200") {
+    throw new Error(res.msg);
+  }
+
+  return res.data;
+};

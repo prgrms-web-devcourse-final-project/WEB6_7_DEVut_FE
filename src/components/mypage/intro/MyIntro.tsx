@@ -150,30 +150,33 @@ export default function MyIntro() {
             )}
           </div>
           <Button
-            className="bg-custom-red h-10 w-full text-lg font-bold text-white"
+            className="bg-custom-red max-h-10 w-full text-lg font-bold text-white"
             onClick={handleSignOut}
           >
             {signOutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
           </Button>
-          <Button className="bg-custom-orange h-10 w-full border-white text-lg font-bold text-white">
+          {/* <Button className="bg-custom-orange h-10 w-full border-white text-lg font-bold text-white">
             회원탈퇴
-          </Button>
+          </Button> */}
         </div>
 
-        <div className="text-title-main flex min-h-[280px] w-full flex-col justify-center gap-7 text-sm font-bold md:flex-1 md:text-lg">
+        <div className="text-title-main mt-8 flex min-h-[280px] w-full flex-col justify-center gap-7 text-sm font-bold md:flex-1 md:text-lg">
           {inputFields.map(({ label, value, setValue }) => (
-            <div key={label} className="flex">
-              <span className={`w-20 shrink-0 md:w-[100px]`}>{label}</span>
+            <div key={label} className="flex items-center">
+              {/* 라벨 */}
+              <span className="flex h-10 w-20 shrink-0 items-center md:w-[100px]">{label}</span>
+
+              {/* 값 영역 */}
               {onEdit ? (
                 <Input
-                  placeholder="입력해주세요"
+                  placeholder={`${label}를 입력해주세요`}
                   value={value}
                   onChange={e => setValue(e.target.value)}
                   className="h-10 flex-1 md:max-w-[60%]"
                 />
               ) : (
                 <span className="flex h-10 flex-1 items-center px-4 font-normal md:max-w-[60%]">
-                  {value}
+                  {value ? value : `${label}를 입력해주세요.`}
                 </span>
               )}
             </div>
@@ -181,17 +184,17 @@ export default function MyIntro() {
         </div>
       </div>
 
-      <div className="mx-auto mb-5 flex w-[95%] justify-end gap-3">
+      <div className="mx-auto mt-5 mb-5 flex w-[95%] justify-end gap-3">
         {onEdit && (
           <Button
-            className="bg-custom-red h-10 w-full text-white md:w-auto"
+            className="bg-custom-red max-h-10 w-full text-white md:w-auto"
             onClick={() => setOnEdit(false)}
           >
             취소
           </Button>
         )}
         <Button
-          className="h-10 w-full md:w-auto"
+          className="max-h-10 w-full md:w-auto"
           onClick={handleEditClick}
           disabled={updateMeMutation.isPending || isUploading}
         >

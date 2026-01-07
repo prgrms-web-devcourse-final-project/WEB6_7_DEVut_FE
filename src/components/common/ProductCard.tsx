@@ -63,7 +63,7 @@ export default function ProductCard({
             product.status?.status !== "BEFORE_BIDDING" &&
             product.status?.status !== "FAILED" ? (
               <Button
-                className="h-full px-3 py-1 text-[12px]"
+                className="max-h-8 px-3 py-1 text-[12px]"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
