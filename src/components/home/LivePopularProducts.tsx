@@ -5,7 +5,6 @@ import Title from "../common/Title";
 import PopularProductsCarousel from "../product/PopularProductsCarousel";
 import { CirclePlay } from "lucide-react";
 import EmptyContainer from "../common/EmptyContainer";
-import Button from "../common/Button";
 
 export default function LivePopularProducts({ products }: { products: ProductCardType[] }) {
   return (
@@ -22,7 +21,7 @@ export default function LivePopularProducts({ products }: { products: ProductCar
         </Link>
       </div>
       {!!products.length ? (
-        <PopularProductsCarousel products={products} autoplayDelay={5000} />
+        <PopularProductsCarousel initialData={products} autoplayDelay={5000} type={"liveHot"} />
       ) : (
         <EmptyContainer
           title="주목을 받는 라이브 상품이 없어요"

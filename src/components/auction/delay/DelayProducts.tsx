@@ -1,6 +1,5 @@
 "use client";
 
-import OrderSwitch from "@/components/common/OrderSwitch";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
@@ -25,7 +24,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
 
   const page = Number(searchParams.get("page") ?? 1);
   const category = searchParams.get("category") as CategoryKey;
-  const [isSelling, setIsSelling] = useState(true);
+  const [isSelling, setIsSelling] = useState(false);
 
   const params: GetProductsParams = {
     page,
@@ -34,9 +33,16 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
     isSelling,
   };
 
-  const { data, isLoading, error } = useDelayedProducts(params, {
+  const {
+    data,
+    data: products,
+    isLoading,
+    error,
+  } = useDelayedProducts(params, {
     initialData: page === 1 && isSelling && !category ? initialDelayProducts : undefined,
   });
+  console.log("initial", initialDelayProducts.products[0]);
+  console.log("delay products data:", products);
 
   const updateParams = (next: { page?: number; category?: CategoryKey | null }) => {
     const sp = new URLSearchParams(searchParams.toString());
@@ -96,7 +102,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
         )}
         <ProductsGrid>
           {data?.products?.map(product => (
-            <ProductCard context="CARD" key={product.id} product={product} />
+            <ProductCard context="CARD" key={product.uid} product={product} />
           ))}
         </ProductsGrid>
         {data && <Pagination totalPages={Math.ceil(data.totalCount / params.size)} />}

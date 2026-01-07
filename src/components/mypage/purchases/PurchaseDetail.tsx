@@ -1,8 +1,6 @@
 "use client";
 
 import OptionDropdown from "@/components/common/OptionDropdown";
-import OrderSwitch from "@/components/common/OrderSwitch";
-import Pagenation from "@/components/common/Pagenation";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
@@ -63,7 +61,7 @@ export default function PurchaseDetail({ initialData }: { initialData?: ProductC
           </div>
         ) : (
           filteredItems.map(product => (
-            <ProductCard context="MY_BUYING" key={product.id} product={product} />
+            <ProductCard context="MY_BUYING" key={product.uid} product={product} />
           ))
         )}
       </ProductsGrid>
