@@ -3,6 +3,7 @@ interface LiveRoomItem {
   title: string;
   amount: number;
   image: string;
+  isLiked: boolean;
 }
 
 interface LiveRoom {
