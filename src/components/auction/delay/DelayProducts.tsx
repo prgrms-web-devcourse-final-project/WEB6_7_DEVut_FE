@@ -24,7 +24,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
 
   const page = Number(searchParams.get("page") ?? 1);
   const category = searchParams.get("category") as CategoryKey;
-  const [isSelling, setIsSelling] = useState(false);
+  const [isSelling, setIsSelling] = useState(true);
 
   const params: GetProductsParams = {
     page,
@@ -33,16 +33,9 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
     isSelling,
   };
 
-  const {
-    data,
-    data: products,
-    isLoading,
-    error,
-  } = useDelayedProducts(params, {
-    initialData: page === 1 && isSelling && !category ? initialDelayProducts : undefined,
+  const { data, isLoading, error } = useDelayedProducts(params, {
+    initialData: page === 1 && !category ? initialDelayProducts : undefined,
   });
-  console.log("initial", initialDelayProducts.products[0]);
-  console.log("delay products data:", products);
 
   const updateParams = (next: { page?: number; category?: CategoryKey | null }) => {
     const sp = new URLSearchParams(searchParams.toString());
