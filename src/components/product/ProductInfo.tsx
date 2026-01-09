@@ -20,9 +20,10 @@ import DelayedEndTimer from "./DelayedEndTimer";
 import DelayedBuyNowSection from "./DelayedBuyNowSection";
 import Link from "next/link";
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
-import { getDelayStatus, getLiveEnterStatus, getLiveStatus } from "@/utils/auction";
+import { getDelayStatus } from "@/utils/auction";
 import { useWishToggle } from "@/features/wish/hooks/useWishToggle";
 import Image from "next/image";
+import { LiveActionButton } from "./LiveActionButton";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -113,6 +114,9 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
 
             <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm lg:text-base">
               <div className="grid grid-cols-[80px_1fr] gap-x-3 gap-y-5">
+                <div className="text-title-sub">판매자</div>
+                <div className="text-title-main-dark">{product?.sellerNickname}</div>
+
                 <div className="text-title-sub">상품상태</div>
                 <div className="text-title-main-dark">
                   {statusMapping(product?.itemStatus || "NEW")}
@@ -133,7 +137,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                   <>
                     <div className="text-title-sub">시작가</div>
                     <div className="text-title-main-dark">
-                      {product?.startPrice.toLocaleString()}
+                      {`${product?.startPrice.toLocaleString()} Bizz`}
                     </div>
                   </>
                 )}
@@ -153,6 +157,9 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
                     auctionStatus={product.auctionStatus}
                   />
                 )}
+
+                <div className="text-title-sub">등록일</div>
+                <div className="text-title-main-dark">{formatDateTime(product.createdAt)}</div>
               </div>
             </div>
           </div>
@@ -178,33 +185,17 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               />
               찜
             </Button>
-            {product?.type === "LIVE" && (
-              <>
-                {getLiveEnterStatus(product?.liveTime) === "READY" && (
-                  <Button className="flex-1" disabled>
-                    라이브 준비중
-                  </Button>
-                )}
 
-                {getLiveEnterStatus(product?.liveTime) === "ONGOING" && (
-                  <Button
-                    onClick={() => {
-                      addSubscribedAuctionId(product.auctionRoomId);
-                      setActiveAuctionId(product.auctionRoomId);
-                      route.push("/auction/liveRoom");
-                    }}
-                    className="bg-custom-orange flex-1 text-white"
-                  >
-                    라이브 입장하기
-                  </Button>
-                )}
-
-                {getLiveStatus(product?.auctionStatus) === "CLOSE" && (
-                  <Button className="flex-1" disabled>
-                    라이브 종료
-                  </Button>
-                )}
-              </>
+            {isLive && (
+              <LiveActionButton
+                auctionStatus={product.auctionStatus}
+                onEnter={() => {
+                  addSubscribedAuctionId(product.auctionRoomId);
+                  setActiveAuctionId(product.auctionRoomId);
+                  route.push("/auction/liveRoom");
+                }}
+                liveTime={product.liveTime}
+              />
             )}
 
             <Activity mode={me?.id === sellerId ? "hidden" : "visible"}>
