@@ -22,7 +22,6 @@ export default async function AuctionDelayPage({
   };
 
   const initialDelayProducts = await getDelayedProducts(params);
-  console.log(initialDelayProducts);
   return (
     <>
       <PageTabArea items={auctionItems} />

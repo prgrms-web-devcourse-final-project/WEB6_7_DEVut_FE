@@ -34,7 +34,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
   };
 
   const { data, isLoading, error } = useDelayedProducts(params, {
-    initialData: page === 1 && !category ? initialDelayProducts : undefined,
+    initialData: page === 1 && isSelling && !category ? initialDelayProducts : undefined,
   });
 
   const updateParams = (next: { page?: number; category?: CategoryKey | null }) => {
