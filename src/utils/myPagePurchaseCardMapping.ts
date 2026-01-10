@@ -11,7 +11,7 @@ export const myPagePurchaseCardMapping = (item: Purchase) => {
     title: item.itemName,
     amount: item.winningPrice,
     image: item.image,
-    href: item.type === "DELAYED" ? `/product/${item.id}` : `/product/live/${item.id}`,
+    href: item.type === "DELAYED" ? `/product/${item.itemId}` : `/product/live/${item.itemId}`,
     isWish: item.wish,
     badge: {
       image: item.type === "DELAYED" ? delayBadge : liveBadge,

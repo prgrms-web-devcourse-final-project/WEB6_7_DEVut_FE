@@ -44,7 +44,7 @@ export const myPageSellCardMapping = (item: Sell) => {
     dealId: item.dealId,
     id: item.id,
     title: item.name,
-    amount: item.initPrice,
+    amount: item.auctionStatus === "BEFORE_BIDDING" ? item.initPrice : item.currentPrice,
     image: item.image,
     href: item.type === "DELAYED" ? `/product/${item.id}` : `/product/live/${item.id}`,
     isWish: item.wish,
