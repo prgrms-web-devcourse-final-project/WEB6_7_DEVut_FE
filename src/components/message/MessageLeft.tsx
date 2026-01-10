@@ -12,6 +12,7 @@ interface MessageLeftProps {
   onSelectRoom: (roomId: number) => void;
 }
 
+const ORANGE = "#FF8A00";
 export default function MessageLeft({ selectedRoomId, onSelectRoom }: MessageLeftProps) {
   const { data } = useDMList();
   const { messagesByRoom } = useDMSocketStore();
@@ -34,7 +35,6 @@ export default function MessageLeft({ selectedRoomId, onSelectRoom }: MessageLef
               console.warn("[MessageLeft] Skipping room with missing data:", room);
               return null;
             }
-
             const isSelected = selectedRoomId === room.chatRoomId;
             const socketMessages = room.chatRoomId ? (messagesByRoom[room.chatRoomId] ?? []) : [];
             const latestSocketMessage = socketMessages[socketMessages.length - 1];
@@ -44,7 +44,7 @@ export default function MessageLeft({ selectedRoomId, onSelectRoom }: MessageLef
                 key={room.chatRoomId}
                 room={room}
                 isSelected={isSelected}
-                latestSocketMessage={latestSocketMessage}
+                latestSocketMessage={latestSocketMessage?.content}
                 onSelectRoom={onSelectRoom}
               />
             );
@@ -64,8 +64,7 @@ function RoomListItem({
 }: {
   room: DMRoom;
   isSelected: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  latestSocketMessage?: any;
+  latestSocketMessage: string;
   onSelectRoom: (roomId: number) => void;
 }) {
   const router = useRouter();
@@ -88,13 +87,15 @@ function RoomListItem({
       }}
       className={`m-3 flex cursor-pointer items-center gap-3 rounded-xl border-[3px] p-3 transition-all hover:border-[#C56E33] ${
         isSelected
-          ? "border-[#C56E33] bg-[#FFDAB9] shadow-[0px_0px_10px_#FF8A00]"
+          ? `shadow-[0px_0px_10px_${ORANGE}] border-[#C56E33] bg-[#FFDAB9]`
           : "border-transparent"
       } `}
     >
       <div className="relative h-12 w-12 flex-shrink-0">
         {room.hasUnreadMessage && (
-          <div className="absolute top-0.5 -left-1 z-10 h-4 w-4 rounded-full bg-[#FF7043]" />
+          <div
+            className={`shadow-[0px_0px_10px_${ORANGE}] absolute top-0.5 -left-1 z-10 h-4 w-4 rounded-full bg-[#FF7043]`}
+          />
         )}
 
         <div className="h-full w-full overflow-hidden rounded-full border-2 border-[#6D4C41]">
@@ -116,8 +117,8 @@ function RoomListItem({
 
       <div className="flex flex-1 items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <span className="text-[16px] font-bold text-[#6D4C41]">{itemName}</span>
-          <span className="text-[14px] text-[#8D6E63]">{room.otherUserNickname}</span>
+          <span className="truncate text-[16px] font-bold text-[#6D4C41]">{itemName}</span>
+          <span className="truncate text-[14px] text-[#8D6E63]">{room.otherUserNickname}</span>
         </div>
         <div className="flex flex-shrink-0 flex-col items-end gap-1">
           <div className="flex items-center gap-2">
@@ -134,7 +135,7 @@ function RoomListItem({
             )}
           </div>
           <p className="max-w-[150px] truncate text-right text-[14px] text-[#A1887F]">
-            {latestSocketMessage?.content ?? room.lastMessage ?? ""}
+            {latestSocketMessage ?? room.lastMessage ?? ""}
           </p>
         </div>
       </div>

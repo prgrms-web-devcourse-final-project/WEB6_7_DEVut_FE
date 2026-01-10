@@ -29,26 +29,19 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
   setQueryClient: client => set({ queryClient: client }),
 
   addDMMessage: (chatRoomId, msg) => {
-    console.log("[useDMSocketStore] addDMMessage called:", { chatRoomId, msg });
+    console.log(
+      `%c[스토어] 메시지 추가됨 (방 ID: ${chatRoomId})`,
+      "color: #4CAF50; font-weight: bold;",
+      msg
+    );
     set(state => {
       const prev = state.messagesByRoom[chatRoomId] ?? [];
-      // 동일 ID 메시지 중복 방지 (서버 에코와 클라이언트 임시 추가가 중복될 수 있음)
       const exists = prev.some(m => m.id === msg.id);
       if (exists) {
-        console.warn("[useDMSocketStore] 중복 메시지 무시됨:", {
-          chatRoomId,
-          msgId: msg.id,
-        });
         return state;
       }
 
       const newMessages = [...prev, msg];
-      console.log(
-        "[useDMSocketStore] New message count for room",
-        chatRoomId,
-        ":",
-        newMessages.length
-      );
       return {
         messagesByRoom: {
           ...state.messagesByRoom,
@@ -57,12 +50,11 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
       };
     });
   },
-
   sendDM: (productId, payload) => {
-    console.log("[STOMP DM SEND]", productId, payload);
+    console.log("[STOMP DM 전송]", productId, payload);
 
     if (!stompClient.connected) {
-      console.error("[STOMP DM] Cannot send - not connected");
+      console.error("[STOMP DM] 전송 실패 - 연결되지 않음");
       stompClient.activate();
       setTimeout(() => {
         if (!stompClient.connected) return;
@@ -72,7 +64,7 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
             body: JSON.stringify(payload),
           });
         } catch (error) {
-          console.error("[STOMP DM] Send failed after reconnect:", error);
+          console.error("[STOMP DM] 재연결 후 전송 실패:", error);
         }
       }, 500);
       return;
@@ -84,7 +76,7 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
         body: JSON.stringify(payload),
       });
     } catch (error) {
-      console.error("[STOMP DM] Send failed:", error);
+      console.error("[STOMP DM] 전송 실패:", error);
     }
   },
 
@@ -98,22 +90,19 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
     // - 연결(onConnect) 시점에 stompClient가
     //   현재 subscriptions의 key들을 보고 다시 subscribeDM을 호출함
     if (!stompClient.connected) {
-      console.warn(
-        "[STOMP DM] Not connected yet. Will subscribe on connect. ChatRoomId:",
-        chatRoomId
-      );
+      console.warn("[STOMP DM] 아직 연결되지 않음. 연결 시 구독 예정. 방 ID:", chatRoomId);
       set(state => ({
         subscriptions: { ...state.subscriptions, [chatRoomId]: null },
       }));
       return;
     }
 
-    console.log("[STOMP DM SUBSCRIBE]", chatRoomId);
+    console.log("[STOMP DM 구독]", chatRoomId);
 
     try {
       // 서버에게 이 채팅방 메시지 보내줘 요청
       const sub = stompClient.subscribe(`/receive/chat/dm/${chatRoomId}`, frame => {
-        console.log("[STOMP DM RECEIVE]", frame.body);
+        console.log("[STOMP DM 수신]", frame.body);
         try {
           // 메시지 받으면 파싱해서 상태에 추가
           const msg = JSON.parse(frame.body);
@@ -151,9 +140,12 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
                     ),
                   };
                 });
+
+                // 확실한 동기화를 위해 서버 상태로 한 번 더 갱신 (사용자 요청 반영: unread 즉시 반영 보장)
+                queryClient.invalidateQueries({ queryKey: ["dm-list"] });
               })
               .catch(error => {
-                console.error("[STOMP DM] Failed to mark room as read:", error);
+                console.error("[STOMP DM] 읽음 처리 실패:", error);
               });
           } else if (prev) {
             queryClient.setQueryData<DMRoomListResponse>(["dm-list"], data => {
@@ -176,11 +168,11 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
             queryClient.invalidateQueries({ queryKey: ["dm-list"] });
           }
 
-          // 안전망: 위의 분기와 무관하게 항상 dm-list를 한 번 더 갱신해서
-          // 다른 페이지(사이드바, 리스트 등)에서도 안읽음 상태가 즉시 반영되도록 보장
+          // 안전망: 전역 리스트 갱신 (다른 방 메시지 수신 시 등)
+          // 이전 최적화가 불안정했으므로, 확실한 unread 뱃지 노출을 위해 invalidation 복구
           queryClient.invalidateQueries({ queryKey: ["dm-list"] });
         } catch (e) {
-          console.error("Failed to parse DM message", e);
+          console.error("DM 메시지 파싱 실패", e);
         }
       });
 
@@ -188,14 +180,14 @@ export const useDMSocketStore = create<DMSocketStore>((set, get) => ({
         subscriptions: { ...state.subscriptions, [chatRoomId]: sub },
       }));
     } catch (error) {
-      console.error("[STOMP DM] Subscribe failed:", error);
+      console.error("[STOMP DM] 구독 실패:", error);
     }
   },
 
   unsubscribeDM: chatRoomId => {
     const sub = get().subscriptions[chatRoomId];
     if (sub) {
-      console.log("[STOMP DM UNSUBSCRIBE]", chatRoomId);
+      console.log("[STOMP DM 구독 해지]", chatRoomId);
       sub.unsubscribe();
     }
 

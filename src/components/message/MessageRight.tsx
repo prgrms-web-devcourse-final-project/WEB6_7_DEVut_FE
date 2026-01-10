@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import StatusBadge from "../common/StatusBadge";
 
-import dummyImage2 from "@/assets/message/dummyImage2.jpg";
 import sendButton from "@/assets/message/sendButton.svg";
 import productSelector from "@/assets/message/productSelector.svg";
 
@@ -33,26 +32,37 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
 
   const dmdetail = dmDetailByRoom || dmDetailByItem;
 
-  // Zustand store에서 명시적으로 messagesByRoom 구독 (shallow comparison 방지)
+  // Zustand store에서 명시적으로 messagesByRoom 구독
   const messagesByRoom = useDMSocketStore(state => state.messagesByRoom);
   const subscribeDM = useDMSocketStore(state => state.subscribeDM);
-  const unsubscribeDM = useDMSocketStore(state => state.unsubscribeDM);
   const sendDM = useDMSocketStore(state => state.sendDM);
-  const addDMMessage = useDMSocketStore(state => state.addDMMessage);
-
-  console.log("[MessageRight] messagesByRoom updated, keys:", Object.keys(messagesByRoom));
+  // const addDMMessage = useDMSocketStore(state => state.addDMMessage);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState("");
 
-  // 수신(구독/상태)에 사용할 ID: roomId(이미 있는 방) 우선, 없으면 상세의 chatRoomId.
   const activeChatRoomId = roomId ?? dmdetail?.chatRoomId ?? null;
 
   const initialMessages = useMemo(
     () => ((roomId || productId) && dmdetail?.messages ? dmdetail.messages : []),
     [roomId, productId, dmdetail]
   );
+
+  // API(REST)로 상세 내역을 성공적으로 가져왔을 때도 사이드바의 unread 배지를 제거 (소켓 끊김 대비 fallback)
+  useEffect(() => {
+    if (activeChatRoomId) {
+      queryClient.setQueryData<DMRoomListResponse | undefined>(["dm-list"], prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          chatRooms: prev.chatRooms.map(room =>
+            room.chatRoomId === activeChatRoomId ? { ...room, hasUnreadMessage: false } : room
+          ),
+        };
+      });
+    }
+  }, [activeChatRoomId, dmdetail, queryClient]);
 
   const socketMessages = useMemo(() => {
     const messages = activeChatRoomId ? (messagesByRoom[activeChatRoomId] ?? []) : [];
@@ -65,12 +75,26 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
   }, [activeChatRoomId, messagesByRoom]);
 
   const allMessages = useMemo(() => {
-    const combined = [...initialMessages, ...socketMessages];
-    console.log("[MessageRight] allMessages:", {
-      initialCount: initialMessages.length,
-      socketCount: socketMessages.length,
-      totalCount: combined.length,
+    // ID를 키로 사용하여 중복 제거 (Map은 삽입 순서 보장)
+    const messageMap = new Map();
+
+    // 1. 초기 메시지들 추가 (서버 데이터)
+    initialMessages.forEach(msg => {
+      // id가 있는 경우에만 Map에 추가
+      if (msg.id) {
+        messageMap.set(msg.id, msg);
+      }
     });
+
+    // 2. 소켓 메시지들 추가 (최신 데이터로 덮어쓰거나 새 메시지 추가)
+    socketMessages.forEach(msg => {
+      const key = msg.id;
+      if (key) {
+        messageMap.set(key, msg);
+      }
+    });
+
+    const combined = Array.from(messageMap.values());
     return combined;
   }, [initialMessages, socketMessages]);
 
@@ -120,15 +144,38 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
   // 메시지 수신을 위한 chatRoomId 구독
   useEffect(() => {
     if (activeChatRoomId && isOpen) {
-      console.log("[MessageRight] Subscribing to chatRoomId:", activeChatRoomId);
+      console.log("[MessageRight] 채팅방 구독 시작:", activeChatRoomId);
       subscribeDM(activeChatRoomId);
-      return () => unsubscribeDM(activeChatRoomId);
     }
-  }, [activeChatRoomId, isOpen, subscribeDM, unsubscribeDM]);
+  }, [activeChatRoomId, isOpen, subscribeDM]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages]);
+  // 스크롤 깜빡임 방지를 위한 상태
+  const [lastScrolledRoomId, setLastScrolledRoomId] = useState<number | null>(null);
+  const isReady = activeChatRoomId === lastScrolledRoomId;
+
+  // 이전 메시지 개수 추적 (새 메시지 스크롤용)
+  const prevMessageCountRef = useRef<number>(0);
+
+  // 화면이 그려지기 전에 스크롤 위치 조정
+  useLayoutEffect(() => {
+    if (!bottomRef.current || !activeChatRoomId) return;
+
+    const isRoomChanged = activeChatRoomId !== lastScrolledRoomId;
+    const isNewMessage = allMessages.length > prevMessageCountRef.current;
+
+    // 1. 방이 바뀌었거나(초기 진입 포함): 즉시 최하단 이동 후 준비 상태로 전환
+    if (isRoomChanged) {
+      bottomRef.current.scrollIntoView({ behavior: "auto" });
+      setLastScrolledRoomId(activeChatRoomId);
+    }
+    // 2. 같은 방에서 새 메시지가 추가된 경우: 부드럽게 최하단 이동
+    else if (isNewMessage) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // 메시지 개수 업데이트
+    prevMessageCountRef.current = allMessages.length;
+  }, [allMessages, activeChatRoomId, lastScrolledRoomId]);
 
   const targetItem = useMemo(() => {
     if (dmdetail?.itemInfo) {
@@ -146,7 +193,12 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
 
   const handleSend = async () => {
     const value = inputValue.trim();
-    if (!value || !meId) return;
+    if (!value) return;
+
+    if (!meId) {
+      console.error("[MessageRight] 내 ID 없음");
+      return;
+    }
 
     // 메시지 전송에 사용할 식별자들
     const sendProductId = productId || dmdetail?.itemInfo?.itemId;
@@ -154,7 +206,7 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
     const isExistingRoom = roomId !== null && roomId !== undefined ? true : !!dmdetail?.chatRoomId;
 
     if (!sendProductId) {
-      console.error("[MessageRight] No productId available for sending");
+      console.error("[MessageRight] 상품 ID를 찾을 수 없습니다.");
       alert("상품 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
       return;
     }
@@ -187,19 +239,19 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
       const messageContent = value;
       const itemId = sendProductId;
 
-      // 재시도 로직... 임시방편. 웹소캣 연결 지연 문제 때문에 채팅방 ID가 바로 안 내려오는 경우가 있음. 사실 재시도가 의미 없긴 함
+      // 재시도 로직. 웹소켓 연결 지연 문제 때문에 채팅방 ID가 바로 안 내려오는 경우가 있음.
       const pollForChatRoomId = async (retries = 5) => {
         for (let i = 0; i < retries; i++) {
-          console.log(`[MessageRight] Polling attempt ${i + 1}/${retries}, itemId:`, itemId);
+          console.log(`[MessageRight] 채팅방 ID 폴링 시도 ${i + 1}/${retries}, itemId:`, itemId);
 
           try {
             const result = itemId ? await refetchByItem() : null;
-            console.log(`[MessageRight] Attempt ${i + 1} - Refetch result:`, result?.data);
+            console.log(`[MessageRight] 시도 ${i + 1} - Refetch 결과:`, result?.data);
 
             const newChatRoomId = result?.data?.chatRoomId;
 
             if (newChatRoomId) {
-              console.log("[MessageRight] ✅ Got chatRoomId:", newChatRoomId);
+              console.log("[MessageRight] ✅ 채팅방 ID 발견:", newChatRoomId);
 
               queryClient.invalidateQueries({ queryKey: ["dm-list"] });
               router.push(`/message/${newChatRoomId}`);
@@ -207,9 +259,9 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
               return; // 성공하면 종료
             }
 
-            console.log(`[MessageRight] Attempt ${i + 1} - No chatRoomId yet, waiting...`);
+            console.log(`[MessageRight] 시도 ${i + 1} - 아직 채팅방 ID 없음, 대기 중...`);
           } catch (error) {
-            console.error(`[MessageRight] Attempt ${i + 1} - Error:`, error);
+            console.error(`[MessageRight] 시도 ${i + 1} - 오류 발생:`, error);
           }
 
           if (i < retries - 1) {
@@ -217,7 +269,7 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
           }
         }
 
-        console.error("[MessageRight] ❌ Failed to get chatRoomId after", retries, "attempts");
+        console.error("[MessageRight] ❌ 채팅방 ID 찾기 실패 (타임아웃)", retries, "번 시도 후");
         alert("채팅방 생성에 실패했습니다. 페이지를 새로고침해주세요.");
       };
 
@@ -287,7 +339,6 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
                   className="flex items-center justify-center py-2"
                 >
                   <div className="flex items-center gap-2">
-                    {/* <div className="h-px flex-1 bg-[#A1887F] opacity-80"></div> */}
                     <div className="text-title-sub/50">
                       ---------
                       <span className="border-border-sub rounded-full border-2 bg-white px-1.5 py-0.5 text-[12px] whitespace-nowrap text-[#A1887F]">
@@ -295,7 +346,6 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
                       </span>
                       ----------
                     </div>
-                    <div className="h-px flex-1 bg-[#A1887F] opacity-80"></div>
                   </div>
                 </div>
               );
@@ -305,10 +355,7 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
             const isMine = meId ? msg.senderId === meId : false;
 
             return (
-              <div
-                key={msg.id || idx}
-                className={`flex ${isMine ? "justify-end" : "justify-start"}`}
-              >
+              <div key={idx} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                 {!isMine && (
                   <div className="mr-3 h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#6D4C41]">
                     {opponentProfileImage ? (

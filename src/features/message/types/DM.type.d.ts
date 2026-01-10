@@ -17,7 +17,6 @@ export interface Message {
 
 export interface UiMessage {
   id?: number;
-  clientMessageId?: string; // 프론트용 임시 id. optimistic ui
   senderId?: number;
   profileImageUrl?: string;
   nickname?: string;
