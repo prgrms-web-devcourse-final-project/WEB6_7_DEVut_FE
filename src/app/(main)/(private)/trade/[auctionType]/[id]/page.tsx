@@ -2,7 +2,11 @@ import PagePrevArea from "@/components/common/PagePrevArea";
 import TradeInfo from "@/components/trade/TradeInfo";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params?: { auctionType?: string; id?: string } }) {
+export default async function Page({
+  params,
+}: {
+  params?: Promise<{ auctionType?: string; id?: string }>;
+}) {
   if (!params) {
     notFound();
   }

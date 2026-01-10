@@ -20,9 +20,17 @@ export default function PopularProductsCarousel({
   autoplayDelay = 4000,
   type,
 }: PopularProductsCarouselProps) {
-  const liveQuery = useLiveHotProducts({ initialData });
-  const delayHotQuery = useDelayedHotProducts({ initialData });
-  const mostBidQuery = useDelayedMostBidsProducts({ initialData });
+  const liveQuery = useLiveHotProducts({
+    initialData: type === "liveHot" ? initialData : undefined,
+  });
+
+  const delayHotQuery = useDelayedHotProducts({
+    initialData: type === "delayHot" ? initialData : undefined,
+  });
+
+  const mostBidQuery = useDelayedMostBidsProducts({
+    initialData: type === "mostBidDelay" ? initialData : undefined,
+  });
 
   const products = useMemo<ProductCardType[]>(() => {
     switch (type) {

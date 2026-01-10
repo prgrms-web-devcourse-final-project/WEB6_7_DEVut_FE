@@ -69,6 +69,8 @@ interface ProductDetailBase {
   likeCount: number;
   currentPrice: number;
   isLiked: boolean;
+  sellerNickname: string;
+  createdAt: string;
 }
 
 interface LiveProductDetail extends ProductDetailBase {

@@ -46,8 +46,8 @@ export default function ProductImageCarousel({
   }, [emblaApi, handleSelect]);
 
   return (
-    <div className={twMerge("w-full", className)}>
-      <div className="relative">
+    <div className={twMerge("flex w-full flex-col items-center justify-center gap-3", className)}>
+      <div className="relative w-full">
         <div
           ref={emblaRef}
           className={twMerge("overflow-hidden transition-opacity", isClose && "opacity-40")}
