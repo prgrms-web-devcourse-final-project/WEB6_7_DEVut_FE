@@ -3,6 +3,7 @@ import liveBadge from "@/assets/common/liveBadge.svg";
 export const mapLiveProductToCard = (item: LiveProduct): ProductCardType => {
   const uid = `${item.type}-${item.id}`;
   const base = {
+    dealId: null,
     uid,
     id: item.id,
     title: item.name,
@@ -48,6 +49,7 @@ export const mapLiveProductToCard = (item: LiveProduct): ProductCardType => {
 export const mapDelayedProductToCard = (item: DelayProduct): ProductCardType => {
   const uid = `${item.type}-${item.id}`;
   const base = {
+    dealId: null,
     uid,
     id: item.id,
     title: item.name,
@@ -85,6 +87,7 @@ export const mapAuctionItemToCard = (item: ProductAll): ProductCardType => {
   const isLive = item.auctionType === "LIVE";
   const uid = `${item.auctionType}-${item.id}`;
   const base: ProductCardType = {
+    dealId: null,
     uid,
     id: item.id,
     title: item.itemName,

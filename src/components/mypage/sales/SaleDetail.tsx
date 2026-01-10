@@ -1,7 +1,6 @@
 "use client";
 
 import OptionDropdown from "@/components/common/OptionDropdown";
-import OrderSwitch from "@/components/common/OrderSwitch";
 import ProductCard from "@/components/common/ProductCard";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import Title from "@/components/common/Title";
@@ -39,9 +38,7 @@ export default function SaleDetail({ initialData }: { initialData: ProductCardTy
         판매 상세
       </Title>
       <div className="flex w-full justify-end gap-5">
-        <div className="relative w-[110px] translate-y-2 scale-120">
-          <OrderSwitch />
-        </div>
+        <div className="relative w-[110px] translate-y-2 scale-120"></div>
 
         <OptionDropdown label={status} className="mb-5">
           <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>

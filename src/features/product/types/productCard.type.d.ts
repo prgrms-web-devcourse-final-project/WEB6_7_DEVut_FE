@@ -1,6 +1,5 @@
-interface ProductCardType {
+type ProductCardBase = {
   uid: string;
-  dealId?: number | null;
   id: number;
   title: string;
   amount: number;
@@ -13,4 +12,14 @@ interface ProductCardType {
   };
   status?: ProductStatusData;
   type: AuctionType;
-}
+};
+
+type ProductCardWithDeal = ProductCardBase & {
+  dealId: number | null;
+};
+
+type ProductCardWithoutDeal = ProductCardBase & {
+  dealId: null;
+};
+
+type ProductCardType = ProductCardWithDeal | ProductCardWithoutDeal;

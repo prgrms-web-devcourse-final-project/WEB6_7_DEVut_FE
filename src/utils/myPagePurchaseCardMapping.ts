@@ -26,6 +26,7 @@ export const myPageCurrentPurchaseCardMapping = (currentItem: CurrentPurchase): 
   const status: ProductStatusData = { kind: "time", time: currentItem.endTime };
   const uid = `DELAYED-${currentItem.id}`;
   return {
+    dealId: null,
     uid,
     id: currentItem.id,
     title: currentItem.name,
