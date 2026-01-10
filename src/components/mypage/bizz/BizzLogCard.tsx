@@ -5,6 +5,7 @@ export default function BizzLogCard({ log }: { log: BizzLogItem }) {
   const isCharge = log.transactionType === "CHARGE";
   const isPayToUser = log.transactionType === "PAY_TO_USER";
   const isBid = log.transactionType === "BID";
+  const isRefund = log.transactionType === "REFUND" || log.transactionType === "BID_REFUND";
   return (
     <div className="text-border-sub2 shadow-flat-light grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg bg-white px-4 py-2 text-center">
       <div
@@ -17,19 +18,23 @@ export default function BizzLogCard({ log }: { log: BizzLogItem }) {
                 ? "text-orange-500"
                 : isBid
                   ? "text-yellow-500"
-                  : "text-green-600"
+                  : isRefund
+                    ? "text-purple-700"
+                    : "text-green-600"
         }
       >
-        {log.transactionType === "CHARGE"
+        {isCharge
           ? "충전"
-          : log.transactionType === "BID"
+          : isBid
             ? "입찰"
-            : log.transactionType === "PAY_TO_USER"
+            : isPayToUser
               ? "구매"
               : log.transactionType === "RECEIVE_FROM_USER" ||
                   log.transactionType === "DEAL_SETTLEMENT"
                 ? "판매"
-                : "출금"}
+                : isRefund
+                  ? "환불"
+                  : "출금"}
       </div>
 
       <div>{formatPaymentDate(log.transactionDate)}</div>
@@ -44,7 +49,9 @@ export default function BizzLogCard({ log }: { log: BizzLogItem }) {
                 ? "text-orange-500"
                 : isBid
                   ? "text-yellow-500"
-                  : "text-green-600"
+                  : isRefund
+                    ? "text-purple-700"
+                    : "text-green-600"
         }
       >
         {log.amount.toLocaleString("ko-KR")} Bizz

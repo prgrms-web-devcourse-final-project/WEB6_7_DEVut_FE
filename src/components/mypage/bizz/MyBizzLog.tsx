@@ -29,6 +29,7 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
           <OptionDropdown.Item onClick={() => setStatus("구매")}>구매</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("판매")}>판매</OptionDropdown.Item>
           <OptionDropdown.Item onClick={() => setStatus("입찰")}>입찰</OptionDropdown.Item>
+          <OptionDropdown.Item onClick={() => setStatus("환불")}>환불</OptionDropdown.Item>
         </OptionDropdown>
       )}
       <div className="border-border-sub2 text-border-sub2 bg-content-gray mt-3 grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg border-2 px-4 py-2 text-center font-bold">
@@ -63,6 +64,10 @@ export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
         ) : status === "입찰" ? (
           logs
             .filter(log => log.transactionType === "BID")
+            .map(log => <BizzLogCard key={log.index} log={log} />)
+        ) : status === "환불" ? (
+          logs
+            .filter(log => log.transactionType === "BID_REFUND" || log.transactionType === "REFUND")
             .map(log => <BizzLogCard key={log.index} log={log} />)
         ) : (
           logs
