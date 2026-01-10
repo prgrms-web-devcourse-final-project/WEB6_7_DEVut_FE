@@ -76,9 +76,12 @@ export default function ProductCard({
           </div>
 
           <div className="flex flex-1 flex-col px-2">
-            <div className="text-title-main-dark mt-2">
+            <div className="text-title-main-dark mt-2 min-w-0 truncate overflow-hidden whitespace-nowrap">
               <p className="text-[12px] opacity-70">입찰가</p>
-              <BizzAmount amount={product.amount} className="text-custom-orange-dark font-bold" />
+              <BizzAmount
+                amount={product.amount}
+                className="text-custom-orange-dark max-w-full font-bold"
+              />
               <p className="mt-2 line-clamp-2 min-h-10 text-[14px] leading-snug">{product.title}</p>
             </div>
 
