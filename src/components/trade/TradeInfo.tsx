@@ -108,7 +108,7 @@ export default function TradeInfo({ auctionType, dealId }: TradeInfoProps) {
   });
 
   return (
-    <div className="mt-2 flex w-full flex-col px-8">
+    <div className="mt-2 flex w-full flex-col overflow-y-hidden px-8">
       <ContentContainer className="border-border-sub bg-content-area m-0 flex w-full flex-col gap-16 border-3 px-14 py-7 lg:flex-row">
         <div className="flex flex-col lg:min-w-[55%]">
           <Title className="text-title-sub ml-3 text-[24px]">상품 정보</Title>
