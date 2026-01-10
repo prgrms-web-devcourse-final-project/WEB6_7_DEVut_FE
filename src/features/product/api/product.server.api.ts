@@ -6,7 +6,7 @@ export const getDelayedProducts = async (params: GetProductsParams) => {
     method: "GET",
     params: { ...params },
   });
-  console.log("res", res.data);
+
   return {
     products: res.data.delayedItems.map(mapDelayedProductToCard),
     totalCount: res.data.totalCount,
@@ -33,6 +33,8 @@ export const getLiveHotProducts = async () => {
   const res = await ServerApi<LiveProductResponse>(`/auction/live/hot`, {
     method: "GET",
   });
+
+  console.log("라이브 인기 상품: ", res.data.liveItems);
 
   return res.data.liveItems.map(mapLiveProductToCard);
 };

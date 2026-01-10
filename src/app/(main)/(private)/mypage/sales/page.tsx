@@ -3,7 +3,7 @@ import SaleDetail from "@/components/mypage/sales/SaleDetail";
 import SaleList from "@/components/mypage/sales/SaleList";
 import { getSellProducts } from "@/features/mypage/api/myPage.server.api";
 export default async function SalesPage() {
-  const initialData = await getSellProducts(); // 이미 정제됨
+  const initialData = await getSellProducts();
 
   return (
     <ContentContainer bordered={false} className="pt-5">
