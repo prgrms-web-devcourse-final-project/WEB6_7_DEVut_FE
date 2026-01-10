@@ -257,7 +257,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
         </div>
       </div>
 
-      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light min-h-100 w-full p-5 md:w-full md:text-xl">
+      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light min-h-100 w-full p-5 whitespace-pre-wrap md:w-full md:text-xl">
         {product?.description}
       </ContentContainer>
     </div>
