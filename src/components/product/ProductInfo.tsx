@@ -18,12 +18,12 @@ import ProductImageCarouselSkeleton from "../skeleton/product/ProductImageCarous
 import DelayedBidSection from "./DelayedBidSection";
 import DelayedEndTimer from "./DelayedEndTimer";
 import DelayedBuyNowSection from "./DelayedBuyNowSection";
-import Link from "next/link";
 import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { getDelayStatus } from "@/utils/auction";
 import { useWishToggle } from "@/features/wish/hooks/useWishToggle";
 import Image from "next/image";
 import { LiveActionButton } from "./LiveActionButton";
+import PriceSection from "./PriceSection";
 
 const ProductImageCarousel = dynamic(() => import("./ProductImageCarousel"), {
   ssr: false,
@@ -74,43 +74,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
               </span>
             </div>
 
-            <div className="bg-content-gray border-border-sub2 flex justify-between rounded-xl border p-5">
-              <div className="flex h-full items-center gap-8">
-                <div>
-                  <p className="text-title-sub2 text-sm">입찰가</p>
-                  <div className="mt-2 flex items-end justify-between">
-                    <BizzAmount
-                      amount={product.currentPrice}
-                      iconSize="lg"
-                      className="text-title-main-dark text-2xl font-bold lg:text-3xl"
-                    />
-                  </div>
-                </div>
-                {product?.type === "DELAYED" && (
-                  <>
-                    <div className="border-border-sub2 h-[50%] rotate-15 border" />
-                    <div>
-                      <p className="text-title-sub2 text-sm">즉시 구매가</p>
-
-                      <div className="mt-2 flex items-end justify-between">
-                        <BizzAmount
-                          amount={product?.buyNowPrice}
-                          iconSize="lg"
-                          className="text-title-main-dark text-2xl font-bold lg:text-3xl"
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-              {product.type === "DELAYED" && (
-                <div className="flex items-end">
-                  <Link href={`${path}/bidsLog`}>
-                    <Button size="sm">경매 기록</Button>
-                  </Link>
-                </div>
-              )}
-            </div>
+            <PriceSection path={path} product={product} />
 
             <div className="border-border-sub2 rounded-xl border p-4 py-5 text-sm lg:text-base">
               <div className="grid grid-cols-[80px_1fr] gap-x-3 gap-y-5">
@@ -257,7 +221,7 @@ export default function ProductInfo({ initialProduct, me }: ProductInfo) {
         </div>
       </div>
 
-      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light min-h-100 w-full p-5 md:w-full md:text-xl">
+      <ContentContainer className="bg-content-area text-title-main border-border-main/10 shadow-flat-light min-h-100 w-full p-5 whitespace-pre-wrap md:w-full md:text-xl">
         {product?.description}
       </ContentContainer>
     </div>

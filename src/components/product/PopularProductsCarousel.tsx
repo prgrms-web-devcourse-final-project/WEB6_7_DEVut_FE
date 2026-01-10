@@ -49,7 +49,7 @@ export default function PopularProductsCarousel({
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
-      loop: isCarousel,
+      loop: false,
       align: "start",
     },
     isCarousel

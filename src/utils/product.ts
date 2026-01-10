@@ -19,3 +19,8 @@ export const auctionTypeMapping = (status: AuctionTypeKOR): AuctionType => {
       return "DELAYED";
   }
 };
+
+export function getDigitLength(value: number | string) {
+  const str = typeof value === "number" ? value.toString() : value;
+  return str.replace(/[^0-9]/g, "").length;
+}
