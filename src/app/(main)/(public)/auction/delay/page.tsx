@@ -18,11 +18,10 @@ export default async function AuctionDelayPage({
     page: Number(resolvedSearchParams.page ?? 1),
     size: 15,
     category: resolvedSearchParams.category,
-    isSelling: false,
+    isSelling: true,
   };
 
   const initialDelayProducts = await getDelayedProducts(params);
-  console.log(initialDelayProducts);
   return (
     <>
       <PageTabArea items={auctionItems} />

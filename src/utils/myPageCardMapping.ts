@@ -10,6 +10,7 @@ export const myPageCardMapping = (item: Sell | Wish): ProductCardType => {
   const uid = `${item.type}-${item.id}`; // 🔥 핵심
 
   return {
+    dealId: null,
     uid,
     id: item.id,
     title: item.name,
@@ -26,35 +27,32 @@ export const myPageCardMapping = (item: Sell | Wish): ProductCardType => {
   };
 };
 
-export const myPageSellCardMapping = ({ card }: { card?: MySellResponse }) => {
-  if (!card) return [];
-
-  return card.items.map(item => {
-    const status: ProductStatusData =
-      item.auctionStatus === "IN_PROGRESS" && item.type === "DELAYED"
-        ? {
-            kind: "time",
-            time: item.endTime,
-          }
-        : {
-            kind: "status",
-            status: item.auctionStatus,
-          };
-
-    return {
-      dealId: item.dealId,
-      id: item.id,
-      title: item.name,
-      amount: item.initPrice,
-      image: item.image,
-      href: item.type === "DELAYED" ? `/product/${item.id}` : `/product/live/${item.id}`,
-      isWish: item.wish,
-      badge: {
-        image: item.type === "DELAYED" ? delayBadge : liveBadge,
-        alt: item.type === "DELAYED" ? "일반 경매" : "라이브 경매",
-      },
-      type: item.type,
-      status,
-    };
-  });
+export const myPageSellCardMapping = (item: Sell) => {
+  const status: ProductStatusData =
+    item.auctionStatus === "IN_PROGRESS" && item.type === "DELAYED"
+      ? {
+          kind: "time",
+          time: item.endTime,
+        }
+      : {
+          kind: "status",
+          status: item.auctionStatus,
+        };
+  const uid = `${item.type}-${item.id}`; // 🔥 핵심
+  return {
+    uid,
+    dealId: item.dealId,
+    id: item.id,
+    title: item.name,
+    amount: item.auctionStatus === "BEFORE_BIDDING" ? item.initPrice : item.currentPrice,
+    image: item.image,
+    href: item.type === "DELAYED" ? `/product/${item.id}` : `/product/live/${item.id}`,
+    isWish: item.wish,
+    badge: {
+      image: item.type === "DELAYED" ? delayBadge : liveBadge,
+      alt: item.type === "DELAYED" ? "일반 경매" : "라이브 경매",
+    },
+    type: item.type,
+    status,
+  };
 };

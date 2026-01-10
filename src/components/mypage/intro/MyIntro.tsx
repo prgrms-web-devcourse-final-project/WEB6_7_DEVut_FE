@@ -14,6 +14,7 @@ import { useMe } from "@/features/auth/hooks/useMe";
 import { useUploadImages } from "@/features/image/hooks/useUploadImages";
 import closeIcon from "@/assets/mypage/closeButton.svg";
 import Image from "next/image";
+import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 
 export default function MyIntro() {
   const { data: user } = useMe();
@@ -31,6 +32,8 @@ export default function MyIntro() {
   const [detailAddress, setDetailAddress] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [postal, setPostal] = useState("");
+
+  const { resetLiveRoom } = useLiveRoomStore(state => state);
 
   const inputFields = [
     { label: "닉네임", value: nickname, setValue: setNickname },
@@ -96,6 +99,7 @@ export default function MyIntro() {
     signOutMutation.mutate(undefined, {
       onSuccess: () => {
         notify("다음에 또 만나요!", "SUCCESS");
+        resetLiveRoom();
         router.replace("/");
         router.refresh();
       },

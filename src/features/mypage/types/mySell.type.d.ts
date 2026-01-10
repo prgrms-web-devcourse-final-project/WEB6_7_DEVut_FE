@@ -6,6 +6,7 @@ interface Sell {
   name: string;
   category: string;
   initPrice: number;
+  currentPrice: number;
   instantBuyPrice: null;
   wish: boolean;
   image: string;

@@ -9,6 +9,7 @@ import { X } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import { Url } from "next/dist/shared/lib/router/router";
+import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 
 export default function NotificationItem({
   notify,
@@ -19,6 +20,7 @@ export default function NotificationItem({
 }) {
   const notifyRoute = getNotificationRoute(notify);
   const { mutate } = useDeleteNotify(notify.id);
+  const { addSubscribedAuctionId, setActiveAuctionId } = useLiveRoomStore(state => state);
   return (
     <div
       className={twMerge(
@@ -32,7 +34,8 @@ export default function NotificationItem({
         href={notifyRoute as Url}
         onClick={() => {
           if (notify.type === "LIVE_AUCTION_START") {
-            
+            setActiveAuctionId(notify.resourceId);
+            addSubscribedAuctionId(notify.resourceId);
           }
         }}
       >

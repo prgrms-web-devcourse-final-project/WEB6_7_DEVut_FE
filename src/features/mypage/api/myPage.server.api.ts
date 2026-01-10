@@ -1,5 +1,5 @@
 import { ServerApi } from "@/lib/serverApi";
-import { myPageCardMapping } from "@/utils/myPageCardMapping";
+import { myPageCardMapping, myPageSellCardMapping } from "@/utils/myPageCardMapping";
 
 export const getWishProducts = async () => {
   const res = await ServerApi<MyWishResponse>("/users/me/likes", {
@@ -13,9 +13,10 @@ export const getWishProducts = async () => {
   return res.data.items.map(myPageCardMapping);
 };
 
-export const getSellProducts = async () => {
+export const getSellProducts = async (): Promise<ProductCardType[]> => {
   const res = await ServerApi<MySellResponse>("/users/me/items", {
     method: "GET",
   });
-  return res.data.items.map(myPageCardMapping);
+
+  return res.data.items.map(myPageSellCardMapping);
 };

@@ -38,23 +38,31 @@ export default function LiveAuctionStage({
   const isClosed = roomStatus === "CLOSE";
 
   const [localRemainingMs, setLocalRemainingMs] = useState<number | null>(null);
+  const currentPrice = currentStageProduct?.currentPrice || 0;
+  const bidSteps = getBidSteps(currentPrice);
+  const minBidPrice = currentPrice + bidSteps[0];
 
-  const bidSteps = getBidSteps(currentStageProduct?.currentPrice || 10000);
   const [bidInput, setBidInput] = useState(0);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
+  const queryClient = useQueryClient();
+
   const { mutate: bid } = useLiveBid();
   const { data: myBizz, isLoading } = useGetMyBizz();
 
-  const queryClient = useQueryClient();
-
   const handleConfirm = () => {
     if (!roomId || !currentStageProduct) return;
-    if (bidInput <= currentStageProduct?.currentPrice) {
+    if (bidInput <= currentPrice) {
       notify("입찰 금액을 확인해주세요!", "ERROR");
       return;
     }
+
+    if (bidInput < minBidPrice) {
+      notify(`최소 입찰가는 ${minBidPrice.toLocaleString()} 입니다!`, "ERROR");
+      return;
+    }
+
     if (isIntermission || isClosed) return;
 
     bid(
@@ -179,15 +187,43 @@ export default function LiveAuctionStage({
 
         <div className="grid grid-cols-1 gap-4 px-4 pt-4 pb-2 lg:grid-cols-[1.2fr_1fr_1.4fr] lg:items-center">
           <div className="flex justify-center lg:justify-start">
-            <div className="border-border-sub2 shadow-flat-light flex w-full items-center rounded-sm border-2 bg-white px-4 py-2 text-sm">
-              <span className="text-title-main mr-5">보유 Bizz</span>
-              {isLoading ? (
-                <div className="flex items-center">
-                  <span className="border-border-sub h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+            <div className="flex w-full flex-col gap-3">
+              <div
+                className={twMerge(
+                  "border-border-sub2 bg-custom-brown/20 text-title-main-dark flex items-center justify-between rounded-sm border-2 px-4 py-3 text-sm",
+                  (isIntermission || isClosed) && "opacity-50"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <span>최소 입찰가</span>
+                  <span className="font-semibold">
+                    <BizzAmount amount={minBidPrice || 0} fontSize="sm" />
+                  </span>
                 </div>
-              ) : (
-                <BizzAmount amount={myBizz || 0} />
-              )}
+
+                <button
+                  disabled={isIntermission || isClosed}
+                  onClick={() => {
+                    if (isIntermission || isClosed) return;
+                    setBidInput(minBidPrice);
+                  }}
+                  className={twMerge(
+                    "border-border-sub text-title-main-dark cursor-pointer rounded-sm border bg-white px-3 py-1 text-xs font-semibold transition hover:bg-gray-100",
+                    (isIntermission || isClosed) && "pointer-events-none bg-gray-100 text-gray-400"
+                  )}
+                >
+                  적용
+                </button>
+              </div>
+
+              <div className="border-border-sub2 shadow-flat-light flex items-center rounded-sm border-2 bg-white px-4 py-3 text-sm">
+                <span className="text-title-main mr-5">보유 Bizz</span>
+                {isLoading ? (
+                  <span className="border-border-sub h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                ) : (
+                  <BizzAmount amount={myBizz || 0} fontSize={"sm"} />
+                )}
+              </div>
             </div>
           </div>
 

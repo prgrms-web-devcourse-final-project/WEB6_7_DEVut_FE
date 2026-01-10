@@ -11,7 +11,7 @@ export const myPagePurchaseCardMapping = (item: Purchase) => {
     title: item.itemName,
     amount: item.winningPrice,
     image: item.image,
-    href: item.type === "DELAYED" ? `/product/${item.id}` : `/product/live/${item.id}`,
+    href: item.type === "DELAYED" ? `/product/${item.itemId}` : `/product/live/${item.itemId}`,
     isWish: item.wish,
     badge: {
       image: item.type === "DELAYED" ? delayBadge : liveBadge,
@@ -26,6 +26,7 @@ export const myPageCurrentPurchaseCardMapping = (currentItem: CurrentPurchase): 
   const status: ProductStatusData = { kind: "time", time: currentItem.endTime };
   const uid = `DELAYED-${currentItem.id}`;
   return {
+    dealId: null,
     uid,
     id: currentItem.id,
     title: currentItem.name,

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface LiveRoomState {
   activeAuctionId: number | null;
@@ -9,41 +10,51 @@ interface LiveRoomState {
   addSubscribedAuctionId: (id: number) => void;
   setChatRoomId: (auctionId: number, chatRoomId: string) => void;
   removeSubscribedAuctionId: (auctionId: number) => void;
+
+  resetLiveRoom: () => void;
 }
 
-export const useLiveRoomStore = create<LiveRoomState>(set => ({
+const initialLiveRoomState = {
   activeAuctionId: null,
   subscribedAuctionIds: [],
   chatRoomIds: {},
+};
 
-  setActiveAuctionId: id => set({ activeAuctionId: id }),
+export const useLiveRoomStore = create<LiveRoomState>()(
+  persist(
+    set => ({
+      ...initialLiveRoomState,
 
-  addSubscribedAuctionId: id =>
-    set(state =>
-      state.subscribedAuctionIds.includes(id)
-        ? state
-        : { subscribedAuctionIds: [...state.subscribedAuctionIds, id] }
-    ),
+      setActiveAuctionId: id => set({ activeAuctionId: id }),
 
-  setChatRoomId: (auctionId, chatRoomId) =>
-    set(state => ({
-      chatRoomIds: { ...state.chatRoomIds, [auctionId]: chatRoomId },
-    })),
+      addSubscribedAuctionId: id =>
+        set(state =>
+          state.subscribedAuctionIds.includes(id)
+            ? state
+            : { subscribedAuctionIds: [...state.subscribedAuctionIds, id] }
+        ),
 
-  removeSubscribedAuctionId: (auctionId: number) =>
-    set(state => {
-      const nextSubscribed = state.subscribedAuctionIds.filter(id => id !== auctionId);
-      const { [auctionId]: _, ...nextChatRoomIds } = state.chatRoomIds;
-      let nextActiveAuctionId = state.activeAuctionId;
+      setChatRoomId: (auctionId, chatRoomId) =>
+        set(state => ({
+          chatRoomIds: { ...state.chatRoomIds, [auctionId]: chatRoomId },
+        })),
 
-      if (state.activeAuctionId === auctionId) {
-        nextActiveAuctionId = nextSubscribed[0] ?? null;
-      }
+      removeSubscribedAuctionId: auctionId =>
+        set(state => {
+          const nextSubscribed = state.subscribedAuctionIds.filter(id => id !== auctionId);
+          const { [auctionId]: _, ...nextChatRoomIds } = state.chatRoomIds;
 
-      return {
-        subscribedAuctionIds: nextSubscribed,
-        chatRoomIds: nextChatRoomIds,
-        activeAuctionId: nextActiveAuctionId,
-      };
+          return {
+            subscribedAuctionIds: nextSubscribed,
+            chatRoomIds: nextChatRoomIds,
+            activeAuctionId: nextSubscribed[0] ?? null,
+          };
+        }),
+
+      resetLiveRoom: () => set(initialLiveRoomState),
     }),
-}));
+    {
+      name: "live-room-store",
+    }
+  )
+);

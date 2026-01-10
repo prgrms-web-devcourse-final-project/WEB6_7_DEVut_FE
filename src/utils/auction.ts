@@ -53,7 +53,15 @@ export const getDelayStatus = (status: AuctionStatus) => {
   }
 };
 
-export const getLiveEnterStatus = (liveTime?: string) => {
+export const getLiveEnterStatus = (status: AuctionStatus, liveTime?: string) => {
+  if (getLiveStatus(status) === "CLOSE") {
+    return "CLOSE";
+  }
+
+  if (status === "IN_PROGRESS") {
+    return "ONGOING";
+  }
+
   if (!liveTime) return "READY";
 
   const liveAt = new Date(liveTime).getTime();
