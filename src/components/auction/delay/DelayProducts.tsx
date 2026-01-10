@@ -33,7 +33,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
     isSelling,
   };
 
-  const { data, isLoading, error } = useDelayedProducts(params, {
+  const { data, isLoading, isFetching, error } = useDelayedProducts(params, {
     initialData: page === 1 && isSelling && !category ? initialDelayProducts : undefined,
   });
 
@@ -51,7 +51,8 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
     router.push(`${pathname}?${sp.toString()}`, { scroll: false });
   };
 
-  if (isLoading) return <div>일반 경매 목록 불러오는중...</div>;
+  const isEmpty = !isFetching && data && data.totalCount === 0;
+
   if (error) return <div>목록을 불러오는 중 오류가 발생하였습니다.</div>;
 
   return (
@@ -81,7 +82,7 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
         {/* <div className="h-[15px] w-[90%] text-right">
           <OrderSwitch />
         </div> */}
-        {!!!data?.totalCount && (
+        {isEmpty && (
           <EmptyContainer
             className="h-100"
             title="등록된 상품이 없습니다"
@@ -93,7 +94,13 @@ export default function DelayProducts({ initialDelayProducts }: DelayProductsPro
             }
           />
         )}
-        <ProductsGrid>
+        <ProductsGrid className="relative">
+          {isFetching && (
+            <div className="absolute inset-0 z-10 flex h-100 items-center justify-center bg-white/50">
+              <div className="border-custom-orange border-t-content-gray h-6 w-6 animate-spin rounded-full border-4" />
+            </div>
+          )}
+
           {data?.products?.map(product => (
             <ProductCard context="CARD" key={product.uid} product={product} />
           ))}

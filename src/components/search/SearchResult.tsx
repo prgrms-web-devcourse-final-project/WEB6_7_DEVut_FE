@@ -31,10 +31,7 @@ export default function SearchResult({
   if (isLoading) {
     return (
       <div className="flex h-120 items-center justify-center py-10">
-        <div
-          className="border-custom-orange border-t-content-gray animate-spin rounded-full border-4"
-          style={{ width: 24, height: 24 }}
-        />
+        <div className="border-custom-orange border-t-content-gray h-6 w-6 animate-spin rounded-full border-4" />
       </div>
     );
   }
