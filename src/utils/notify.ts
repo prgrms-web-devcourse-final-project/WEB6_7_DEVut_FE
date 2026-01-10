@@ -61,6 +61,16 @@ const NOTIFY_ICON_MAP: Record<NotificationType, string> = {
   LIVE_SUCCESS_SELLER: "💰",
   LIVE_SUCCESS_BIDDER: "🏆",
   LIVE_FAILED_SELLER: "❌",
+
+  // 배송
+  ITEM_SHIPPED: "📦",
+  TRANSACTION_COMPLETE: "✅",
+
+  // 💳 결제
+  PAYMENT_COMPLETE: "💳",
+  PAYMENT_REMINDER: "⏰",
+  PAYMENT_TIMEOUT_BUYER: "⚠️",
+  PAYMENT_TIMEOUT_SELLER: "🚨",
 };
 
 export const getNotifyIcon = (type: NotificationType) => {

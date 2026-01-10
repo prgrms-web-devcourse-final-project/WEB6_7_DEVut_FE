@@ -1,3 +1,14 @@
+const getTradeRouteByResourceType = (resourceType: string, resourceId: number) => {
+  switch (resourceType) {
+    case "LIVE_DEAL":
+      return `/trade/live/${resourceId}`;
+    case "DELAYED_DEAL":
+      return `/trade/${resourceId}`;
+    default:
+      return null;
+  }
+};
+
 export const NOTIFICATION_ROUTE_MAP: Record<NotificationType, NotificationRouteHandler> = {
   // 지연
   DELAYED_FIRST_BID: n => `/product/${n.resourceId}`,
@@ -12,11 +23,18 @@ export const NOTIFICATION_ROUTE_MAP: Record<NotificationType, NotificationRouteH
   DM_FIRST_MESSAGE: n =>
     n.metadata && "chatRoomId" in n.metadata ? `/message/${n.metadata.chatRoomId}` : null,
 
-  LIVE_AUCTION_START: n => {
-    // useRoomStore에서 구독, 저장
-    return `/auction/liveRoom`;
-  },
+  LIVE_AUCTION_START: () => `/auction/liveRoom`,
   LIVE_SUCCESS_SELLER: n => `/product/live/${n.resourceId}`,
   LIVE_SUCCESS_BIDDER: n => `/product/live/${n.resourceId}`,
   LIVE_FAILED_SELLER: n => `/product/live/${n.resourceId}`,
+
+  // 배송
+  ITEM_SHIPPED: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
+  TRANSACTION_COMPLETE: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
+
+  // 결제
+  PAYMENT_COMPLETE: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
+  PAYMENT_REMINDER: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
+  PAYMENT_TIMEOUT_BUYER: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
+  PAYMENT_TIMEOUT_SELLER: n => getTradeRouteByResourceType(n.resourceType, n.resourceId),
 };
