@@ -7,6 +7,7 @@ import { ChevronDown } from "lucide-react";
 import { ConfirmModal } from "../common/ComfirmModal";
 import Toast from "../common/Toast";
 import { getBidUnit } from "@/utils/auction";
+import { useGetMyBizz } from "@/features/mypage/hooks/useMyBizz";
 
 interface BiddingSectionModalProps {
   isOpen: boolean;
@@ -28,10 +29,20 @@ export const BiddingSectionModal = ({
   const [bidPrice, setBidPrice] = useState(minBid);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const notify = (message: string, type: ToastType) => Toast({ message, type });
+  const { data: myBizz } = useGetMyBizz();
 
   const handleConfirm = () => {
-    if (bidPrice < minBid)
-      return notify(`최소 입찰가는 ${minBid.toLocaleString()}원입니다.`, "INFO");
+    if (bidPrice < minBid) {
+      notify(`최소 입찰가는 ${minBid.toLocaleString()}원입니다.`, "ERROR");
+      setIsConfirmOpen(false);
+      return;
+    }
+
+    if ((myBizz || 0) < bidPrice) {
+      notify(`보유 Bizz가 부족합니다.`, "ERROR");
+      setIsConfirmOpen(false);
+      return;
+    }
 
     onConfirmBid({ bidPrice });
     setIsConfirmOpen(false);
