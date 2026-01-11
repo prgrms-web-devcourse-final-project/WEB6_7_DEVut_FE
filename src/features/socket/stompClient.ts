@@ -27,17 +27,11 @@ export const stompClient = new Client({
 
   onDisconnect: () => {
     // console.log("[STOMP] disconnected");
-    useSocketStore.getState().setDisconnected();
+    useSocketStore.getState().stopHeartbeat();
   },
 
   onStompError: () => {
     // console.error("[STOMP] ❌ stomp error");
     useSocketStore.getState().setError();
-  },
-
-  debug: str => {
-    if (process.env.NODE_ENV === "development") {
-      // console.log("[STOMP DEBUG]", str);
-    }
   },
 });
