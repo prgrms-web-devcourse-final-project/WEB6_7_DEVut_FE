@@ -15,9 +15,16 @@ export const createWithdrawal = async (
   return res.data;
 };
 
-export const historyWithdrawals = async (): Promise<HistoryWalletsResponse> => {
+export const historyWithdrawals = async ({
+  page,
+}: {
+  page: number;
+}): Promise<HistoryWalletsResponse> => {
   const res = await ClientApi<HistoryWalletsResponse>("/wallet/histories", {
     method: "GET",
+    params: {
+      page,
+    },
   });
 
   return res.data;
