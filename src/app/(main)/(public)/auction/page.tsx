@@ -9,7 +9,7 @@ import { auctionItems } from "@/constants/route/auction";
 import ContentContainer from "@/components/common/ContentContainer";
 import { useEffect, useState } from "react";
 import useNow from "@/components/schedule/UpdateNow";
-import { formatYmd, getAuctionTimeKey } from "@/utils/date";
+import { formatYmd, getAuctionTimeKey, getNextAuctionSlot } from "@/utils/date";
 import { getLiveRooms } from "@/features/auction/api/liveAuction.api";
 import LiveRoomListWriteMode from "@/components/auction/live/liveRoomList/LiveRoomListWriteMode";
 
@@ -33,6 +33,7 @@ export default function AuctionPage({
       day: "2-digit",
     }).format(now);
   const [nowDate, setNowDate] = useState(dateFn());
+  const [realMinute, setRealMinute] = useState(now.getMinutes());
   const [nowTime, setNowTime] = useState(getAuctionTimeKey(now));
   const [rooms, setRooms] = useState<LiveRoom[]>([]);
   const [focusedRoom, setFocusedRoom] = useState<LiveRoom | null>(null);
@@ -41,15 +42,16 @@ export default function AuctionPage({
   const [hour, minute] = nowTime.split(":").map(Number);
 
   const runningTime = (hour: number, minute: number) => {
-    // 일단 대충 시간으로... 디테일(하루의 마지막 경매가 끝나는 시간에 종료하도록) 수정 필요
-    // if (hour >= 9 && hour <= 21) {
-    setIsRunning(true);
-    // } else setIsRunning(false);
+    // 일단 시간으로...
+    if (hour >= 9 && hour <= 21) {
+      setIsRunning(true);
+    } else setIsRunning(false);
   };
   useEffect(() => {
     const interval = setInterval(() => {
       setNowDate(dateFn());
       setNowTime(getAuctionTimeKey(now));
+      setRealMinute(now.getMinutes());
     }, 60 * 1000); // 1분
     runningTime(hour, minute);
     return () => clearInterval(interval);
@@ -62,10 +64,21 @@ export default function AuctionPage({
       const t = startAt ? slotTime : nowTime;
 
       try {
-        const data = await getLiveRooms(d, t);
-        if (data && data.rooms) {
-          setRooms(data.rooms);
+        const currentData = await getLiveRooms(d, t);
+        let combinedRooms = currentData?.rooms || [];
+
+        // 10분 전(20~29분, 50~59분)이면 다음 타임 경매방도 미리 불러옴
+        if ((20 <= realMinute && realMinute <= 29) || (50 <= realMinute && realMinute <= 59)) {
+          console.log(`[AuctionPage] 다음 타임 경매 미리 로딩 (현재 ${realMinute}분)`);
+          const { nextDate, nextTime } = getNextAuctionSlot(d, t);
+          const nextData = await getLiveRooms(nextDate, nextTime);
+
+          if (nextData?.rooms) {
+            combinedRooms = [...combinedRooms, ...nextData.rooms];
+          }
         }
+
+        setRooms(combinedRooms);
       } catch (error) {
         console.error("live rooms fetch 실패:", error);
       }

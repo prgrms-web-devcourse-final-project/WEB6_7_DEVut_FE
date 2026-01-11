@@ -47,6 +47,19 @@ export const getAuctionTimeKey = (d: Date | string) => {
   return `${hh}:${mm}`;
 };
 
+export const getNextAuctionSlot = (dateStr: string, timeStr: string) => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const [hour, minute] = timeStr.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute);
+  date.setMinutes(date.getMinutes() + 30);
+
+  const nextDate = formatYmd(date);
+  const nextTime = getAuctionTimeKey(date);
+
+  return { nextDate, nextTime };
+};
+
 export const getScheduleByWeek = (date: Date) => {
   const base = new Date(date); // 원본 보호
 
@@ -89,4 +102,3 @@ export function isNowCell(day: Date): boolean {
   const end = getAuctionTimeKey(day);
   return now === end;
 }
-
