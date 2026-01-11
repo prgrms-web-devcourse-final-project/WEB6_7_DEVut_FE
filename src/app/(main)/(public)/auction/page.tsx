@@ -43,9 +43,9 @@ export default function AuctionPage({
 
   const runningTime = (hour: number, minute: number) => {
     // 일단 시간으로...
-    if (hour >= 9 && hour <= 21) {
-      setIsRunning(true);
-    } else setIsRunning(false);
+    // if (hour >= 9 && hour <= 21) {
+    setIsRunning(true);
+    // } else setIsRunning(false);
   };
   useEffect(() => {
     const interval = setInterval(() => {
