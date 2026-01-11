@@ -34,8 +34,6 @@ export const getLiveHotProducts = async () => {
     method: "GET",
   });
 
-  console.log("라이브 인기 상품: ", res.data.liveItems);
-
   return res.data.liveItems.map(mapLiveProductToCard);
 };
 

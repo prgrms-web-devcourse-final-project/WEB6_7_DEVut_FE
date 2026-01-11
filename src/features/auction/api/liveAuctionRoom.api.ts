@@ -5,9 +5,15 @@ export const enterChatRoom = async (auctionId: number) => {
     method: "PUT",
   });
 
-  console.log("첫접속: ", res.data.participantCount);
-
   return { ...res.data };
+};
+
+export const exitChatRoom = async (auctionId: number) => {
+  const res = await ClientApi<string>(`/chatrooms/auction/${auctionId}/exit`, {
+    method: "DELETE",
+  });
+
+  return res.data;
 };
 
 export const getLiveRoomProducts = async (roomId: number) => {

@@ -1,3 +1,4 @@
+import { useGetMyBizz } from "@/features/mypage/hooks/useMyBizz";
 import Button from "../common/Button";
 import Toast from "../common/Toast";
 import { BuyNowSectionModal } from "./BuyNowSectionModal";
@@ -21,10 +22,17 @@ export default function DelayedBuyNowSection({
   const notify = (message: string, type: ToastType) => Toast({ message, type });
 
   const { mutate: buyNow, isPending } = useBuyNowDelayProduct(productId);
+  const { data: myBizz } = useGetMyBizz();
 
   const handleConfirmBid = () => {
     if (!me) {
       notify("로그인을 해주세요!", "ERROR");
+      modalToggle(false);
+      return;
+    }
+
+    if ((myBizz || 0) < buyNowPrice) {
+      notify("보유 Bizz가 부족합니다!", "ERROR");
       modalToggle(false);
       return;
     }
