@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { StompSubscription } from "@stomp/stompjs";
 import { stompClient } from "../stompClient";
 import { queryClient } from "@/providers/QueryProvider";
+import { exitChatRoom } from "@/features/auction/api/liveAuctionRoom.api";
 
 type SocketStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 type HeartbeatTimer = ReturnType<typeof setInterval> | null;
@@ -19,15 +20,12 @@ interface SocketStore {
   setError: () => void;
   startHeartbeat: () => void;
   stopHeartbeat: () => void;
-
   addMessage: (chatRoomId: string, msg: LiveChatMessage) => void;
   setParticipants: (auctionId: number, count: number) => void;
-
   sendAuctionMessage: (auctionId: number, payload: { content: string }) => void;
   subscribeChatRoom: (chatRoomId: string, auctionId?: number) => void;
-  unsubscribeChatRoom: (chatRoomId: string) => void;
-
   setInitialParticipants: (auctionId: number, count: number) => void;
+  exitAuctionRoom: (chatRoomId: string, auctionId: number) => Promise<void>;
 }
 
 type RoomSubscriptions = {
@@ -166,6 +164,10 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               sendTime: Date.now(),
               newPrice: data.newPrice,
               bidderId: data.bidderId,
+              bidderNickname: data.bidderNickname,
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["my-bizz"],
             });
             break;
           }
@@ -180,6 +182,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               result: data.result,
               winnerId: data.winnerId,
               finalPrice: data.finalPrice,
+              winnerNickname: data.winnerNickname,
             });
             break;
           }
@@ -224,7 +227,22 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     }));
   },
 
-  unsubscribeChatRoom: chatRoomId => {
+  setInitialParticipants: (auctionId, count) =>
+    set(state => ({
+      participantsByAuction: {
+        ...state.participantsByAuction,
+        [auctionId]: count,
+      },
+    })),
+
+  exitAuctionRoom: async (chatRoomId, auctionId) => {
+    try {
+      console.log("경매방 퇴장");
+      await exitChatRoom(auctionId);
+    } catch (e) {
+      console.warn("[WS] exitChatRoom api failed", e);
+    }
+
     const roomSubs = get().subscriptions[chatRoomId];
 
     roomSubs?.chat?.unsubscribe();
@@ -234,19 +252,13 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     set(state => {
       const { [chatRoomId]: _, ...restSubs } = state.subscriptions;
       const { [chatRoomId]: __, ...restMessages } = state.messagesByRoom;
+      const { [auctionId]: ___, ...restParticipants } = state.participantsByAuction;
 
       return {
         subscriptions: restSubs,
         messagesByRoom: restMessages,
+        participantsByAuction: restParticipants,
       };
     });
   },
-
-  setInitialParticipants: (auctionId, count) =>
-    set(state => ({
-      participantsByAuction: {
-        ...state.participantsByAuction,
-        [auctionId]: count,
-      },
-    })),
 }));
