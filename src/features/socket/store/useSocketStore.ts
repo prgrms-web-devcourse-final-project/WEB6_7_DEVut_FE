@@ -16,7 +16,6 @@ interface SocketStore {
   heartbeatTimer: HeartbeatTimer;
 
   setConnected: () => void;
-  setDisconnected: () => void;
   setError: () => void;
   startHeartbeat: () => void;
   stopHeartbeat: () => void;
@@ -57,11 +56,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     });
 
     set({ pendingSubscribe: [] });
-  },
-
-  setDisconnected: () => {
-    get().stopHeartbeat();
-    set({ status: "disconnected" });
   },
 
   setError: () => {
@@ -237,7 +231,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
   exitAuctionRoom: async (chatRoomId, auctionId) => {
     try {
-      console.log("경매방 퇴장");
       await exitChatRoom(auctionId);
     } catch (e) {
       console.warn("[WS] exitChatRoom api failed", e);
@@ -253,6 +246,14 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       const { [chatRoomId]: _, ...restSubs } = state.subscriptions;
       const { [chatRoomId]: __, ...restMessages } = state.messagesByRoom;
       const { [auctionId]: ___, ...restParticipants } = state.participantsByAuction;
+
+      const hasAnySubscription = Object.values(restSubs).some(
+        sub => sub.chat || sub.auction || sub.participants
+      );
+
+      if (!hasAnySubscription) {
+        get().stopHeartbeat();
+      }
 
       return {
         subscriptions: restSubs,
