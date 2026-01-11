@@ -15,10 +15,12 @@ import { useLiveRoomStore } from "@/features/auction/store/useLiveRoomStore";
 import { useSocketStore } from "@/features/socket/store/useSocketStore";
 import { getLiveRoomStatus, getLiveStatus } from "@/utils/auction";
 import { useMe } from "@/features/auth/hooks/useMe";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function LiveAuctionRoomPage() {
   const { data: me } = useMe();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     activeAuctionId,
@@ -33,10 +35,10 @@ export default function LiveAuctionRoomPage() {
   const {
     sendAuctionMessage,
     subscribeChatRoom,
-    unsubscribeChatRoom,
     messagesByRoom,
     participantsByAuction,
     setInitialParticipants,
+    exitAuctionRoom,
   } = useSocketStore();
 
   const current = useMemo(() => {
@@ -92,14 +94,14 @@ export default function LiveAuctionRoomPage() {
   );
 
   const closeRoom = useCallback(
-    (auctionId: number) => {
+    async (auctionId: number) => {
       const chatRoomId = chatRoomIds[auctionId];
-      if (chatRoomId) {
-        unsubscribeChatRoom(chatRoomId);
-      }
+      if (!chatRoomId) return;
+
+      await exitAuctionRoom(chatRoomId, auctionId);
       removeSubscribedAuctionId(auctionId);
     },
-    [chatRoomIds, unsubscribeChatRoom, removeSubscribedAuctionId]
+    [chatRoomIds, exitAuctionRoom, removeSubscribedAuctionId]
   );
 
   const sendMessage = (payload: { content: string }) => {
@@ -114,6 +116,14 @@ export default function LiveAuctionRoomPage() {
     }
     enterRoom(activeAuctionId);
   }, [activeAuctionId, enterRoom, router]);
+
+  useEffect(() => {
+    if (!activeAuctionId) return;
+
+    queryClient.invalidateQueries({
+      queryKey: ["live-room-products", activeAuctionId],
+    });
+  }, [activeAuctionId, queryClient]);
 
   if (!current) return null;
 
