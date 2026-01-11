@@ -1,5 +1,5 @@
 type MilestoneStep = {
-  key: "PENDING" | "PAID" | "SHIPPING" | "COMPLETED";
+  key: "PENDING" | "PAID" | "SHIPPING_PREPARE" | "SHIPPING_IN_PROGRESS" | "COMPLETED";
   title: string;
   description: string;
   action?: {
@@ -45,34 +45,39 @@ export function buildMilestones({
     },
 
     {
-      key: "SHIPPING",
+      key: "SHIPPING_PREPARE",
       title: "거래 중",
-      description:
-        status === "PAID"
-          ? isBuyer
-            ? "판매자가 발송 준비 중입니다."
-            : "송장 정보를 입력해주세요."
-          : isBuyer
-            ? "상품이 배송 중입니다."
-            : "상품을 발송하였습니다.",
-      active: status === "SHIPPING",
-      done: status === "COMPLETED",
+      description: isBuyer ? "판매자가 발송 준비 중입니다." : "송장 정보를 입력해주세요.",
+      active: status === "PAID",
+      done: ["SHIPPING", "COMPLETED"].includes(status),
     },
 
     {
-      key: "COMPLETED",
+      key: "SHIPPING_IN_PROGRESS",
       title: "거래 완료",
       description: isBuyer ? "구매 확정을 기다리고 있습니다." : "판매가 완료되었습니다.",
       action:
-        isBuyer && status === "COMPLETED"
+        isBuyer && status === "SHIPPING"
           ? { label: "구매 확정", onClick: onConfirmClick }
           : undefined,
-      active: status === "COMPLETED",
-      done: false,
+      active: status === "SHIPPING",
+      done: status === "COMPLETED",
     },
   ];
 
-  const lastIndex = status === "PENDING" ? 0 : status === "PAID" || status === "SHIPPING" ? 2 : 3;
+  return allSteps.filter(step => {
+    if (status === "PENDING") {
+      return step.key === "PENDING";
+    }
 
-  return allSteps.slice(0, lastIndex + 1);
+    if (status === "PAID") {
+      return ["PENDING", "PAID", "SHIPPING_PREPARE"].includes(step.key);
+    }
+
+    if (status === "SHIPPING") {
+      return ["PENDING", "PAID", "SHIPPING_PREPARE", "SHIPPING_IN_PROGRESS"].includes(step.key);
+    }
+
+    return true; // COMPLETED
+  });
 }
