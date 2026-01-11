@@ -27,7 +27,7 @@ const font = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Buzzer Bidder",
+  title: "Buzzer Bidder | 실시간 라이브 경매 플랫폼",
   description: "실시간 경매 플랫폼 버저비더 입니다.",
 };
 
