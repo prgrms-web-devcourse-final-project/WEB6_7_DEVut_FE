@@ -3,7 +3,7 @@
 import BaseImage from "@/components/common/BaseImage";
 import { cva } from "class-variance-authority";
 
-const liveChatItemVariants = cva("text-title-main-dark w-full text-sm", {
+const liveChatItemVariants = cva("text-title-main-dark w-full list-none text-sm", {
   variants: {
     type: {
       USER: "flex w-full items-start",
@@ -40,6 +40,8 @@ export default function LiveChatItem({ message, userId }: LiveChatItemProps) {
     result,
     finalPrice,
     winnerId,
+    bidderNickname,
+    winnerNickname,
   } = message;
   const isMine = userId === senderId;
   const isBidder = userId === bidderId;
@@ -58,17 +60,14 @@ export default function LiveChatItem({ message, userId }: LiveChatItemProps) {
     return (
       <li className={liveChatItemVariants({ type })}>
         <div className="border-border-sub2 shadow-flat-light bg-content-area flex w-full flex-col items-center gap-1 border-[3px] px-4 py-2 text-sm">
-          {isBidder ? (
-            <>
-              <span>🎉 입찰을 축하드립니다! </span>
-              <span>{newPrice?.toLocaleString()} Bizz에 성공적으로 입찰했어요.</span>
-            </>
-          ) : (
-            <>
-              <span>🔔 상위 입찰 </span>
-              <span>{newPrice?.toLocaleString()} Bizz에 입찰이 들어왔습니다.</span>
-            </>
-          )}
+          <>
+            <span>{isBidder ? "🎉 입찰을 축하드립니다!" : "🔔 상위 입찰"} </span>
+            <span>
+              <b className="text-custom-red">{`"${bidderNickname}"`}</b>
+              <b> 님이 {newPrice?.toLocaleString()} </b>
+              Bizz에 입찰을 했습니다.
+            </span>
+          </>
         </div>
       </li>
     );
@@ -78,29 +77,22 @@ export default function LiveChatItem({ message, userId }: LiveChatItemProps) {
     return (
       <li className={liveChatItemVariants({ type })}>
         <div className="border-border-sub2 shadow-flat-light bg-content-area flex w-full flex-col items-center gap-1 border-[3px] px-4 py-2 text-sm">
-          {result === "FAILED" ? (
-            <>
+          <>
+            {result === "FAILED" ? (
               <span>상품이 유찰되었습니다.</span>
-            </>
-          ) : (
-            <>
-              {isWinner ? (
-                <>
-                  <span>🎉 축하드립니다! 상품이 낙찰되었습니다.</span>
-                  <span>
-                    <b>{finalPrice?.toLocaleString()}</b> Bizz에 낙찰되었어요!
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span>상품이 낙찰되었습니다.</span>
-                  <span>
-                    <b>{finalPrice?.toLocaleString()}</b> Bizz에 낙찰되었습니다.
-                  </span>
-                </>
-              )}
-            </>
-          )}
+            ) : (
+              <>
+                <span>
+                  {isWinner ? "🎉 축하드립니다! 상품이 낙찰되었습니다." : "상품이 낙찰되었습니다."}
+                </span>
+                <span>
+                  <b className="text-custom-red">{`"${winnerNickname}"`}</b>
+                  <b> 님이 {finalPrice?.toLocaleString()} </b>
+                  Bizz에 낙찰되었습니다.
+                </span>
+              </>
+            )}
+          </>
         </div>
       </li>
     );
