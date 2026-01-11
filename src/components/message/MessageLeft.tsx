@@ -91,52 +91,54 @@ function RoomListItem({
           : "border-transparent"
       } `}
     >
-      <div className="relative h-12 w-12 flex-shrink-0">
-        {room.hasUnreadMessage && (
-          <div
-            className={`shadow-[0px_0px_10px_${ORANGE}] absolute top-0.5 -left-1 z-10 h-4 w-4 rounded-full bg-[#FF7043]`}
-          />
-        )}
-
-        <div className="h-full w-full overflow-hidden rounded-full border-2 border-[#6D4C41]">
-          {room.otherUserProfileImage ? (
-            <Image
-              src={room.otherUserProfileImage}
-              alt={room.otherUserNickname}
-              width={48}
-              height={48}
-              className="block h-full w-full object-cover"
+      <div className="flex w-full flex-1 items-center gap-3 overflow-hidden">
+        <div className="relative h-12 w-12 flex-shrink-0">
+          {room.hasUnreadMessage && (
+            <div
+              className={`shadow-[0px_0px_10px_${ORANGE}] absolute top-0.5 -left-1 z-10 h-4 w-4 rounded-full bg-[#FF7043]`}
             />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-              {room.otherUserNickname.charAt(0)}
-            </div>
           )}
-        </div>
-      </div>
 
-      <div className="flex flex-1 items-center justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <span className="truncate text-[16px] font-bold text-[#6D4C41]">{itemName}</span>
-          <span className="truncate text-[14px] text-[#8D6E63]">{room.otherUserNickname}</span>
-        </div>
-        <div className="flex flex-shrink-0 flex-col items-end gap-1">
-          <div className="flex items-center gap-2">
-            {room.lastMessageTime && (
-              <span className="text-[11px] whitespace-nowrap text-[#A1887F]">
-                {new Date(room.lastMessageTime).toLocaleString("ko-KR", {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
+          <div className="h-full w-full overflow-hidden rounded-full border-2 border-[#6D4C41]">
+            {room.otherUserProfileImage ? (
+              <Image
+                src={room.otherUserProfileImage}
+                alt={room.otherUserNickname}
+                width={48}
+                height={48}
+                className="block h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                {room.otherUserNickname.charAt(0)}
+              </div>
             )}
           </div>
-          <p className="max-w-[150px] truncate text-right text-[14px] text-[#A1887F]">
-            {latestSocketMessage ?? room.lastMessage ?? ""}
-          </p>
+        </div>
+
+        <div className="flex w-full flex-1 items-center justify-between gap-3 overflow-hidden">
+          <div className="flex flex-1 flex-col gap-1 overflow-hidden">
+            <span className="truncate text-[16px] font-bold text-[#6D4C41]">{itemName}</span>
+            <span className="truncate text-[14px] text-[#8D6E63]">{room.otherUserNickname}</span>
+          </div>
+          <div className="flex flex-shrink-0 flex-col items-end gap-1">
+            <div className="flex items-center gap-2">
+              {room.lastMessageTime && (
+                <span className="text-[11px] whitespace-nowrap text-[#A1887F]">
+                  {new Date(room.lastMessageTime).toLocaleString("ko-KR", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              )}
+            </div>
+            <p className="max-w-[100px] truncate text-right text-[14px] text-[#A1887F]">
+              {latestSocketMessage ?? room.lastMessage ?? ""}
+            </p>
+          </div>
         </div>
       </div>
     </li>
