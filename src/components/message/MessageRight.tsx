@@ -300,28 +300,39 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
         <p className="text-[20px] text-[#8D6E63]">{opponent?.nickname ?? "채팅"}</p>
       </div>
 
-      <div className="flex h-[117px] flex-shrink-0 items-center justify-center border-b border-[#6D4C41] bg-[#FDF6E9] p-4">
+      <div className="flex min-h-[117px] flex-shrink-0 items-center justify-center border-b border-[#6D4C41] bg-[#FDF6E9] p-4">
         <button
           onClick={() => router.push(`/product/${targetItem?.id}`)}
-          className="flex h-full w-full cursor-pointer flex-row items-center rounded-lg border-2 border-[#A1887F] p-[15px] shadow-[3px_3px_0px_rgba(109,76,65,0.4)] transition-all hover:scale-101 active:scale-99"
+          className="flex w-full cursor-pointer items-center rounded-lg border-2 border-[#A1887F] p-[15px] shadow-[3px_3px_0px_rgba(109,76,65,0.4)] transition-all hover:scale-101 active:scale-99"
         >
-          <div className="h-16 w-16 overflow-hidden rounded-md border-3 border-[#6D4C41]">
+          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-3 border-[#6D4C41]">
             {targetItem?.image && (
-              <Image src={targetItem.image} alt={targetItem.name} width={64} height={64} />
+              <Image
+                src={targetItem.image}
+                alt={targetItem.name}
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
             )}
           </div>
 
-          <div className="flex flex-col p-4">
-            <div className="flex flex-row gap-2">
-              {/* <StatusBadge status="pending" /> */}
-              <p className="text-title-sub text-[18px] font-bold">{targetItem?.name}</p>
+          <div className="flex min-w-0 flex-1 flex-col p-4">
+            <div className="flex min-w-0 flex-row gap-2">
+              <p className="text-title-sub min-w-0 truncate text-[18px] font-bold">
+                {targetItem?.name}
+              </p>
             </div>
-            <div className="flex flex-row items-center gap-2">
-              <span className="text-title-sub2 text-left text-[14px]">현재가</span>
-              <BizzAmount amount={targetItem?.price ?? 0} />
+
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="text-title-sub2 shrink-0 text-[14px]">현재가</span>
+              <div className="min-w-0 truncate whitespace-nowrap">
+                <BizzAmount amount={targetItem?.price ?? 0} />
+              </div>
             </div>
           </div>
-          <Image className="ml-auto" src={productSelector} alt="" width={41} height={36} />
+
+          <Image className="ml-auto shrink-0" src={productSelector} alt="" width={41} height={36} />
         </button>
       </div>
 
@@ -357,14 +368,14 @@ export default function MessageRight({ roomId, productId, isOpen, onBack }: Mess
             return (
               <div key={idx} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                 {!isMine && (
-                  <div className="mr-3 h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#6D4C41]">
+                  <div className="relative mr-3 h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#6D4C41]">
                     {opponentProfileImage ? (
                       <Image
                         src={opponentProfileImage}
                         alt={`${msg.senderId}`}
-                        width={48}
-                        height={48}
+                        fill
                         className="object-cover"
+                        sizes="48px"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
