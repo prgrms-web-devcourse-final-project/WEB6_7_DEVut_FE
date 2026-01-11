@@ -4,77 +4,81 @@ import OptionDropdown from "@/components/common/OptionDropdown";
 import BizzLogCard from "./BizzLogCard";
 import { useState } from "react";
 import { useHistoryWithdrawals } from "@/features/withdrawal/hooks/useHistoryWithdrawals";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/common/Pagenation";
 
 export default function MyBizzLog({ simple = false }: { simple?: boolean }) {
-  const { data } = useHistoryWithdrawals();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") ?? 1);
+
+  const { data } = useHistoryWithdrawals({ page });
   const [status, setStatus] = useState("전체");
-  console.log("walletHistories:", data);
-  const isEmpty = !data?.walletHistories || data.walletHistories.length === 0;
-  const historyData = data?.walletHistories || [];
-  const mylogs = historyData.sort(
+
+  const histories = data?.walletHistories ?? [];
+  const totalPages = data?.totalPages ?? 1;
+
+  const sortedLogs = [...histories].sort(
     (a, b) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
   );
-  const logs = mylogs.map((log, index) => {
-    const newLog = { ...log, index };
-    return newLog;
-  });
-  console.log("logs:", logs);
+
+  const filteredLogs =
+    status === "전체"
+      ? sortedLogs
+      : status === "충전"
+        ? sortedLogs.filter(l => l.transactionType === "CHARGE")
+        : status === "출금"
+          ? sortedLogs.filter(l => l.transactionType === "WITHDRAW")
+          : status === "판매"
+            ? sortedLogs.filter(
+                l =>
+                  l.transactionType === "RECEIVE_FROM_USER" ||
+                  l.transactionType === "DEAL_SETTLEMENT"
+              )
+            : status === "입찰"
+              ? sortedLogs.filter(l => l.transactionType === "BID")
+              : status === "환불"
+                ? sortedLogs.filter(
+                    l => l.transactionType === "BID_REFUND" || l.transactionType === "REFUND"
+                  )
+                : sortedLogs.filter(l => l.transactionType === "PAY_TO_USER");
+
+  const isEmpty = filteredLogs.length === 0;
+
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       {!simple && (
-        <OptionDropdown label={status} className="cursor-pointer">
-          <OptionDropdown.Item onClick={() => setStatus("전체")}>전체</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("충전")}>충전</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("출금")}>출금</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("구매")}>구매</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("판매")}>판매</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("입찰")}>입찰</OptionDropdown.Item>
-          <OptionDropdown.Item onClick={() => setStatus("환불")}>환불</OptionDropdown.Item>
+        <OptionDropdown label={status}>
+          {["전체", "충전", "출금", "구매", "판매", "입찰", "환불"].map(v => (
+            <OptionDropdown.Item key={v} onClick={() => setStatus(v)}>
+              {v}
+            </OptionDropdown.Item>
+          ))}
         </OptionDropdown>
       )}
-      <div className="border-border-sub2 text-border-sub2 bg-content-gray mt-3 grid grid-cols-[1fr_1fr_1fr_1fr] rounded-lg border-2 px-4 py-2 text-center font-bold">
+
+      <div className="border-border-sub2 text-border-sub2 bg-content-gray mt-3 grid grid-cols-4 rounded-lg border-2 px-4 py-2 text-center font-bold">
         <div>구분</div>
         <div>일시</div>
         <div>금액</div>
         <div>잔액</div>
       </div>
+
       <div className="mt-1 flex flex-col gap-3">
         {isEmpty ? (
-          <div className="border-border-sub col-span-full mt-3 flex min-h-[350px] flex-col items-center justify-center rounded-md border-2 border-dashed bg-[#FDF6E9] text-center">
+          <div className="border-border-sub mt-3 flex min-h-[350px] items-center justify-center rounded-md border-2 border-dashed bg-[#FDF6E9]">
             <p className="text-title-main text-lg font-bold">기록이 없습니다</p>
           </div>
-        ) : status === "전체" ? (
-          logs.map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : status === "충전" ? (
-          logs
-            .filter(log => log.transactionType === "CHARGE")
-            .map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : status === "출금" ? (
-          logs
-            .filter(log => log.transactionType === "WITHDRAW")
-            .map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : status === "판매" ? (
-          logs
-            .filter(
-              log =>
-                log.transactionType === "RECEIVE_FROM_USER" ||
-                log.transactionType === "DEAL_SETTLEMENT"
-            )
-            .map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : status === "입찰" ? (
-          logs
-            .filter(log => log.transactionType === "BID")
-            .map(log => <BizzLogCard key={log.index} log={log} />)
-        ) : status === "환불" ? (
-          logs
-            .filter(log => log.transactionType === "BID_REFUND" || log.transactionType === "REFUND")
-            .map(log => <BizzLogCard key={log.index} log={log} />)
         ) : (
-          logs
-            .filter(log => log.transactionType === "PAY_TO_USER")
-            .map(log => <BizzLogCard key={log.index} log={log} />)
+          filteredLogs.map((log, idx) => (
+            <BizzLogCard
+              key={`${log.transactionDate}-${idx}`} // 서버 id 없을 때 안전
+              log={log}
+            />
+          ))
         )}
       </div>
+
+      <Pagination totalPages={totalPages} />
     </div>
   );
 }
