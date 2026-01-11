@@ -25,6 +25,8 @@ interface LiveChatMessage {
   result?: "SUCCESS" | "FAILED";
   winnerId?: number;
   finalPrice?: number;
+  bidderNickname?: string;
+  winnerNickname?: string;
 }
 
 // 상품 목록

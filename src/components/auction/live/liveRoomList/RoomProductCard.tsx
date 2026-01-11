@@ -45,7 +45,7 @@ export default function RoomProductCard({ product }: RoomProductCardProps) {
                   className="text-custom-orange-dark text-[14px] leading-tight font-bold"
                 />
 
-                <p className="mt-0.5 line-clamp-1 text-[13px]">{product.title}</p>
+                <p className="mt-0.5 line-clamp-1 pb-2 text-[13px]">{product.title}</p>
               </div>
               <button
                 className="cursor-pointer transition-transform hover:scale-105 active:scale-90"
