@@ -48,13 +48,16 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
   setConnected: () => {
     set({ status: "connected" });
+    const { pendingSubscribe, subscriptions } = get();
 
-    get().startHeartbeat();
+    const hasAnySubscription = Object.keys(subscriptions).length > 0 || pendingSubscribe.length > 0;
+    if (hasAnySubscription) {
+      get().startHeartbeat();
+    }
 
-    get().pendingSubscribe.forEach(({ chatRoomId, auctionId }) => {
+    pendingSubscribe.forEach(({ chatRoomId, auctionId }) => {
       get().subscribeChatRoom(chatRoomId, auctionId);
     });
-
     set({ pendingSubscribe: [] });
   },
 
@@ -65,9 +68,16 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
   startHeartbeat: () => {
     const { heartbeatTimer } = get();
-    if (heartbeatTimer) return;
+    if (heartbeatTimer) {
+      console.log("[HB] already running");
+      return;
+    }
+
+    console.log("[HB] start heartbeat");
 
     const timer = setInterval(() => {
+      console.log("[HB] heartbeat sent", Date.now());
+
       stompClient.publish({
         destination: "/send/auction/heartbeat",
         body: JSON.stringify({}),
@@ -79,9 +89,13 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
   stopHeartbeat: () => {
     const { heartbeatTimer } = get();
+
     if (heartbeatTimer) {
+      console.log("[HB] stop heartbeat");
       clearInterval(heartbeatTimer);
       set({ heartbeatTimer: null });
+    } else {
+      console.log("[HB] stop called but no timer");
     }
   },
 
@@ -113,7 +127,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     const roomSubs = subscriptions[chatRoomId];
 
     if (status !== "connected") {
-      if (!pendingSubscribe.some(p => p.chatRoomId === chatRoomId)) {
+      if (!pendingSubscribe.some(p => p.chatRoomId === chatRoomId && p.auctionId === auctionId)) {
         set({
           pendingSubscribe: [...pendingSubscribe, { chatRoomId, auctionId }],
         });
@@ -121,7 +135,10 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       return;
     }
 
-    // 경매방 입장 알림
+    const hasAnyBefore = Object.values(subscriptions).some(
+      sub => sub.chat || sub.auction || sub.participants
+    );
+
     if (!messagesByRoom[chatRoomId]) {
       set(state => ({
         messagesByRoom: {
@@ -160,9 +177,8 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               bidderId: data.bidderId,
               bidderNickname: data.bidderNickname,
             });
-            queryClient.invalidateQueries({
-              queryKey: ["my-bizz"],
-            });
+
+            queryClient.invalidateQueries({ queryKey: ["my-bizz"] });
             break;
           }
 
@@ -193,16 +209,9 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
     let participantsSub = roomSubs?.participants;
     if (!participantsSub && auctionId !== undefined) {
-      console.log("[WS] participants subscribe 요청", {
-        auctionId,
-        destination: `/receive/chat/auction/${auctionId}/participants`,
-      });
-
       participantsSub = stompClient.subscribe(
         `/receive/chat/auction/${auctionId}/participants`,
         frame => {
-          console.log("[WS] participants message 수신", frame.body);
-
           const { count } = JSON.parse(frame.body);
           get().setParticipants(auctionId, count);
         }
@@ -219,6 +228,10 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
         },
       },
     }));
+
+    if (!hasAnyBefore) {
+      get().startHeartbeat();
+    }
   },
 
   setInitialParticipants: (auctionId, count) =>
@@ -234,32 +247,32 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       await exitChatRoom(auctionId);
     } catch (e) {
       console.warn("[WS] exitChatRoom api failed", e);
+    } finally {
+      const roomSubs = get().subscriptions[chatRoomId];
+
+      roomSubs?.chat?.unsubscribe();
+      roomSubs?.auction?.unsubscribe();
+      roomSubs?.participants?.unsubscribe();
+
+      set(state => {
+        const { [chatRoomId]: _, ...restSubs } = state.subscriptions;
+        const { [chatRoomId]: __, ...restMessages } = state.messagesByRoom;
+        const { [auctionId]: ___, ...restParticipants } = state.participantsByAuction;
+
+        const hasAnySubscription = Object.values(restSubs).some(
+          sub => sub.chat || sub.auction || sub.participants
+        );
+
+        if (!hasAnySubscription) {
+          get().stopHeartbeat();
+        }
+
+        return {
+          subscriptions: restSubs,
+          messagesByRoom: restMessages,
+          participantsByAuction: restParticipants,
+        };
+      });
     }
-
-    const roomSubs = get().subscriptions[chatRoomId];
-
-    roomSubs?.chat?.unsubscribe();
-    roomSubs?.auction?.unsubscribe();
-    roomSubs?.participants?.unsubscribe();
-
-    set(state => {
-      const { [chatRoomId]: _, ...restSubs } = state.subscriptions;
-      const { [chatRoomId]: __, ...restMessages } = state.messagesByRoom;
-      const { [auctionId]: ___, ...restParticipants } = state.participantsByAuction;
-
-      const hasAnySubscription = Object.values(restSubs).some(
-        sub => sub.chat || sub.auction || sub.participants
-      );
-
-      if (!hasAnySubscription) {
-        get().stopHeartbeat();
-      }
-
-      return {
-        subscriptions: restSubs,
-        messagesByRoom: restMessages,
-        participantsByAuction: restParticipants,
-      };
-    });
   },
 }));
