@@ -3,7 +3,7 @@ const getTradeRouteByResourceType = (resourceType: string, resourceId: number) =
     case "LIVE_DEAL":
       return `/trade/live/${resourceId}`;
     case "DELAYED_DEAL":
-      return `/trade/${resourceId}`;
+      return `/trade/delayed/${resourceId}`;
     default:
       return null;
   }
